@@ -681,6 +681,7 @@ run(function()
 		Remote.ID = remoteID
 
 		local success, remote = pcall(Client.Get, Client, Remote.ID)
+		Remote.Success = success
 		Remote.Remote = remote
 
 		RemoteHandler.Remotes[remoteID] = Remote
@@ -690,10 +691,13 @@ run(function()
 
 	function RemoteHandler:Fire(method, ...)
 		local Remote = self.Remote
+		if not self.Success or not Remote then
+			return { andThen = function() end }
+		end
 
 		local func = (method and Remote[method]) or (Remote.CallServer or Remote.CallServerAsync or Remote.SendToServer)
 	    if func then
-			return func(method, ...)
+			return func(Remote, ...)
 		end
 
 		return
