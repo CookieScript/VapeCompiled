@@ -1338,7 +1338,7 @@ run(function()
 							end
 						end
 					elseif store.hand.toolType == 'sword' then
-						bedwars.SwordController:swingSwordAtMouse(39)
+						bedwars.SwordController:swingSwordAtMouse(0.39)
 					end
 				end
 	
@@ -2746,7 +2746,7 @@ run(function()
 						if tracked < -45 then
 							root.Velocity = Vector3.new(0, 5, 0)
 							entitylib.character.Humanoid:ChangeState(Enum.HumanoidStateType.Landed)
-							runService.RenderStepped:Wait()
+							runService.PreRender:Wait()
 							root.Velocity = Velo
 							bedwars.Handler:Get('GroundHit'):Fire('SendToServer', nil, Vector3.new(0, tracked, 0), workspace:GetServerTimeNow())
 						end
