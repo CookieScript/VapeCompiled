@@ -667,6 +667,38 @@ run(function()
 	local Client = require(replicatedStorage.TS.remotes).default.Client
 	local OldGet, OldBreak = Client.Get
 
+	local RemoteHandler = {}
+	RemoteHandler.Remotes = {}
+
+	function RemoteHandler.Get(self, remoteID)
+		if RemoteHandler.Remotes[remoteID] then
+			return RemoteHandler.Remotes[remoteID]
+		end
+
+		local Remote = {}
+		setmetatable(Remote, RemoteHandler)
+
+		Remote.ID = remoteID
+
+		local success, remote = pcall(Client.Get, Client, Remote.ID)
+		Remote.Remote = remote
+
+		RemoteHandler.Remotes[remoteID] = Remote
+			
+		return Remote
+	end
+
+	function RemoteHandler:Fire(method, ...)
+		local Remote = self.Remote
+
+		local func = (Method and Remote[Method]) or (Remote.CallServer or Remote.CallServerAsync or Remote.SendToServer)
+	    if func then
+			return func(method, ...)
+		end
+
+		return
+	end
+
 	bedwars = setmetatable({
 		AbilityController = Flamework.resolveDependency('@easy-games/game-core:client/controllers/ability/ability-controller@AbilityController'),
 		AnimationType = require(replicatedStorage.TS.animation['animation-type']).AnimationType,
@@ -701,6 +733,7 @@ run(function()
 				armor = {}
 			}
 		end,
+		Handler = RemoteHandler,
 		HudAliveCount = require(lplr.PlayerScripts.TS.controllers.global['top-bar'].ui.game['hud-alive-player-counts']).HudAlivePlayerCounts,
 		ItemMeta = debug.getupvalue(require(replicatedStorage.TS.item['item-meta']).getItemMeta, 1),
 		KillEffectMeta = require(replicatedStorage.TS.locker['kill-effect']['kill-effect-meta']).KillEffectMeta,
@@ -734,10 +767,7 @@ run(function()
 
 	local remoteNames = {
 		AfkStatus = debug.getproto(Knit.Controllers.AfkController.KnitStart, 1),
-		AttackEntity = Knit.Controllers.SwordController.sendServerRequest,
 		BeePickup = Knit.Controllers.BeeNetController.trigger,
-		CannonAim = debug.getproto(Knit.Controllers.CannonController.startAiming, 5),
-		CannonLaunch = Knit.Controllers.CannonHandController.launchSelf,
 		ConsumeBattery = debug.getproto(Knit.Controllers.BatteryController.onKitLocalActivated, 1),
 		ConsumeItem = debug.getproto(Knit.Controllers.ConsumeController.onEnable, 1),
 		ConsumeSoul = Knit.Controllers.GrimReaperController.consumeSoul,
@@ -748,8 +778,6 @@ run(function()
 		DragonFly = Knit.Controllers.VoidDragonController.flapWings,
 		DropItem = Knit.Controllers.ItemDropController.dropItemInHand,
 		EquipItem = debug.getproto(require(replicatedStorage.TS.entity.entities['inventory-entity']).InventoryEntity.equipItem, 4),
-		FireProjectile = debug.getupvalue(Knit.Controllers.ProjectileController.launchProjectileWithValues, 2),
-		GroundHit = Knit.Controllers.FallDamageController.KnitStart,
 		GuitarHeal = Knit.Controllers.GuitarController.performHeal,
 		HannahKill = debug.getproto(Knit.Controllers.HannahController.registerExecuteInteractions, 1),
 		HarvestCrop = debug.getproto(debug.getproto(Knit.Controllers.CropController.KnitStart, 4), 1),
@@ -2028,7 +2056,7 @@ run(function()
 	local anims, AnimDelay, AnimTween, armC0 = vape.Libraries.auraanims, tick()
 	local AttackRemote = {FireServer = function() end}
 	task.spawn(function()
-		AttackRemote = bedwars.Client:Get(remotes.AttackEntity).instance
+		AttackRemote = bedwars.Handler:Get("SwordHit")
 	end)
 
 	local function getAttackData()
@@ -2178,7 +2206,7 @@ run(function()
 									store.attackReach = (delta.Magnitude * 100) // 1 / 100
 									store.attackReachUpdate = tick() + 1
 
-									AttackRemote:FireServer({
+									AttackRemote:Fire("SendToServer", {
 										weapon = sword.tool,
 										chargedAttack = {chargeRatio = 0},
 										entityInstance = v.Character,
@@ -2487,7 +2515,7 @@ run(function()
 	local JumpTick, JumpSpeed, Direction = tick(), 0
 	local projectileRemote = {InvokeServer = function() end}
 	task.spawn(function()
-		projectileRemote = bedwars.Client:Get(remotes.FireProjectile).instance
+		projectileRemote = bedwars.Handler:Get('ProjectileFire').Remote.instance
 	end)
 	
 	local function launchProjectile(item, pos, proj, speed, dir)
@@ -2522,7 +2550,7 @@ run(function()
 						switchItem(tool.tool)
 					end
 	
-					bedwars.Client:Get(remotes.CannonAim):SendToServer({
+					bedwars.Handler:Get('AimCannon'):Fire('SendToServer', {
 						cannonBlockPos = blockpos,
 						lookVector = dir
 					})
@@ -2535,7 +2563,7 @@ run(function()
 	
 					task.delay(broken, function()
 						for _ = 1, 3 do
-							local call = bedwars.Client:Get(remotes.CannonLaunch):CallServer({cannonBlockPos = blockpos})
+							local call = bedwars.Handler:Get('LaunchSelfFromCannon'):Fire('CallServer', {cannonBlockPos = blockpos})
 							if call then
 								bedwars.breakBlock(block, true, true)
 								JumpSpeed = 5.25 * Value.Value
@@ -2715,7 +2743,7 @@ run(function()
 	local rayParams = RaycastParams.new()
 	local groundHit
 	task.spawn(function()
-		groundHit = bedwars.Client:Get(remotes.GroundHit).instance
+		groundHit = bedwars.Handler:Get('GroundHit')
 	end)
 	
 	NoFall = vape.Categories.Blatant:CreateModule({
@@ -2752,7 +2780,7 @@ run(function()
 	
 							if tracked < -85 then
 								if Mode.Value == 'Packet' then
-									groundHit:FireServer(nil, Vector3.new(0, tracked, 0), workspace:GetServerTimeNow())
+									groundHit:Fire('SendToServer', nil, Vector3.new(0, tracked, 0), workspace:GetServerTimeNow())
 								else
 									rayParams.FilterDescendantsInstances = {lplr.Character, gameCamera}
 									rayParams.CollisionGroup = root.CollisionGroup
@@ -2935,7 +2963,7 @@ run(function()
 	local projectileRemote = {InvokeServer = function() end}
 	local FireDelays = {}
 	task.spawn(function()
-		projectileRemote = bedwars.Client:Get(remotes.FireProjectile).instance
+		projectileRemote = bedwars.Handler:Get('ProjectileFire').Remote.instance
 	end)
 	
 	local function getAmmo(check)
