@@ -691,7 +691,7 @@ run(function()
 	function RemoteHandler:Fire(method, ...)
 		local Remote = self.Remote
 
-		local func = (Method and Remote[Method]) or (Remote.CallServer or Remote.CallServerAsync or Remote.SendToServer)
+		local func = (method and Remote[method]) or (Remote.CallServer or Remote.CallServerAsync or Remote.SendToServer)
 	    if func then
 			return func(method, ...)
 		end
