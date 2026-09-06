@@ -2276,8 +2276,8 @@ run(function()
 	SwingRange = Killaura:CreateSlider({
 		Name = 'Swing range',
 		Min = 1,
-		Max = 18,
-		Default = 18,
+		Max = 28,
+		Default = 28,
 		Suffix = function(val)
 			return val == 1 and 'stud' or 'studs'
 		end
@@ -2285,8 +2285,8 @@ run(function()
 	AttackRange = Killaura:CreateSlider({
 		Name = 'Attack range',
 		Min = 1,
-		Max = 28,
-		Default = 28,
+		Max = 18,
+		Default = 18,
 		Suffix = function(val)
 			return val == 1 and 'stud' or 'studs'
 		end
@@ -2738,20 +2738,17 @@ run(function()
 		Name = 'NoFall',
 		Function = function(callback)
 			if callback then
-				local tracked = 0
-				NoFall:Clean(runService.PreSimulation:Connect(function(dt)
+				NoFall:Clean(runService.Heartbeat:Connect(function(dt)
 					if entitylib.isAlive and store.matchState == 1 then
 						local root = entitylib.character.RootPart
 				        local Velo = root.Velocity
-						if tracked < -45 then
+						if Velo < -45 then
 							root.Velocity = Vector3.new(0, 5, 0)
 							entitylib.character.Humanoid:ChangeState(Enum.HumanoidStateType.Landed)
-							runService.PreRender:Wait()
+							runService.RenderStepped:Wait()
 							root.Velocity = Velo
 							bedwars.Handler:Get('GroundHit'):Fire('SendToServer', nil, Vector3.new(0, tracked, 0), workspace:GetServerTimeNow())
 						end
-
-						tracked = Velo.Y
 					end
 				end))
 			end
