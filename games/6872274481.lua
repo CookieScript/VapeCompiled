@@ -4143,7 +4143,7 @@ run(function()
 		end,
 		metal_detector = function()
 			kitCollection('hidden-metal', function(v)
-				bedwars.Client:Get('CollectCollectableEntity'):Fire('SendToServer', {
+				bedwars.Handler:Get('CollectCollectableEntity'):Fire('SendToServer', {
 					id = v:GetAttribute('Id')
 				})
 			end, 20, false)
