@@ -48,6 +48,7 @@ local whitelist = vape.Libraries.whitelist
 local prediction = vape.Libraries.prediction
 local getfontbounds = vape.Libraries.getfontbounds
 local getvapeasset = vape.Libraries.getvapeasset
+local auraanims = vape.Libraries.auraanims
 
 local store = {
 	attackReach = 0,
