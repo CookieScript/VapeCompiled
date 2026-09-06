@@ -15,7 +15,7 @@ local entitylib = vape.Libraries.entity
 local sessioninfo = vape.Libraries.sessioninfo
 local bedwars = {}
 
---[[ Vape v4 reborn ❤️❤️
+--[[ Vape v4 reborn ❤️❤️❤️
 local kickThread = task.spawn(lplr.Kick, lplr, 'Bedwars is no longer supported by Vape V4, thank you for 5 years of support ❤️')
 if coroutine.status(kickThread) ~= 'dead' then
 	game:Shutdown()
