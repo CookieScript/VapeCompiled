@@ -669,6 +669,7 @@ run(function()
 
 	local RemoteHandler = {}
 	RemoteHandler.Remotes = {}
+	RemoteHandler.__index = RemoteHandler
 
 	function RemoteHandler.Get(self, remoteID)
 		if RemoteHandler.Remotes[remoteID] then
