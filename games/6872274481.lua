@@ -1654,7 +1654,7 @@ run(function()
 									local lastTeleport = lplr:GetAttribute('LastTeleported')
 									local connection
 									connection = runService.PreSimulation:Connect(function()
-										if vape.Modules.Fly.Enabled or vape.Modules.InfiniteFly.Enabled or vape.Modules.LongJump.Enabled then
+										if vape.Modules.Fly.Enabled or vape.Modules.LongJump.Enabled then
 											connection:Disconnect()
 											AntiFallDirection = nil
 											return
@@ -2049,10 +2049,6 @@ run(function()
 	local LegitAura
 	local Particles, Boxes = {}, {}
 	local anims, AnimDelay, AnimTween, armC0 = vape.Libraries.auraanims, tick()
-	--[[local AttackRemote = {FireServer = function() end}
-	task.spawn(function()
-		AttackRemote = bedwars.Handler:Get("SwordHit")
-	end)]]
 
 	local function getAttackData()
 		if Mouse.Enabled then
@@ -2736,10 +2732,6 @@ run(function()
 	local NoFall
 	local Mode
 	local rayParams = RaycastParams.new()
-	local groundHit
-	task.spawn(function()
-		groundHit = bedwars.Handler:Get('GroundHit')
-	end)
 	
 	NoFall = vape.Categories.Blatant:CreateModule({
 		Name = 'NoFall',
@@ -2775,7 +2767,7 @@ run(function()
 	
 							if tracked < -85 then
 								if Mode.Value == 'Packet' then
-									groundHit:Fire('SendToServer', nil, Vector3.new(0, tracked, 0), workspace:GetServerTimeNow())
+									bedwars.Handler:Get('GroundHit'):Fire('SendToServer', nil, Vector3.new(0, tracked, 0), workspace:GetServerTimeNow())
 								else
 									rayParams.FilterDescendantsInstances = {lplr.Character, gameCamera}
 									rayParams.CollisionGroup = root.CollisionGroup
