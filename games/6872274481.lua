@@ -2202,7 +2202,7 @@ run(function()
 									store.attackReach = (delta.Magnitude * 100) // 1 / 100
 									store.attackReachUpdate = tick() + 1
 
-									bedwars.Handler:Get("SwordHit"):Fire("SendToServer", {
+									bedwars.Handler:Get('SwordHit'):Fire('SendToServer', {
 										weapon = sword.tool,
 										chargedAttack = {chargeRatio = 0},
 										entityInstance = v.Character,
@@ -4587,7 +4587,7 @@ run(function()
 								for _, item in {'iron', 'diamond', 'emerald', 'gold'} do
 									item = getItem(item)
 									if item then
-										item = bedwars.Client:Get(remotes.DropItem):CallServer({
+										item = bedwars.Handler:Get('DropItem'):Fire('CallServer', {
 											item = item.tool,
 											amount = item.amount
 										})
@@ -4678,7 +4678,7 @@ run(function()
 							if (localPosition - v.Position).Magnitude <= Range.Value then
 								if Lower.Enabled and (localPosition.Y - v.Position.Y) < (entitylib.character.HipHeight - 1) then continue end
 								task.spawn(function()
-									bedwars.Client:Get(remotes.PickupItem):CallServerAsync({
+									bedwars.Handler:Get('PickupItem'):Fire('CallServerAsync', {
 										itemDrop = v
 									}):andThen(function(suc)
 										if suc and bedwars.SoundList then
@@ -4733,7 +4733,7 @@ run(function()
 				})
 	
 				if getItem('raven') and plr then
-					bedwars.Client:Get(remotes.SpawnRaven):CallServerAsync():andThen(function(projectile)
+					bedwars.Handler:Get('SpawnRaven'):Fire('CallServerAsync'):andThen(function(projectile)
 						if projectile then
 							local bodyforce = Instance.new('BodyForce')
 							bodyforce.Force = Vector3.new(0, projectile.PrimaryPart.AssemblyMass * workspace.Gravity, 0)
@@ -6347,7 +6347,7 @@ run(function()
 	local function buyItem(item, currencytable)
 		if not id then return end
 		notif('AutoBuy', 'Bought '..bedwars.ItemMeta[item.itemType].displayName, 3)
-		bedwars.Client:Get('BedwarsPurchaseItem'):CallServerAsync({
+		bedwars.Handler:Get('BedwarsPurchaseItem'):Fire('CallServerAsync', {
 			shopItem = item,
 			shopId = id
 		}):andThen(function(suc)
@@ -6376,7 +6376,7 @@ run(function()
 	
 			if canBuy({currency = 'diamond', price = tier.cost}, currencytable) then
 				notif('AutoBuy', 'Bought '..(upgrade.name == 'Armor' and 'Protection' or upgrade.name)..' '..i, 3)
-				bedwars.Client:Get('RequestPurchaseTeamUpgrade'):CallServerAsync(upgradeType)
+				bedwars.Handler:Get('RequestPurchaseTeamUpgrade'):Fire('CallServerAsync', upgradeType)
 				currencytable.diamond -= tier.cost
 				bought = true
 			else
@@ -6612,7 +6612,7 @@ run(function()
 				local speedpotion = getItem('speed_potion')
 				if speedpotion and (not lplr.Character:GetAttribute('StatusEffect_speed')) then
 					for _ = 1, 4 do
-						if bedwars.Client:Get(remotes.ConsumeItem):CallServer({item = speedpotion.tool}) then break end
+						if bedwars.Handler:Get('ConsumeItem'):Fire('CallServer', {item = speedpotion.tool}) then break end
 					end
 				end
 			end
@@ -6622,7 +6622,7 @@ run(function()
 					local apple = getItem('orange') or (not lplr.Character:GetAttribute('StatusEffect_golden_apple') and getItem('golden_apple')) or getItem('apple')
 					
 					if apple then
-						bedwars.Client:Get(remotes.ConsumeItem):CallServerAsync({
+						bedwars.Handler:Get('ConsumeItem'):Fire('CallServerAsync', {
 							item = apple.tool
 						})
 					end
@@ -6634,7 +6634,7 @@ run(function()
 					local shield = getItem('big_shield') or getItem('mini_shield')
 	
 					if shield then
-						bedwars.Client:Get(remotes.ConsumeItem):CallServerAsync({
+						bedwars.Handler:Get('ConsumeItem'):Fire('CallServerAsync', {
 							item = shield.tool
 						})
 					end
@@ -7001,7 +7001,7 @@ run(function()
 			if vape.ThreadFix then
 				setthreadidentity(8)
 			end
-			hotbarlist.Size = UDim2.fromOffset(220, math.min(43 + windowlist.AbsoluteContentSize.Y / vape.guiscale.Scale, 603))
+			hotbarlist.Size = UDim2.fromOffset(220, math.min(43 + windowlist.AbsoluteContentSize.Y / (vape.guiscale.Scale or 1), 603))
 		end)
 		textbutton.MouseButton1Click:Connect(function()
 			optionapi:AddHotbar()
