@@ -773,10 +773,7 @@ run(function()
 
 	local remoteNames = {
 		AfkStatus = debug.getproto(Knit.Controllers.AfkController.KnitStart, 1),
-		BeePickup = Knit.Controllers.BeeNetController.trigger,
-		ConsumeBattery = debug.getproto(Knit.Controllers.BatteryController.onKitLocalActivated, 1),
 		ConsumeSoul = Knit.Controllers.GrimReaperController.consumeSoul,
-		ConsumeTreeOrb = debug.getproto(Knit.Controllers.EldertreeController.createTreeOrbInteraction, 1),
 		DragonBreath = debug.getproto(Knit.Controllers.VoidDragonController.onKitLocalActivated, 5),
 		DragonEndFly = debug.getproto(Knit.Controllers.VoidDragonController.flapWings, 1),
 		DragonFly = Knit.Controllers.VoidDragonController.flapWings,
@@ -2202,7 +2199,7 @@ run(function()
 									store.attackReach = (delta.Magnitude * 100) // 1 / 100
 									store.attackReachUpdate = tick() + 1
 
-									bedwars.Handler:Get('SwordHit').instance:Fire('SendToServer', {
+									bedwars.Handler:Get('SwordHit'):Fire('SendToServer', {
 										weapon = sword.tool,
 										chargedAttack = {chargeRatio = 0},
 										entityInstance = v.Character,
@@ -3968,7 +3965,7 @@ run(function()
 							local BatteryInfo = bedwars.BatteryEffectsController:getBatteryInfo(i)
 							if not BatteryInfo or BatteryInfo.activateTime >= workspace:GetServerTimeNow() or BatteryInfo.consumeTime + 0.1 >= workspace:GetServerTimeNow() then continue end
 							BatteryInfo.consumeTime = workspace:GetServerTimeNow()
-							bedwars.Client:Get(remotes.ConsumeBattery):SendToServer({batteryId = i})
+							bedwars.Handler:Get("ConsumeBattery"):Fire("SendToServer", {batteryId = i})
 						end
 					end
 				end
@@ -3977,12 +3974,12 @@ run(function()
 		end,
 		beekeeper = function()
 			kitCollection('bee', function(v)
-				bedwars.Client:Get(remotes.BeePickup):SendToServer({beeId = v:GetAttribute('BeeId')})
+				bedwars.Handler:Get("BeePickup"):Fire("SendToServer", {beeId = v:GetAttribute('BeeId')})
 			end, 18, false)
 		end,
 		bigman = function()
 			kitCollection('treeOrb', function(v)
-				if bedwars.Client:Get(remotes.ConsumeTreeOrb):CallServer({treeOrbSecret = v:GetAttribute('TreeOrbSecret')}) then
+				if bedwars.Handler:Get("ConsumeTreeOrb"):Fire("CallServer", {treeOrbSecret = v:GetAttribute('TreeOrbSecret')}) then
 					v:Destroy()
 				end
 			end, 12, false)
