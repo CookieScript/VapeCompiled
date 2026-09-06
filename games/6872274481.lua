@@ -2747,7 +2747,7 @@ run(function()
 							entitylib.character.Humanoid:ChangeState(Enum.HumanoidStateType.Landed)
 							runService.RenderStepped:Wait()
 							root.Velocity = Velo
-							bedwars.Handler:Get('GroundHit'):Fire('SendToServer', nil, Vector3.new(0, tracked, 0), workspace:GetServerTimeNow())
+							bedwars.Handler:Get('GroundHit'):Fire('SendToServer', nil, Vector3.new(0, root.Velocity.Y, 0), workspace:GetServerTimeNow())
 						end
 					end
 				end))
