@@ -3,5 +3,5 @@ I wanted to play bedwars with vape v4 but its gone so im gonna make a working on
 
 # Script
 ```
-loadstring(game:HttpGet("https://raw.githubusercontent.com/CookieScript/VapeCompiled/refs/heads/main/loader.lua"))()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/CookieScript/VapeCompiled/refs/heads/main/loader.lua", true))()
 ```
