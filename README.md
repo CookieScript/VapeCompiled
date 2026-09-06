@@ -1,7 +1,13 @@
-# Welcome to vape v4 reborn
-I wanted to play bedwars with vape v4 but its gone so im gonna make a working one.
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="./README/vapelogo-white.png">
+    <source media="(prefers-color-scheme: light)" srcset="./README/vapelogo-dark.png">
+    <img alt="vape logo" src="./README/vapelogo.png">
+  </picture>
+</p>
 
-# Script
+# Usage
+- Copy and execute the provided loadstring below.
 ```
 loadstring(game:HttpGet("https://raw.githubusercontent.com/CookieScript/VapeCompiled/refs/heads/main/loader.lua", true))()
 ```
