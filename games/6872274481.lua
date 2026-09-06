@@ -427,7 +427,7 @@ local sortmethods = {
 		return getStrength(a.Entity) > getStrength(b.Entity)
 	end,
 	Kit = function(a, b)
-		return (a.Entity.Player and kitorder[a.Entity.Player:GetAttribute('PlayingAsKit')] or 0) > (b.Entity.Player and kitorder[b.Entity.Player:GetAttribute('PlayingAsKit')] or 0)
+		return (a.Entity.Player and kitorder[a.Entity.Player:GetAttribute('PlayingAsKits')] or 0) > (b.Entity.Player and kitorder[b.Entity.Player:GetAttribute('PlayingAsKits')] or 0)
 	end,
 	Health = function(a, b)
 		return a.Entity.Health < b.Entity.Health
@@ -770,7 +770,6 @@ run(function()
 		AfkStatus = debug.getproto(Knit.Controllers.AfkController.KnitStart, 1),
 		BeePickup = Knit.Controllers.BeeNetController.trigger,
 		ConsumeBattery = debug.getproto(Knit.Controllers.BatteryController.onKitLocalActivated, 1),
-		ConsumeItem = debug.getproto(Knit.Controllers.ConsumeController.onEnable, 1),
 		ConsumeSoul = Knit.Controllers.GrimReaperController.consumeSoul,
 		ConsumeTreeOrb = debug.getproto(Knit.Controllers.EldertreeController.createTreeOrbInteraction, 1),
 		DragonBreath = debug.getproto(Knit.Controllers.VoidDragonController.onKitLocalActivated, 5),
