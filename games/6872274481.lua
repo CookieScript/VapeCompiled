@@ -2201,7 +2201,7 @@ run(function()
 									store.attackReach = (delta.Magnitude * 100) // 1 / 100
 									store.attackReachUpdate = tick() + 1
 
-									bedwars.Handler:Get('SwordHit'):Fire('SendToServer', {
+									bedwars.Handler:Get('SwordHit').instance:Fire('SendToServer', {
 										weapon = sword.tool,
 										chargedAttack = {chargeRatio = 0},
 										entityInstance = v.Character,
