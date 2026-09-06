@@ -2050,10 +2050,10 @@ run(function()
 	local LegitAura
 	local Particles, Boxes = {}, {}
 	local anims, AnimDelay, AnimTween, armC0 = vape.Libraries.auraanims, tick()
-	local AttackRemote = {FireServer = function() end}
+	--[[local AttackRemote = {FireServer = function() end}
 	task.spawn(function()
 		AttackRemote = bedwars.Handler:Get("SwordHit")
-	end)
+	end)]]
 
 	local function getAttackData()
 		if Mouse.Enabled then
@@ -2202,13 +2202,13 @@ run(function()
 									store.attackReach = (delta.Magnitude * 100) // 1 / 100
 									store.attackReachUpdate = tick() + 1
 
-									AttackRemote:Fire("SendToServer", {
+									bedwars.Handler:Get("SwordHit"):Fire("SendToServer", {
 										weapon = sword.tool,
 										chargedAttack = {chargeRatio = 0},
 										entityInstance = v.Character,
 										validate = {
 											raycast = {
-												cameraPosition = {value = pos},
+												cameraPosition = {value = workspace.CurrentCamera.CFrame.Position},
 												cursorDirection = {value = dir}
 											},
 											targetPosition = {value = actualRoot.Position},
@@ -4323,7 +4323,7 @@ run(function()
 	rayCheck.RespectCanCollide = true
 	local projectileRemote = {InvokeServer = function() end}
 	task.spawn(function()
-		projectileRemote = bedwars.Client:Get(remotes.FireProjectile).instance
+		projectileRemote = bedwars.Handler:Get('ProjectileFire').Remote.instance
 	end)
 	
 	local function firePearl(pos, spot, item)
@@ -6866,7 +6866,7 @@ run(function()
 			if vape.ThreadFix then
 				setthreadidentity(8)
 			end
-			children.CanvasSize = UDim2.fromOffset(0, windowlist.AbsoluteContentSize.Y / vape.guiscale.Scale)
+			children.CanvasSize = UDim2.fromOffset(0, windowlist.AbsoluteContentSize.Y / (vape.guiscale.Scale or 1))
 		end)
 		table.insert(vape.Windows, window)
 	
