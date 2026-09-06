@@ -48,38 +48,6 @@ local whitelist = vape.Libraries.whitelist
 local prediction = vape.Libraries.prediction
 local getfontbounds = vape.Libraries.getfontbounds
 local getvapeasset = vape.Libraries.getvapeasset
-vape.Libraries.auraanims = {
-	Normal = {
-		{CFrame = CFrame.new(-0.17, -0.14, -0.12) * CFrame.Angles(math.rad(-53), math.rad(50), math.rad(-64)), Time = 0.1},
-		{CFrame = CFrame.new(-0.55, -0.59, -0.1) * CFrame.Angles(math.rad(-161), math.rad(54), math.rad(-6)), Time = 0.08},
-		{CFrame = CFrame.new(-0.62, -0.68, -0.07) * CFrame.Angles(math.rad(-167), math.rad(47), math.rad(-1)), Time = 0.03},
-		{CFrame = CFrame.new(-0.56, -0.86, 0.23) * CFrame.Angles(math.rad(-167), math.rad(49), math.rad(-1)), Time = 0.03}
-	},
-	Random = {},
-	['Horizontal Spin'] = {
-		{CFrame = CFrame.Angles(math.rad(-10), math.rad(-90), math.rad(-80)), Time = 0.12},
-		{CFrame = CFrame.Angles(math.rad(-10), math.rad(180), math.rad(-80)), Time = 0.12},
-		{CFrame = CFrame.Angles(math.rad(-10), math.rad(90), math.rad(-80)), Time = 0.12},
-		{CFrame = CFrame.Angles(math.rad(-10), 0, math.rad(-80)), Time = 0.12}
-	},
-	['Vertical Spin'] = {
-		{CFrame = CFrame.Angles(math.rad(-90), 0, math.rad(15)), Time = 0.12},
-		{CFrame = CFrame.Angles(math.rad(180), 0, math.rad(15)), Time = 0.12},
-		{CFrame = CFrame.Angles(math.rad(90), 0, math.rad(15)), Time = 0.12},
-		{CFrame = CFrame.Angles(0, 0, math.rad(15)), Time = 0.12}
-	},
-	Exhibition = {
-		{CFrame = CFrame.new(0.69, -0.7, 0.6) * CFrame.Angles(math.rad(-30), math.rad(50), math.rad(-90)), Time = 0.1},
-		{CFrame = CFrame.new(0.7, -0.71, 0.59) * CFrame.Angles(math.rad(-84), math.rad(50), math.rad(-38)), Time = 0.2}
-	},
-	['Exhibition Old'] = {
-		{CFrame = CFrame.new(0.69, -0.7, 0.6) * CFrame.Angles(math.rad(-30), math.rad(50), math.rad(-90)), Time = 0.15},
-		{CFrame = CFrame.new(0.69, -0.7, 0.6) * CFrame.Angles(math.rad(-30), math.rad(50), math.rad(-90)), Time = 0.05},
-		{CFrame = CFrame.new(0.7, -0.71, 0.59) * CFrame.Angles(math.rad(-84), math.rad(50), math.rad(-38)), Time = 0.1},
-		{CFrame = CFrame.new(0.7, -0.71, 0.59) * CFrame.Angles(math.rad(-84), math.rad(50), math.rad(-38)), Time = 0.05},
-		{CFrame = CFrame.new(0.63, -0.1, 1.37) * CFrame.Angles(math.rad(-84), math.rad(50), math.rad(-38)), Time = 0.15}
-	}
-}
 
 local store = {
 	attackReach = 0,
@@ -846,7 +814,7 @@ run(function()
 	Client.Get = function(self, remoteName)
 		local call = OldGet(self, remoteName)
 
-		if remoteName == remotes.AttackEntity then
+		if remoteName == 'SwordHit' then
 			return {
 				instance = call.instance,
 				SendToServer = function(_, attackTable, ...)
@@ -1370,7 +1338,7 @@ run(function()
 							end
 						end
 					elseif store.hand.toolType == 'sword' then
-						bedwars.SwordController:swingSwordAtMouse()
+						bedwars.SwordController:swingSwordAtMouse(39)
 					end
 				end
 	
@@ -2133,7 +2101,7 @@ run(function()
 							}
 						}
 					}
-					debug.setupvalue(oldSwing or bedwars.SwordController.playSwordEffect, 6, fake)
+					debug.setupvalue(oldSwing or bedwars.SwordController.playSwordEffect, 7, fake)
 					debug.setupvalue(bedwars.ScytheController.playLocalAnimation, 3, fake)
 
 					task.spawn(function()
@@ -2308,8 +2276,8 @@ run(function()
 	SwingRange = Killaura:CreateSlider({
 		Name = 'Swing range',
 		Min = 1,
-		Max = 28,
-		Default = 28,
+		Max = 18,
+		Default = 18,
 		Suffix = function(val)
 			return val == 1 and 'stud' or 'studs'
 		end
@@ -2751,7 +2719,7 @@ run(function()
 	Value = LongJump:CreateSlider({
 		Name = 'Speed',
 		Min = 1,
-		Max = 37,
+		Max = 140,
 		Default = 37,
 		Suffix = function(val)
 			return val == 1 and 'stud' or 'studs'
@@ -2764,81 +2732,31 @@ end)
 
 run(function()
 	local NoFall
-	local Mode
 	local rayParams = RaycastParams.new()
-	
+
 	NoFall = vape.Categories.Blatant:CreateModule({
 		Name = 'NoFall',
 		Function = function(callback)
 			if callback then
 				local tracked = 0
-				if Mode.Value == 'Gravity' then
-					local extraGravity = 0
-					NoFall:Clean(runService.PreSimulation:Connect(function(dt)
-						if entitylib.isAlive then
-							local root = entitylib.character.RootPart
-							if root.AssemblyLinearVelocity.Y < -85 then
-								rayParams.FilterDescendantsInstances = {lplr.Character, gameCamera}
-								rayParams.CollisionGroup = root.CollisionGroup
-	
-								local rootSize = root.Size.Y / 2 + entitylib.character.HipHeight
-								local ray = workspace:Blockcast(root.CFrame, Vector3.new(3, 3, 3), Vector3.new(0, (tracked * 0.1) - rootSize, 0), rayParams)
-								if not ray then
-									root.AssemblyLinearVelocity = Vector3.new(root.AssemblyLinearVelocity.X, -86, root.AssemblyLinearVelocity.Z)
-									root.CFrame += Vector3.new(0, extraGravity * dt, 0)
-									extraGravity += -workspace.Gravity * dt
-								end
-							else
-								extraGravity = 0
-							end
+				NoFall:Clean(runService.PreSimulation:Connect(function(dt)
+					if entitylib.isAlive and store.matchState == 1 then
+						local root = entitylib.character.RootPart
+				        local Velo = root.Velocity
+						if tracked < -45 then
+							root.Velocity = Vector3.new(0, 5, 0)
+							entitylib.character.Humanoid:ChangeState(Enum.HumanoidStateType.Landed)
+							runService.RenderStepped:Wait()
+							root.Velocity = Velo
+							bedwars.Handler:Get('GroundHit'):Fire('SendToServer', nil, Vector3.new(0, tracked, 0), workspace:GetServerTimeNow())
 						end
-					end))
-				else
-					repeat
-						if entitylib.isAlive then
-							local root = entitylib.character.RootPart
-							tracked = entitylib.character.Humanoid.FloorMaterial == Enum.Material.Air and math.min(tracked, root.AssemblyLinearVelocity.Y) or 0
-	
-							if tracked < -85 then
-								if Mode.Value == 'Packet' then
-									bedwars.Handler:Get('GroundHit'):Fire('SendToServer', nil, Vector3.new(0, tracked, 0), workspace:GetServerTimeNow())
-								else
-									rayParams.FilterDescendantsInstances = {lplr.Character, gameCamera}
-									rayParams.CollisionGroup = root.CollisionGroup
-	
-									local rootSize = root.Size.Y / 2 + entitylib.character.HipHeight
-									if Mode.Value == 'Teleport' then
-										local ray = workspace:Blockcast(root.CFrame, Vector3.new(3, 3, 3), Vector3.new(0, -1000, 0), rayParams)
-										if ray then
-											root.CFrame -= Vector3.new(0, root.Position.Y - (ray.Position.Y + rootSize), 0)
-										end
-									else
-										local ray = workspace:Blockcast(root.CFrame, Vector3.new(3, 3, 3), Vector3.new(0, (tracked * 0.1) - rootSize, 0), rayParams)
-										if ray then
-											tracked = 0
-											root.AssemblyLinearVelocity = Vector3.new(root.AssemblyLinearVelocity.X, -80, root.AssemblyLinearVelocity.Z)
-										end
-									end
-								end
-							end
-						end
-	
-						task.wait(0.03)
-					until not NoFall.Enabled
-				end
+
+						tracked = Velo.Y
+					end
+				end))
 			end
 		end,
 		Tooltip = 'Prevents taking fall damage.'
-	})
-	Mode = NoFall:CreateDropdown({
-		Name = 'Mode',
-		List = {'Packet', 'Gravity', 'Teleport', 'Bounce'},
-		Function = function()
-			if NoFall.Enabled then
-				NoFall:Toggle()
-				NoFall:Toggle()
-			end
-		end
 	})
 end)
 
@@ -3081,7 +2999,7 @@ run(function()
 	Range = ProjectileAura:CreateSlider({
 		Name = 'Range',
 		Min = 1,
-		Max = 50,
+		Max = 150,
 		Default = 50,
 		Suffix = function(val)
 			return val == 1 and 'stud' or 'studs'
