@@ -2736,7 +2736,7 @@ run(function()
 					if entitylib.isAlive and store.matchState == 1 then
 						local root = entitylib.character.RootPart
 				        local Velo = root.Velocity
-						if Velo < -45 then
+						if Velo.Y < -45 then
 							root.Velocity = Vector3.new(0, 5, 0)
 							entitylib.character.Humanoid:ChangeState(Enum.HumanoidStateType.Landed)
 							runService.RenderStepped:Wait()
