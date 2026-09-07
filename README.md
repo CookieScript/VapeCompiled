@@ -6,7 +6,8 @@
   </picture>
 </p>
 <h2 align="center">
-  Reborn.
+  Reborn
+  <br/>
 </h2>
 
 # Usage
