@@ -355,7 +355,7 @@ local function switchItem(tool, delayTime)
 	local check = lplr.Character and lplr.Character:FindFirstChild('HandInvItem') or nil
 	if check and check.Value ~= tool and tool.Parent ~= nil then
 		task.spawn(function()
-			bedwars.Client:Get(remotes.EquipItem):CallServerAsync({hand = tool})
+			bedwars.Handler:Get('SetInvItem'):Fire('CallServerAsync', {hand = tool})
 		end)
 		check.Value = tool
 		if delayTime > 0 then
@@ -778,7 +778,6 @@ run(function()
 		DragonEndFly = debug.getproto(Knit.Controllers.VoidDragonController.flapWings, 1),
 		DragonFly = Knit.Controllers.VoidDragonController.flapWings,
 		DropItem = Knit.Controllers.ItemDropController.dropItemInHand,
-		EquipItem = debug.getproto(require(replicatedStorage.TS.entity.entities['inventory-entity']).InventoryEntity.equipItem, 4),
 		GuitarHeal = Knit.Controllers.GuitarController.performHeal,
 		HannahKill = debug.getproto(Knit.Controllers.HannahController.registerExecuteInteractions, 1),
 		HarvestCrop = debug.getproto(debug.getproto(Knit.Controllers.CropController.KnitStart, 4), 1),
@@ -2090,8 +2089,17 @@ run(function()
 					local fake = {
 						Controllers = {
 							ViewmodelController = {
-								isVisible = function() end,
-								playAnimation = function() end,
+								isVisible = function()
+									return not Attacking
+								end,
+								playAnimation = function(...)
+									local args = {...}
+									if not Attacking then
+									    pcall(function()
+											bedwars.ViewmodelController:playAnimation(select(2, unpack(args)))
+										end)
+						            end
+								end,
 							}
 						}
 					}
@@ -2741,7 +2749,7 @@ run(function()
 							entitylib.character.Humanoid:ChangeState(Enum.HumanoidStateType.Landed)
 							runService.RenderStepped:Wait()
 							root.Velocity = Velo
-							bedwars.Handler:Get('GroundHit'):Fire('SendToServer', nil, Vector3.new(0, root.Velocity.Y, 0), workspace:GetServerTimeNow())
+							-- // packet mode never worked saddly bedwars.Handler:Get('GroundHit'):Fire('SendToServer', nil, Vector3.new(0, root.Velocity.Y, 0), workspace:GetServerTimeNow())
 						end
 					end
 				end))
