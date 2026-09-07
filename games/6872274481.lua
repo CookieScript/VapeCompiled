@@ -2109,6 +2109,7 @@ run(function()
                     task.spawn(function()
 						local started = false
 						repeat
+							print(Attacking)
 							if Attacking then
 								if not armC0 then
 									armC0 = gameCamera.Viewmodel.RightHand.RightWrist.C0
@@ -2125,7 +2126,7 @@ run(function()
 										C0 = armC0 * v.CFrame
 									})
 									AnimTween:Play()
-									task.wait(v.Time / AnimationSpeed.Value) -- still kinda confused abt the animation lol
+									AnimTween.Completed:Wait()
 									first = false
 									if (not Killaura.Enabled) or (not Attacking) then break end
 								end
