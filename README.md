@@ -5,6 +5,9 @@
     <img alt="vape logo" src="./README/vapelogo.png">
   </picture>
 </p>
+<h2 align="center">
+  Reborn.
+</h2>
 
 # Usage
 - Copy and execute the provided loadstring below.
