@@ -2085,7 +2085,7 @@ run(function()
 					end)
 				end
 
-				if Animation.Enabled and not (identifyexecutor and table.find({'Argon', 'Delta'}, ({identifyexecutor()})[1])) then
+				if Animation.Enabled then
 					local fake = {
 						Controllers = {
 							ViewmodelController = {
@@ -2109,7 +2109,6 @@ run(function()
                     task.spawn(function()
 						local started = false
 						repeat
-							print(Attacking)
 							if Attacking then
 								if not armC0 then
 									armC0 = gameCamera.Viewmodel.RightHand.RightWrist.C0
