@@ -5,7 +5,7 @@
     <img alt="vape logo" src="./README/vapelogo.png">
   </picture>
 </p>
-<h2 align="center" style="margin-top: -30px;">
+<h2 align="top">
   Reborn
   <br/>
 </h2>
