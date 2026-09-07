@@ -764,6 +764,8 @@ function vape:Load(skipgui, profile)
 		button.BackgroundTransparency = 0.2
 		button.Position = UDim2.new(1, -90, 0, 4)
 		button.Size = UDim2.fromOffset(32, 32)
+		button.Active = true
+		button.Draggable = true
 		button.Text = ''
 		button.Parent = gui
 		local image = Instance.new('ImageLabel')
@@ -772,7 +774,7 @@ function vape:Load(skipgui, profile)
 		image.Position = UDim2.fromOffset(6, 6)
 		image.Size = UDim2.fromOffset(20, 20)
 		image.Parent = button
-		addCorner(button, UDim.new(1, 0))
+		addCorner(button, UDim.new(0, 5))
 
 		button.MouseButton1Click:Connect(function()
 			self.GUIBind.Triggered:Fire(true)
@@ -824,16 +826,6 @@ function vape:LoadGUI()
 	clickgui.Size = UDim2.fromScale(1, 1)
 	clickgui.Visible = false
 	clickgui.Parent = scaledgui
-	local scarcitybanner = Instance.new('TextLabel')
-	scarcitybanner.BackgroundTransparency = 1
-	scarcitybanner.FontFace = uipallet.Font
-	scarcitybanner.Position = UDim2.fromScale(0, 0.97)
-	scarcitybanner.Size = UDim2.fromScale(1, 0.018)
-	scarcitybanner.Text = 'All update logs and game support are found in the discord, click the discord icon to join.'
-	scarcitybanner.TextColor3 = Color3.new(1, 1, 1)
-	scarcitybanner.TextScaled = true
-	scarcitybanner.TextStrokeTransparency = 0.5
-	scarcitybanner.Parent = clickgui
 	local modal = Instance.new('TextButton')
 	modal.BackgroundTransparency = 1
 	modal.Modal = true
