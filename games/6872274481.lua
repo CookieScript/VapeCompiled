@@ -2137,7 +2137,7 @@ run(function()
 								AnimTween:Play()
 							end
 
-							task.wait(1 / UpdateRate.Value)
+							task.wait()
 						until (not Killaura.Enabled) or (not Animation.Enabled)
 					end)
 				end
