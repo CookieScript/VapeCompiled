@@ -4409,24 +4409,6 @@ run(function()
 end)
 
 run(function()
-	local InfiniteJump
-
-	InfiniteJump = vape.Categories.Utility:CreateModule({
-		Name = 'InfiniteJump',
-		Function = function(callback)
-            if callback then
-			    InfiniteJump:Clean(inputService.JumpRequest:Connect(function()
-                    if entitylib.isAlive then
-					    entitylib.character.Humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
-					end
-				end))
-            end
-		end,
-		Tooltip = 'Allows you to jump infinitely.'
-	})
-end)
-
-run(function()
 	local AutoToxic
 	local GG
 	local Toggles, Lists, said, dead = {}, {}, {}
@@ -4570,6 +4552,24 @@ run(function()
 		Name = 'Owl check',
 		Default = true,
 		Tooltip = 'Refuses to drop items if being picked up by an owl'
+	})
+end)
+
+run(function()
+	local InfiniteJump
+
+	InfiniteJump = vape.Categories.Utility:CreateModule({
+		Name = 'InfiniteJump',
+		Function = function(callback)
+            if callback then
+			    InfiniteJump:Clean(inputService.JumpRequest:Connect(function()
+                    if entitylib.isAlive then
+					    entitylib.character.Humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+					end
+				end))
+            end
+		end,
+		Tooltip = 'Allows you to jump infinitely.'
 	})
 end)
 
