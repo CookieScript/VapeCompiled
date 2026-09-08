@@ -2667,7 +2667,7 @@ run(function()
 	
 					if root and isnetworkowner(root) then
 						if JumpTick > tick() then
-							root.AssemblyLinearVelocity = Direction * ((getSpeed() + (Value.Value/3)) + ((JumpTick - tick()) > 1.1 and JumpSpeed or 0)) + Vector3.new(0, root.AssemblyLinearVelocity.Y, 0)
+							root.AssemblyLinearVelocity = Direction * ((getSpeed() + (Value.Value/5)) + ((JumpTick - tick()) > 1.1 and JumpSpeed or 0)) + Vector3.new(0, root.AssemblyLinearVelocity.Y, 0)
 							if entitylib.character.Humanoid.FloorMaterial == Enum.Material.Air and not start then
 								root.AssemblyLinearVelocity += Vector3.new(0, dt * (workspace.Gravity - 23), 0)
 							else
@@ -3745,7 +3745,7 @@ run(function()
 	end
 	
 	local function Added(v)
-		local chest = v:WaitForChild('ChestFolderValue', 3)
+		local chest = v:FindFirstChild('ChestFolderValue')
 		if not (chest and StorageESP.Enabled) then return end
 		chest = chest.Value
 		local billboard = Instance.new('BillboardGui')
@@ -6819,7 +6819,7 @@ run(function()
 			if vape.ThreadFix then
 				setthreadidentity(8)
 			end
-			children.CanvasSize = UDim2.fromOffset(0, windowlist.AbsoluteContentSize.Y / (vape.guiscale.Scale or 1))
+			children.CanvasSize = UDim2.fromOffset(0, windowlist.AbsoluteContentSize.Y / vape.guiscale.Scale)
 		end)
 		table.insert(vape.Windows, window)
 	
@@ -6954,7 +6954,7 @@ run(function()
 			if vape.ThreadFix then
 				setthreadidentity(8)
 			end
-			hotbarlist.Size = UDim2.fromOffset(220, math.min(43 + windowlist.AbsoluteContentSize.Y / (vape.guiscale.Scale or 1), 603))
+			hotbarlist.Size = UDim2.fromOffset(220, math.min(43 + windowlist.AbsoluteContentSize.Y / vape.guiscale.Scale, 603))
 		end)
 		textbutton.MouseButton1Click:Connect(function()
 			optionapi:AddHotbar()
