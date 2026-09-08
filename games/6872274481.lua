@@ -805,6 +805,7 @@ run(function()
 		if remote == '' then
 			notif('Vape', 'Failed to grab remote ('..i..')', 10, 'alert')
 		end
+		print(remote)
 		remotes[i] = remote
 	end
 
