@@ -772,15 +772,8 @@ run(function()
 	})
 
 	local remoteNames = {
-		AfkStatus = debug.getproto(Knit.Controllers.AfkController.KnitStart, 1),
-		ConsumeSoul = Knit.Controllers.GrimReaperController.consumeSoul,
-		DragonBreath = debug.getproto(Knit.Controllers.VoidDragonController.onKitLocalActivated, 5),
 		DragonEndFly = debug.getproto(Knit.Controllers.VoidDragonController.flapWings, 1),
-		DragonFly = Knit.Controllers.VoidDragonController.flapWings,
-		DropItem = Knit.Controllers.ItemDropController.dropItemInHand,
-		GuitarHeal = Knit.Controllers.GuitarController.performHeal,
 		HannahKill = debug.getproto(Knit.Controllers.HannahController.registerExecuteInteractions, 1),
-		HarvestCrop = debug.getproto(debug.getproto(Knit.Controllers.CropController.KnitStart, 4), 1),
 		MageSelect = debug.getproto(Knit.Controllers.MageController.registerTomeInteraction, 1),
 		PickupItem = Knit.Controllers.ItemDropController.checkForPickup,
 		ReportPlayer = require(lplr.PlayerScripts.TS.controllers.global.report['report-controller']).default.reportPlayer,
@@ -4003,7 +3996,7 @@ run(function()
 		end,
 		farmer_cletus = function()
 			kitCollection('HarvestableCrop', function(v)
-				if bedwars.Client:Get(remotes.HarvestCrop):CallServer({position = bedwars.BlockController:getBlockPosition(v.Position)}) then
+				if bedwars.Handler:Get('CropHarvest'):Fire('CallServer', {position = bedwars.BlockController:getBlockPosition(v.Position)}) then
 					bedwars.GameAnimationUtil:playAnimation(lplr.Character, bedwars.AnimationType.PUNCH)
 					bedwars.SoundManager:playSound(bedwars.SoundList.CROP_HARVEST)
 				end
@@ -4058,7 +4051,7 @@ run(function()
 		grim_reaper = function()
 			kitCollection(bedwars.GrimReaperController.soulsByPosition, function(v)
 				if entitylib.isAlive and lplr.Character:GetAttribute('Health') <= (lplr.Character:GetAttribute('MaxHealth') / 4) and (not lplr.Character:GetAttribute('GrimReaperChannel')) then
-					bedwars.Client:Get(remotes.ConsumeSoul):CallServer({
+					bedwars.Handler:Get('ConsumeGrimReaperSoul'):Fire('CallServer', {
 						secret = v:GetAttribute('GrimReaperSoulSecret')
 					})
 				end
@@ -4080,7 +4073,7 @@ run(function()
 				end
 	
 				if ent and getItem('guitar') then
-					bedwars.Client:Get(remotes.GuitarHeal):SendToServer({
+					bedwars.Handler:Get('PlayGuitar'):Fire('SendToServer', {
 						healTarget = ent.Character
 					})
 				end
@@ -4148,7 +4141,7 @@ run(function()
 			local flapped
 	
 			bedwars.VoidDragonController.flapWings = function(self)
-				if not flapped and bedwars.Client:Get(remotes.DragonFly):CallServer() then
+				if not flapped and bedwars.Handler:Get('DragonFly'):Fire('CallServer') then
 					local modifier = bedwars.SprintController:getMovementStatusModifier():addModifier({
 						blockSprint = true,
 						constantSpeedMultiplier = 2
@@ -4174,7 +4167,7 @@ run(function()
 					})
 	
 					if plr then
-						bedwars.Client:Get(remotes.DragonBreath):SendToServer({
+						bedwars.Handler:Get('DragonBreath'):Fire('SendToServer', {
 							player = lplr,
 							targetPoint = plr.RootPart.Position
 						})
@@ -5120,7 +5113,7 @@ run(function()
 					end
 				end
 	
-				bedwars.Client:Get(remotes.AfkStatus):SendToServer({
+				bedwars.Handler:Get('AfkInfo'):Fire('SendToServer', {
 					afk = false
 				})
 			end
