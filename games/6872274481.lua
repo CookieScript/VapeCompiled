@@ -2712,7 +2712,7 @@ run(function()
 	Value = LongJump:CreateSlider({
 		Name = 'Speed',
 		Min = 1,
-		Max = 300,
+		Max = 100,
 		Default = 37,
 		Suffix = function(val)
 			return val == 1 and 'stud' or 'studs'
