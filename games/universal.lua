@@ -9005,6 +9005,40 @@ run(function()
 end)
 
 run(function()
+    local function restoreExecuter()
+        if identifyexecutor():find('Delta') then
+            for _, d in coreGui:GetDescendants() do
+                if d.Name == "Executor" and d.Parent and d.Parent:IsA("ScreenGui") and d.Parent.Parent and d.Parent.Parent:IsA("Folder") and #d.Parent.Parent.Name >= 15 then
+                    d.Parent.Enabled = true
+                end
+            end
+        end
+    end
+
+    local function removeExecuter()
+        if identifyexecutor():find('Delta') then
+            for _, d in coreGui:GetDescendants() do
+                if d.Name == "Executor" and d.Parent and d.Parent:IsA("ScreenGui") and d.Parent.Parent and d.Parent.Parent:IsA("Folder") and #d.Parent.Parent.Name >= 15 then
+                    d.Parent.Enabled = false
+                end
+            end
+        end
+    end
+
+    vape.Legit:CreateModule({
+        Name = 'Remove Executer',
+        Function = function(callback)
+            if callback then
+                removeExecuter()
+            else
+                restoreExecuter()
+            end
+        end,
+        Tooltip = 'Removes your executer'
+    })
+end)
+
+run(function()
 	local SongBeats
 	local List
 	local FOV
