@@ -9008,6 +9008,12 @@ run(function()
     local function restoreExecuter()
         if identifyexecutor():find('Delta') then
             for _, d in coreGui:GetDescendants() do
+                if d:IsA("ImageButton") and d.Parent and d.Parent:IsA("ScreenGui") and d.Parent.Parent and d.Parent.Parent:IsA("Folder") and #d.Parent.Parent.Name >= 8 then
+                    d.Visible = true
+                end
+			end
+
+            for _, d in coreGui:GetDescendants() do
                 if d.Name == "Executor" and d.Parent and d.Parent:IsA("ScreenGui") and d.Parent.Parent and d.Parent.Parent:IsA("Folder") and #d.Parent.Parent.Name >= 15 then
                     d.Parent.Enabled = true
                 end
@@ -9018,10 +9024,16 @@ run(function()
     local function removeExecuter()
         if identifyexecutor():find('Delta') then
             for _, d in coreGui:GetDescendants() do
+                if d:IsA("ImageButton") and d.Parent and d.Parent:IsA("ScreenGui") and d.Parent.Parent and d.Parent.Parent:IsA("Folder") and #d.Parent.Parent.Name >= 8 then
+                    d.Visible = false
+                end
+			end
+
+            for _, d in coreGui:GetDescendants() do
                 if d.Name == "Executor" and d.Parent and d.Parent:IsA("ScreenGui") and d.Parent.Parent and d.Parent.Parent:IsA("Folder") and #d.Parent.Parent.Name >= 15 then
                     d.Parent.Enabled = false
                 end
-            end
+			end
         end
     end
 
