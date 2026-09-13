@@ -5427,6 +5427,31 @@ run(function()
 end)
 
 run(function()
+	local NoAnimation
+
+	NoAnimation = vape.Categories.Render:CreateModule({
+		Name = 'NoAnimation',
+		Function = function(callback)
+			if callback then 
+			    entitylib.character.Animate.Enabled = false
+				entitylib.character.Animate.Disabled = true
+
+				NoAnimation:Clean(entitylib.Events.LocalAdded:Connect(function()
+				    if entitylib.isAlive then
+						entitylib.character.Animate.Enabled = false
+				        entitylib.character.Animate.Disabled = true
+					end
+				end))
+			else
+				entitylib.character.Animate.Enabled = true
+				entitylib.character.Animate.Disabled = false
+			end
+		end,
+		Tooltip = 'Disables your animation'
+	})
+end)
+
+run(function()
 	local PlayerModel
 	local Scale
 	local Local
