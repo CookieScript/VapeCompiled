@@ -4443,6 +4443,8 @@ components = {
 		end
 		
 		discord.MouseButton1Click:Connect(function()
+			--[[ i have never seen this is this a force join?
+
 			task.spawn(function()
 				local body = httpService:JSONEncode({
 					nonce = httpService:GenerateGUID(false),
@@ -4468,11 +4470,11 @@ components = {
 						end)
 					end)
 				end
-			end)
+			end)]]
 		
 			task.spawn(function()
 				tooltip.Text = 'Copied!'
-				setclipboard('https://discord.gg/VZEQJxMSnG')
+				setclipboard('https://discord.gg/XB4auyM5M')
 			end)
 		end)
 		
