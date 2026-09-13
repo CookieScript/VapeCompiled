@@ -45,6 +45,7 @@ local toolblur
 local tooltip
 local TextGUI
 local scale = {Scale = 1}
+local discord_invite = 'https://discord.gg/mhsPvg8dPb' -- // Vape V4 Reborn
 local gui
 
 local isfile = isfile or function(file)
@@ -4474,7 +4475,7 @@ components = {
 		
 			task.spawn(function()
 				tooltip.Text = 'Copied!'
-				setclipboard('https://discord.gg/XB4auyM5M')
+				setclipboard(discord_invite)
 			end)
 		end)
 		
