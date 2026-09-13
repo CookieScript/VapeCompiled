@@ -7278,6 +7278,24 @@ run(function()
 end)
 
 run(function()
+	local InfiniteJump
+
+	InfiniteJump = vape.Categories.Utility:CreateModule({
+		Name = 'InfiniteJump',
+		Function = function(callback)
+            if callback then
+			    InfiniteJump:Clean(inputService.JumpRequest:Connect(function()
+                    if entitylib.isAlive then
+					    entitylib.character.Humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+					end
+				end))
+            end
+		end,
+		Tooltip = 'Allows you to jump infinitely.'
+	})
+end)
+
+run(function()
 	vape.Categories.Utility:CreateModule({
 		Name = 'Panic',
 		Function = function(callback)
