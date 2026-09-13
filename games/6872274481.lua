@@ -3752,7 +3752,7 @@ run(function()
 	end
 	
 	local function Added(v)
-		local chest = v:FindFirstChild('ChestFolderValue')
+		local chest = v:WaitForChild('ChestFolderValue', 3)
 		if not (chest and StorageESP.Enabled) then return end
 		chest = chest.Value
 		local billboard = Instance.new('BillboardGui')
