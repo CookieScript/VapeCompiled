@@ -5433,18 +5433,15 @@ run(function()
 		Name = 'NoAnimation',
 		Function = function(callback)
 			if callback then 
-			    entitylib.character.Animate.Enabled = false
-				entitylib.character.Animate.Disabled = true
+			    playersService.LocalPlayer.Character.Animate.Enabled = false
 
 				NoAnimation:Clean(entitylib.Events.LocalAdded:Connect(function()
-				    if entitylib.isAlive then
-						entitylib.character.Animate.Enabled = false
-				        entitylib.character.Animate.Disabled = true
+				    if entitylib.isAlive and playersService.LocalPlayer.Character then
+						playersService.LocalPlayer.Character.Animate.Enabled = false
 					end
 				end))
 			else
-				entitylib.character.Animate.Enabled = true
-				entitylib.character.Animate.Disabled = false
+				playersService.LocalPlayer.Character.Animate.Enabled = true
 			end
 		end,
 		Tooltip = 'Disables your animation'
