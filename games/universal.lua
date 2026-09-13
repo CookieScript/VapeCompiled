@@ -5432,16 +5432,20 @@ run(function()
 	NoAnimation = vape.Categories.Render:CreateModule({
 		Name = 'NoAnimation',
 		Function = function(callback)
-			if callback then 
-			    playersService.LocalPlayer.Character.Animate.Enabled = false
+			local animate = playersService.LocalPlayer.Character:WaitForChild('Animate', 3)
+			if callback then
+				animate.Enabled = false
 
 				NoAnimation:Clean(entitylib.Events.LocalAdded:Connect(function()
 				    if entitylib.isAlive and playersService.LocalPlayer.Character then
-						playersService.LocalPlayer.Character.Animate.Enabled = false
+						local animate = playersService.LocalPlayer.Character:WaitForChild('Animate', 3)
+			            if animate then
+						    animate.Enabled = false
+						end
 					end
 				end))
 			else
-				playersService.LocalPlayer.Character.Animate.Enabled = true
+				animate.Enabled = true
 			end
 		end,
 		Tooltip = 'Disables your animation'
