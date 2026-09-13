@@ -3851,28 +3851,6 @@ run(function()
 end)
 
 run(function()
-	local NoAnimation
-
-	NoAnimation = vape.Categories.Render:CreateModule({
-		Name = 'NoAnimation',
-		Function = function(callback)
-			if callback then 
-			    entitylib.character.Animate.Enabled = false
-
-				NoAnimation:Clean(entitylib.Events.LocalAdded:Connect(function()
-				    if entitylib.isAlive and entitylib.character and entitylib.character:FindFirstChild('Animate') then
-						entitylib.character.Animate.Enabled = false
-					end
-				end))
-			else
-				entitylib.character.Animate.Enabled = true
-			end
-		end,
-		Tooltip = 'Disables your animation'
-	})
-end)
-
-run(function()
 	local AutoBalloon
 	
 	AutoBalloon = vape.Categories.Utility:CreateModule({
