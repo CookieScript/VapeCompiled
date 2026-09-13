@@ -3725,7 +3725,7 @@ run(function()
 				end
 			end
 
-			v.Enabled = false
+			--[[v.Enabled = false
 			local alreadygot = {}
 			for _, item in chestitems do
 				if not alreadygot[item.Name] and (table.find(List.ListEnabled, item.Name) or nearStorageItem(item.Name)) then
@@ -3737,6 +3737,14 @@ run(function()
 					blockimage.Image = bedwars.getIcon({itemType = item.Name}, true)
 					blockimage.Parent = v.Frame
 				end
+			end]]
+
+			for _, item in chestitems do
+				local blockimage = Instance.new('ImageLabel')
+				blockimage.Size = UDim2.fromOffset(32, 32)
+				blockimage.BackgroundTransparency = 1
+				blockimage.Image = bedwars.getIcon({itemType = item.Name}, true)
+				blockimage.Parent = v.Frame
 			end
 
 			table.clear(chestitems)
@@ -3751,7 +3759,7 @@ run(function()
 		billboard.Parent = Folder
 		billboard.Name = 'chest'
 		billboard.StudsOffsetWorldSpace = Vector3.new(0, 3, 0)
-		billboard.Size = UDim2.new(0, 36, 0, 36)
+		billboard.Size = UDim2.fromOffset(36, 36)
 		billboard.AlwaysOnTop = true
 		billboard.ClipsDescendants = false
 		billboard.Adornee = v
@@ -3768,14 +3776,14 @@ run(function()
 		layout.VerticalAlignment = Enum.VerticalAlignment.Center
 		layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
 		layout:GetPropertyChangedSignal('AbsoluteContentSize'):Connect(function()
-			billboard.Size = UDim2.new(0, math.max(layout.AbsoluteContentSize.X + 4, 36), 0, 36)
+			billboard.Size = UDim2.fromOffset(math.max(layout.AbsoluteContentSize.X + 4, 36), 36)
 		end)
 		layout.Parent = frame
 		local corner = Instance.new('UICorner')
 		corner.CornerRadius = UDim.new(0, 4)
 		corner.Parent = frame
 		Reference[v] = billboard
-		StorageESP:Clean(chest.ChildAdded:Connect(function(item)
+		--[[StorageESP:Clean(chest.ChildAdded:Connect(function(item)
 			if table.find(List.ListEnabled, item.Name) or nearStorageItem(item.Name) then
 				refreshAdornee(billboard)
 			end
@@ -3784,6 +3792,12 @@ run(function()
 			if table.find(List.ListEnabled, item.Name) or nearStorageItem(item.Name) then
 				refreshAdornee(billboard)
 			end
+		end))]]
+		StorageESP:Clean(chest.ChildAdded:Connect(function(item)
+			refreshAdornee(billboard)
+		end))
+		StorageESP:Clean(chest.ChildRemoved:Connect(function(item)
+			refreshAdornee(billboard)
 		end))
 		task.spawn(refreshAdornee, billboard)
 	end
