@@ -1775,6 +1775,7 @@ run(function()
 	local WallCheck
 	local PopBalloons
 	local TP
+	local Spoof
 	local rayCheck = RaycastParams.new()
 	rayCheck.RespectCanCollide = true
 	local up, down, old = 0, 0
@@ -1803,6 +1804,7 @@ run(function()
 						local mass = (1.5 + (flyAllowed and 6 or 0) * (tick() % 0.4 < 0.2 and -1 or 1)) + ((up + down) * VerticalValue.Value)
 						local root, moveDirection = entitylib.character.RootPart, entitylib.character.Humanoid.MoveDirection
 						local velo = getSpeed()
+						local oldcframe = root.CFrame
 						local destination = (moveDirection * math.max(Value.Value - velo, 0) * dt)
 						rayCheck.FilterDescendantsInstances = {lplr.Character, gameCamera, AntiFallPart}
 						rayCheck.CollisionGroup = root.CollisionGroup
@@ -1844,6 +1846,13 @@ run(function()
 
 						root.CFrame += destination
 						root.AssemblyLinearVelocity = (moveDirection * velo) + Vector3.new(0, mass, 0)
+
+						if Spoof then
+					        runService:BindToRenderStep('FlySpoofing', 199, function()
+								root.CFrame = oldcframe
+							    runService:UnbindFromRenderStep("FlySpoofing")
+						    end)
+						end
 					end
 				end))
 				Fly:Clean(inputService.InputBegan:Connect(function(input)
@@ -1913,6 +1922,10 @@ run(function()
 	TP = Fly:CreateToggle({
 		Name = 'TP Down',
 		Default = true
+	})
+	Spoof = Fly:CreateToggle({
+		Name = 'Spoof',
+		Default = false
 	})
 end)
 
@@ -2003,7 +2016,7 @@ run(function()
 		end
 	})
 end)
-
+																		
 run(function()
 	vape.Categories.Blatant:CreateModule({
 		Name = 'KeepSprint',
@@ -3055,7 +3068,7 @@ run(function()
 		Name = 'Speed',
 		Min = 1,
 		Max = 23,
-		Default = 23,
+		Default = 20,
 		Suffix = function(val)
 			return val == 1 and 'stud' or 'studs'
 		end
