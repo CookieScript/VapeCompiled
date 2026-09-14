@@ -1753,9 +1753,9 @@ run(function()
 				DamageBoost:Clean(vapeEvents.EntityDamageEvent.Event:Connect(function(Table)
 					if entitylib.isAlive and tick() > (cooldown or 0) and Table.entityInstance == lplr.Character and not vape.Modules.LongJump.Enabled then
 						local horizontal = (Table.knockbackMultiplier and Table.knockbackMultiplier.horizontal or 0)
-						KnockbackSpeed = bedwars.KnockbackUtil.calculateKnockbackVelocity(Vector3.one, 1, {vertical = 0, horizontal = horizontal}).Magnitude
+						KnockbackSpeed = bedwars.KnockbackUtil.calculateKnockbackVelocity(Vector3.one, 1, {vertical = 0, horizontal = horizontal}).Magnitude * 0.85
                         cooldown = tick() + (KnockbackSpeed / 38)
-                        KnockbackTick = tick() + (horizontal / 3)
+                        KnockbackTick = tick() + (horizontal / 2.65)
 					end
 				end))
 			end
