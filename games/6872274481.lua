@@ -280,6 +280,9 @@ local function getShieldAttribute(char)
 	return returned
 end
 
+local KnockbackTick = tick()
+local KnockbackSpeed = 0
+
 local function getSpeed()
 	local multi, increase, modifiers = 0, true, bedwars.SprintController:getMovementStatusModifier():getModifiers()
 
@@ -299,7 +302,7 @@ local function getSpeed()
 		multi += 0.16 + (0.02 * math.round(multi))
 	end
 
-	return 20 * (multi + 1)
+	return (20 + (KnockbackTick > tick() and KnockbackSpeed or 0)) * (multi + 1)
 end
 
 local function getTableSize(tab)
@@ -1740,6 +1743,29 @@ run(function()
 end)
 
 run(function()
+	local DamageBoost
+    local cooldown
+
+	DamageBoost = vape.Categories.Blatant:CreateModule({
+		Name = 'DamageBoost',
+		Function = function(callback)
+			if callback then
+				DamageBoost:Clean(vapeEvents.EntityDamageEvent.Event:Connect(function(Table)
+					if entitylib.isAlive and tick() > (cooldown or 0) and Table.entityInstance == lplr.Character and not vape.Modules.LongJump.Enabled then
+						local horizontal = (Table.knockbackMultiplier and Table.knockbackMultiplier.horizontal or 0)
+						KnockbackSpeed = bedwars.KnockbackUtil.calculateKnockbackVelocity(Vector3.one, 1, {vertical = 0, horizontal = horizontal}).Magnitude * (0.95 + store.ping.total)
+                        cooldown = tick() + (KnockbackSpeed / 38)
+                        KnockbackTick = tick() + (horizontal / 3)
+					end
+				end)
+			else
+			end
+		end,
+		Tooltip = 'Makes you faster when damaged'
+	})
+end)
+
+run(function()
 	local FastBreak
 	local Time
 	
@@ -1800,12 +1826,12 @@ run(function()
 				end))
 				-- // PreSimulation was the old one
 				Fly:Clean(runService.Heartbeat:Connect(function(dt)
-					if entitylib.isAlive and playersService.LocalPlayer.Character and playersService.LocalPlayer.Character:FindFirstChild('HumanoidRootPart') and not InfiniteFly.Enabled and isnetworkowner(entitylib.character.RootPart) then
+					if entitylib.isAlive and lplr.Character and lplr.Character:FindFirstChild('HumanoidRootPart') and not InfiniteFly.Enabled and isnetworkowner(entitylib.character.RootPart) then
 						local flyAllowed = (lplr.Character:GetAttribute('InflatedBalloons') and lplr.Character:GetAttribute('InflatedBalloons') > 0) or store.matchState == 2
 						local mass = (1.5 + (flyAllowed and 6 or 0) * (tick() % 0.4 < 0.2 and -1 or 1)) + ((up + down) * VerticalValue.Value)
 						local root, moveDirection = entitylib.character.RootPart, entitylib.character.Humanoid.MoveDirection
 						local velo = getSpeed()
-						local oldcframe = playersService.LocalPlayer.Character.HumanoidRootPart.CFrame
+						local oldcframe = lplr.Character.HumanoidRootPart.CFrame
 						local destination = (moveDirection * math.max(Value.Value - velo, 0) * dt)
 						rayCheck.FilterDescendantsInstances = {lplr.Character, gameCamera, AntiFallPart}
 						rayCheck.CollisionGroup = root.CollisionGroup
@@ -1850,7 +1876,7 @@ run(function()
 
 						if Spoof.Enabled then
 					        runService:BindToRenderStep('FlySpoofing', 199, function()
-								playersService.LocalPlayer.Character.HumanoidRootPart.CFrame = oldcframe
+								lplr.Character.HumanoidRootPart.CFrame = oldcframe
 							    runService:UnbindFromRenderStep('FlySpoofing')
 						    end)
 						end
@@ -2292,7 +2318,7 @@ run(function()
 	AttackRange = Killaura:CreateSlider({
 		Name = 'Attack range',
 		Min = 1,
-		Max = 18,
+		Max = 28,
 		Default = 18,
 		Suffix = function(val)
 			return val == 1 and 'stud' or 'studs'
@@ -3095,7 +3121,7 @@ run(function()
 	local BedESP
 	local Reference = {}
 	local Folder = Instance.new('Folder')
-	Folder.Parent = vape.holder
+	Folder.Parent = vape.gui
 	
 	local function Added(bed)
 		if not BedESP.Enabled then return end
@@ -3188,7 +3214,7 @@ run(function()
 	local Color = {}
 	local Reference = {}
 	local Folder = Instance.new('Folder')
-	Folder.Parent = vape.holder
+	Folder.Parent = vape.gui
 	
 	local ESPKits = {
 		alchemist = {'alchemist_ingedients', 'wild_flower'},
@@ -3721,17 +3747,22 @@ run(function()
 	local Folder = Instance.new('Folder')
 	Folder.Parent = vape.gui
 	
-	local function nearStorageItem(item)
+	--[[local function nearStorageItem(item)
 		for _, v in List.ListEnabled do
 			if item:find(v) then return v end
 		end
-	end
+	end]]
 	
 	local function refreshAdornee(v)
 		local chest = v.Adornee:FindFirstChild('ChestFolderValue')
 		if chest then
-			chest = chest and chest.Value
-	
+			chest = chest and chest.Value or nil
+
+            if not chest then
+	    	    v.Enabled = false
+			    return
+			end
+
 			local chestitems = chest and chest:GetChildren() or {}
 			for _, obj in v.Frame:GetChildren() do
 				if obj:IsA('ImageLabel') and obj.Name ~= 'Blur' then
@@ -4316,7 +4347,7 @@ run(function()
 						rayCheck.FilterDescendantsInstances = {lplr.Character, gameCamera, AntiFallPart}
 						rayCheck.CollisionGroup = root.CollisionGroup
 	
-						if pearl and root.Velocity.Y < -100 and not workspace:Raycast(root.Position, Vector3.new(0, -200, 0), rayCheck) then
+						if pearl and root.Velocity.Y < -140 and not workspace:Raycast(root.Position, Vector3.new(0, -200, 0), rayCheck) then
 							if not check then
 								check = true
 								local ground = getNearGround(20)
@@ -5254,7 +5285,7 @@ run(function()
 	local Color = {}
 	local Reference = {}
 	local Folder = Instance.new('Folder')
-	Folder.Parent = vape.holder
+	Folder.Parent = vape.gui
 	
 	local function scanSide(self, start, tab)
 		for _, side in sides do
