@@ -3826,6 +3826,10 @@ run(function()
 	end
 	
 	local function Loop()
+		if vape.ThreadFix then
+			setthreadidentity(8)
+		end
+
 		for ent, arrow in Reference do
 			if Distance.Enabled then
 				local distance = entitylib.isAlive and (entitylib.character.RootPart.Position - ent.RootPart.Position).Magnitude or math.huge
@@ -3926,7 +3930,7 @@ run(function()
 	local Walls
 	local Reference = {}
 	local Folder = Instance.new('Folder')
-	Folder.Parent = vape.holder
+	Folder.Parent = vape.gui
 	
 	local function Added(ent)
 		if not Targets.Players.Enabled and ent.Player then return end
