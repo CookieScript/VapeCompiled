@@ -1847,7 +1847,7 @@ run(function()
 						root.CFrame += destination
 						root.AssemblyLinearVelocity = (moveDirection * velo) + Vector3.new(0, mass, 0)
 
-						if Spoof then
+						if Spoof.Enabled then
 					        runService:BindToRenderStep('FlySpoofing', 199, function()
 								root.CFrame = oldcframe
 							    runService:UnbindFromRenderStep('FlySpoofing')
