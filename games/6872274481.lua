@@ -1757,8 +1757,7 @@ run(function()
                         cooldown = tick() + (KnockbackSpeed / 38)
                         KnockbackTick = tick() + (horizontal / 3)
 					end
-				end)
-			else
+				end))
 			end
 		end,
 		Tooltip = 'Makes you faster when damaged'
