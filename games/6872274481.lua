@@ -2060,7 +2060,7 @@ run(function()
 			if callback then
 				up, down = 0, 0
 				InfiniteFly:Clean(runService.Heartbeat:Connect(function(dt)
-					if entitylib.isAlive and lplr.Character and lplr.Character:FindFirstChild('HumanoidRootPart') and not InfiniteFly.Enabled and isnetworkowner(entitylib.character.RootPart) then
+					if entitylib.isAlive and lplr.Character and lplr.Character:FindFirstChild('HumanoidRootPart') and isnetworkowner(entitylib.character.RootPart) then
 						local root, moveDirection = entitylib.character.RootPart, entitylib.character.Humanoid.MoveDirection
 						local velo = getSpeed()
 						local oldvelo = lplr.Character.HumanoidRootPart.Velocity
@@ -2076,7 +2076,7 @@ run(function()
 							end
 						end
 
-						root.CFrame = CFrame.new(Vector3.new(root.Position.X, 300, root.Position.Z) + destination)
+						root.CFrame = CFrame.new(Vector3.new(root.Position.X, 100000, root.Position.Z) + destination)
 						root.AssemblyLinearVelocity = (moveDirection * velo) + Vector3.new(0, (up + down) * VerticalValue.Value, 0)
 
 						runService:BindToRenderStep('InfiniteFlySpoofing', 199, function()
@@ -2111,7 +2111,7 @@ run(function()
 					end)
 				end
 			else
-				lplr.Character.HumanoidRootPart.CFrame = CFrame.new(Vector3.new(lplr.Character.HumanoidRootPart.Position.X, 300, lplr.Character.HumanoidRootPart.Position.Z))
+				lplr.Character.HumanoidRootPart.CFrame = CFrame.new(Vector3.new(lplr.Character.HumanoidRootPart.Position.X, 100, lplr.Character.HumanoidRootPart.Position.Z))
 			end
 		end,
 		ExtraText = function()
