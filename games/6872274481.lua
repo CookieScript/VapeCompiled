@@ -1793,6 +1793,7 @@ run(function()
 end)
 
 local Fly
+local InfiniteFly
 local LongJump
 run(function()
 	local Value
@@ -2043,7 +2044,6 @@ run(function()
 	})
 end)
 
-local InfiniteFly
 run(function()
 	local Value
 	local VerticalValue
@@ -2111,7 +2111,9 @@ run(function()
 					end)
 				end
 			else
-				lplr.Character.HumanoidRootPart.CFrame = CFrame.new(Vector3.new(lplr.Character.HumanoidRootPart.Position.X, 100, lplr.Character.HumanoidRootPart.Position.Z))
+				lplr.Character.HumanoidRootPart.Velocity = Vector3.new(0, 50, 0)
+				entitylib.character.Humanoid:ChangeState(Enum.HumanoidStateType.Landed)
+				notif('InfiniteFly', 'Landed', 1)
 			end
 		end,
 		ExtraText = function()
