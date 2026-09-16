@@ -2042,7 +2042,107 @@ run(function()
 		end
 	})
 end)
-																		
+
+local InfiniteFly
+run(function()
+	local Value
+	local VerticalValue
+	local WallCheck
+	local rayCheck = RaycastParams.new()
+	rayCheck.RespectCanCollide = true
+	local up, down = 0, 0
+
+	InfiniteFly = vape.Categories.Blatant:CreateModule({
+		Name = 'InfiniteFly',
+		Function = function(callback)
+			frictionTable.InfiniteFly = callback or nil
+			updateVelocity()
+			if callback then
+				up, down = 0, 0
+				InfiniteFly:Clean(runService.Heartbeat:Connect(function(dt)
+					if entitylib.isAlive and lplr.Character and lplr.Character:FindFirstChild('HumanoidRootPart') and not InfiniteFly.Enabled and isnetworkowner(entitylib.character.RootPart) then
+						local root, moveDirection = entitylib.character.RootPart, entitylib.character.Humanoid.MoveDirection
+						local velo = getSpeed()
+						local oldvelo = lplr.Character.HumanoidRootPart.Velocity
+						local oldcframe = lplr.Character.HumanoidRootPart.CFrame
+						local destination = (moveDirection * math.max(Value.Value - velo, 0) * dt)
+						rayCheck.FilterDescendantsInstances = {lplr.Character, gameCamera, AntiFallPart}
+						rayCheck.CollisionGroup = root.CollisionGroup
+
+						if WallCheck.Enabled then
+							local ray = workspace:Raycast(root.Position, destination, rayCheck)
+							if ray then
+								destination = ((ray.Position + ray.Normal) - root.Position)
+							end
+						end
+
+						root.CFrame = CFrame.new(Vector3.new(root.Position.X, 300, root.Position.Z) + destination)
+						root.AssemblyLinearVelocity = (moveDirection * velo) + Vector3.new(0, (up + down) * VerticalValue.Value, 0)
+
+						runService:BindToRenderStep('InfiniteFlySpoofing', 199, function()
+							lplr.Character.HumanoidRootPart.CFrame = oldcframe
+					        lplr.Character.HumanoidRootPart.Velocity = Vector3.new(oldvelo.X, lplr.Character.HumanoidRootPart.Velocity.Y, oldvelo.Z)
+						    runService:UnbindFromRenderStep('InfiniteFlySpoofing')
+						end)
+					end
+				end))
+				InfiniteFly:Clean(inputService.InputBegan:Connect(function(input)
+					if not inputService:GetFocusedTextBox() then
+						if input.KeyCode == Enum.KeyCode.Space or input.KeyCode == Enum.KeyCode.ButtonA then
+							up = 1
+						elseif input.KeyCode == Enum.KeyCode.LeftShift or input.KeyCode == Enum.KeyCode.ButtonL2 then
+							down = -1
+						end
+					end
+				end))
+				InfiniteFly:Clean(inputService.InputEnded:Connect(function(input)
+					if input.KeyCode == Enum.KeyCode.Space or input.KeyCode == Enum.KeyCode.ButtonA then
+						up = 0
+					elseif input.KeyCode == Enum.KeyCode.LeftShift or input.KeyCode == Enum.KeyCode.ButtonL2 then
+						down = 0
+					end
+				end))
+				if inputService.TouchEnabled then
+					pcall(function()
+						local jumpButton = lplr.PlayerGui.TouchGui.TouchControlFrame.JumpButton
+						InfiniteFly:Clean(jumpButton:GetPropertyChangedSignal('ImageRectOffset'):Connect(function()
+							up = jumpButton.ImageRectOffset.X == 146 and 1 or 0
+						end))
+					end)
+				end
+			else
+				lplr.Character.HumanoidRootPart.CFrame = CFrame.new(Vector3.new(lplr.Character.HumanoidRootPart.Position.X, 300, lplr.Character.HumanoidRootPart.Position.Z))
+			end
+		end,
+		ExtraText = function()
+			return 'Infinite'
+		end,
+		Tooltip = 'Makes you go zoom.'
+	})
+	Value = InfiniteFly:CreateSlider({
+		Name = 'Speed',
+		Min = 1,
+		Max = 23,
+		Default = 20,
+		Suffix = function(val)
+			return val == 1 and 'stud' or 'studs'
+		end
+	})
+	VerticalValue = InfiniteFly:CreateSlider({
+		Name = 'Vertical Speed',
+		Min = 1,
+		Max = 150,
+		Default = 50,
+		Suffix = function(val)
+			return val == 1 and 'stud' or 'studs'
+		end
+	})
+	WallCheck = InfiniteFly:CreateToggle({
+		Name = 'Wall Check',
+		Default = true
+	})
+end)
+
 run(function()
 	vape.Categories.Blatant:CreateModule({
 		Name = 'KeepSprint',
