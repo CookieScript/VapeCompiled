@@ -1652,7 +1652,7 @@ run(function()
 									local lastTeleport = lplr:GetAttribute('LastTeleported')
 									local connection
 									connection = runService.PreSimulation:Connect(function()
-										if vape.Modules.Fly.Enabled or vape.Modules.LongJump.Enabled then
+										if vape.Modules.Fly.Enabled or (vape.Modules.InfiniteFly and vape.Modules.InfiniteFly.Enabled) or vape.Modules.LongJump.Enabled then
 											connection:Disconnect()
 											AntiFallDirection = nil
 											return
@@ -2076,7 +2076,7 @@ run(function()
 							end
 						end
 
-						root.CFrame = CFrame.new(Vector3.new(root.Position.X, 100000, root.Position.Z) + destination)
+						root.CFrame = CFrame.new(Vector3.new(root.Position.X, 100, root.Position.Z) + destination)
 						root.AssemblyLinearVelocity = (moveDirection * velo) + Vector3.new(0, (up + down) * VerticalValue.Value, 0)
 
 						runService:BindToRenderStep('InfiniteFlySpoofing', 199, function()
@@ -2113,7 +2113,8 @@ run(function()
 			else
 				lplr.Character.HumanoidRootPart.Velocity = Vector3.new(0, 50, 0)
 				entitylib.character.Humanoid:ChangeState(Enum.HumanoidStateType.Landed)
-				notif('InfiniteFly', 'Landed', 1)
+				lplr.Character.HumanoidRootPart.CFrame = CFrame.new(lplr.Character.HumanoidRootPart.CFrame.Position.X, 100, lplr.Character.HumanoidRootPart.CFrame.Position.Z)
+				notif('InfiniteFly', 'Landed', 1.5)
 			end
 		end,
 		ExtraText = function()
