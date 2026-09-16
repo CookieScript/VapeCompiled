@@ -37,6 +37,7 @@ end
 local playersService = cloneref(game:GetService('Players'))
 local replicatedStorage = cloneref(game:GetService('ReplicatedStorage'))
 local runService = cloneref(game:GetService('RunService'))
+local soundService = cloneref(game:GetService('SoundService'))
 local inputService = cloneref(game:GetService('UserInputService'))
 local tweenService = cloneref(game:GetService('TweenService'))
 local lightingService = cloneref(game:GetService('Lighting'))
@@ -8997,6 +8998,35 @@ run(function()
 	local corner = Instance.new('UICorner')
 	corner.CornerRadius = UDim.new(0, 4)
 	corner.Parent = label
+end)
+
+run(function()
+	local originalVolume
+
+	local function GetLobbyMusic()
+		for _, v in soundService:GetDescendants() do
+			if (v:IsA('AudioFader') or v:IsA('AudioPlayer')) and (string.find(v.Name, 'Lobby') or string.find(v.Name, 'lobby')) then
+				return v
+			end
+		end
+		return nil
+	end
+
+	vape.Legit:CreateModule({
+		Name = 'No Lobby Audio',
+		Function = function(callback)
+			local lobbyMusic = GetLobbyMusic()
+			if lobbyMusic then
+				if callback then
+					originalVolume = lobbyMusic.Volume
+					lobbyMusic.Volume = 0
+				else
+					lobbyMusic.Volume = originalVolume
+				end
+			end
+		end,
+		Tooltip = 'Removes the audio from the lobby'
+	})
 end)
 
 run(function()
