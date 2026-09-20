@@ -1848,7 +1848,7 @@ run(function()
 
 						if FlyProgressBarFrame and not flyAllowed then
 							FlyProgressBarFrame.Visible = true
-							FlyProgressBarFrame.Frame:TweenSize(UDim2.new(math.clamp((tick() - entitylib.character.AirTime) / 2, 0, 1), 0, 1, 0), Enum.EasingDirection.InOut, Enum.EasingStyle.Linear, 0, true)
+							FlyProgressBarFrame.Frame:TweenSize(UDim2.new(1 - math.clamp((tick() - entitylib.character.AirTime) / 2, 0, 1), 0, 1, 0), Enum.EasingDirection.InOut, Enum.EasingStyle.Linear, 0, true)
 							FlyProgressBarFrame.TextLabel.Text = string.format("%.1fs", math.max(2 - (tick() - entitylib.character.AirTime), 0))
 						end
 
@@ -1981,7 +1981,7 @@ run(function()
 				FlyProgressBarFrame.Parent = vape.gui
 
 		        local FlyProgressBarFrame2 = Instance.new('Frame')
-				FlyProgressBarFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+				FlyProgressBarFrame2.BackgroundColor3 = Color3.fromHSV(FlyProgressBarColor.Hue, FlyProgressBarColor.Sat, FlyProgressBarColor.Value)
 				FlyProgressBarFrame2.Position = UDim2.new(0, 0, 0, 0)
 				FlyProgressBarFrame2.AnchorPoint = Vector2.new(0, 0)
 				FlyProgressBarFrame2.Size = UDim2.new(1, 0, 0, 20)
@@ -3817,45 +3817,43 @@ run(function()
 	
 	local function refreshAdornee(v)
 		local chest = v.Adornee:FindFirstChild('ChestFolderValue')
-		if chest then
-			chest = chest and chest.Value or nil
+		chest = chest and chest.Value or nil
 
-            if not chest then
-	    	    v.Enabled = false
-			    return
+        if not chest then
+		    v.Enabled = false
+			return
+		end
+
+		local chestitems = chest and chest:GetChildren() or {}
+		for _, obj in v.Frame:GetChildren() do
+			if obj:IsA('ImageLabel') and obj.Name ~= 'Blur' then
+				obj:Destroy()
 			end
+		end
 
-			local chestitems = chest and chest:GetChildren() or {}
-			for _, obj in v.Frame:GetChildren() do
-				if obj:IsA('ImageLabel') and obj.Name ~= 'Blur' then
-					obj:Destroy()
-				end
-			end
-
-			--[[v.Enabled = false
-			local alreadygot = {}
-			for _, item in chestitems do
-				if not alreadygot[item.Name] and (table.find(List.ListEnabled, item.Name) or nearStorageItem(item.Name)) then
-					alreadygot[item.Name] = true
-					v.Enabled = true
-					local blockimage = Instance.new('ImageLabel')
-					blockimage.Size = UDim2.fromOffset(32, 32)
-					blockimage.BackgroundTransparency = 1
-					blockimage.Image = bedwars.getIcon({itemType = item.Name}, true)
-					blockimage.Parent = v.Frame
-				end
-			end]]
-
-			for _, item in chestitems do
+		--[[v.Enabled = false
+		local alreadygot = {}
+		for _, item in chestitems do
+			if not alreadygot[item.Name] and (table.find(List.ListEnabled, item.Name) or nearStorageItem(item.Name)) then
+				alreadygot[item.Name] = true
+				v.Enabled = true
 				local blockimage = Instance.new('ImageLabel')
 				blockimage.Size = UDim2.fromOffset(32, 32)
 				blockimage.BackgroundTransparency = 1
 				blockimage.Image = bedwars.getIcon({itemType = item.Name}, true)
 				blockimage.Parent = v.Frame
 			end
+		end]]
 
-			table.clear(chestitems)
+		for _, item in chestitems do
+			local blockimage = Instance.new('ImageLabel')
+			blockimage.Size = UDim2.fromOffset(32, 32)
+			blockimage.BackgroundTransparency = 1
+			blockimage.Image = bedwars.getIcon({itemType = item.Name}, true)
+			blockimage.Parent = v.Frame
 		end
+
+		table.clear(chestitems)
 	end
 	
 	local function Added(v)
