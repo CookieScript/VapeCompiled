@@ -1774,7 +1774,7 @@ run(function()
 						if closestEntity then
 							local root = entitylib.character.RootPart
 							root.CFrame = root.CFrame + Vector3.new(0, 38, 0)
-							root.AssemblyLinearVelocity = Vector3.new(0, -300, 0)
+							root.AssemblyLinearVelocity = Vector3.new(0, -120, 0)
 						end
 					end
 				end))
