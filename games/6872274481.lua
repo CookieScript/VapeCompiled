@@ -1743,54 +1743,6 @@ run(function()
 end)
 
 run(function()
-	local AntiHit
-	local avoided
-
-	local function IsTouchingFloor()
-		if entitylib.isAlive then
-			return entitylib.character.Humanoid.FloorMaterial ~= Enum.Material.Air
-		end
-		return false
-	end
-
-	AntiHit = vape.Categories.Blatant:CreateModule({
-		Name = 'AntiHit',
-		Function = function(callback)
-			if callback then
-				AntiHit:Clean(runService.Heartbeat:Connect(function()
-					if entitylib.isAlive and IsTouchingFloor() then
-						local closestEntity = entitylib.EntityPosition({
-							Range = 14.4,
-							Part = 'RootPart',
-							Players = true,
-							NPCs = false,
-							Wallcheck = false,
-							Sort = function(a, b)
-								local selfPos = entitylib.character.RootPart.Position
-								return (a.RootPart.Position - selfPos).Magnitude < (b.RootPart.Position - selfPos).Magnitude
-							end
-						})
-
-						if closestEntity and not avoided then
-							avoided = true
-							task.spawn(function()
-		    					local root = entitylib.character.RootPart
-	    						root.CFrame = root.CFrame + Vector3.new(0, 38, 0)
-    							root.AssemblyLinearVelocity = Vector3.new(0, 5, 0)
-								task.wait(0.2)
-    							root.AssemblyLinearVelocity = Vector3.new(0, -500, 0)
-								avoided = false
-				            end)
-						end
-					end
-				end))
-			end
-		end,
-		Tooltip = 'Dodges hits from other players'
-	})
-end)
-
-run(function()
 	local DamageBoost
     local cooldown
 
