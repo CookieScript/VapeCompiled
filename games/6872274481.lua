@@ -1744,6 +1744,7 @@ end)
 
 run(function()
 	local AntiHit
+	local avoided
 
 	local function IsTouchingFloor()
 		if entitylib.isAlive then
@@ -1770,10 +1771,16 @@ run(function()
 							end
 						})
 
-						if closestEntity then
-							local root = entitylib.character.RootPart
-							root.CFrame = root.CFrame + Vector3.new(0, 38, 0)
-							root.AssemblyLinearVelocity = Vector3.new(0, 1, 0)
+						if closestEntity and not avoided then
+							avoided = true
+							task.spawn(function()
+		    					local root = entitylib.character.RootPart
+	    						root.CFrame = root.CFrame + Vector3.new(0, 38, 0)
+    							root.AssemblyLinearVelocity = Vector3.new(0, 5, 0)
+								task.wait(0.2)
+    							root.AssemblyLinearVelocity = Vector3.new(0, -500, 0)
+								avoided = false
+				            end)
 						end
 					end
 				end))
