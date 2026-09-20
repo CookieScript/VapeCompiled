@@ -1801,6 +1801,9 @@ run(function()
 	local PopBalloons
 	local TP
 	local Spoof
+	local FlyProgressBar
+	local FlyProgressBarFrame
+	local FlyProgressBarColor
 	local rayCheck = RaycastParams.new()
 	rayCheck.RespectCanCollide = true
 	local up, down, old = 0, 0
@@ -1823,6 +1826,7 @@ run(function()
 						bedwars.BalloonController:inflateBalloon()
 					end
 				end))
+
 				-- // PreSimulation was the old one
 				Fly:Clean(runService.Heartbeat:Connect(function(dt)
 					if entitylib.isAlive and lplr.Character and lplr.Character:FindFirstChild('HumanoidRootPart') and not InfiniteFly.Enabled and isnetworkowner(entitylib.character.RootPart) then
@@ -1840,6 +1844,12 @@ run(function()
 							if ray then
 								destination = ((ray.Position + ray.Normal) - root.Position)
 							end
+						end
+
+						if FlyProgressBarFrame and not flyAllowed then
+							FlyProgressBarFrame.Visible = true
+							FlyProgressBarFrame.Frame:TweenSize(UDim2.new(math.clamp((tick() - entitylib.character.AirTime) / 2, 0, 1), 0, 1, 0), Enum.EasingDirection.InOut, Enum.EasingStyle.Linear, 0, true)
+							FlyProgressBarFrame.TextLabel.Text = string.format("%.1fs", math.max(2 - (tick() - entitylib.character.AirTime), 0))
 						end
 
 						if not flyAllowed then
@@ -1912,6 +1922,7 @@ run(function()
 						bedwars.BalloonController:deflateBalloon()
 					end
 				end
+				if FlyProgressBarFrame then FlyProgressBarFrame.Visible = false end
 			end
 		end,
 		ExtraText = function()
@@ -1952,6 +1963,57 @@ run(function()
 	Spoof = Fly:CreateToggle({
 		Name = 'Spoof',
 		Default = false
+	})
+	FlyProgressBar = Fly:CreateToggle({
+		Name = 'Progress Bar',
+		Default = false,
+		Function = function(callback)
+			if callback then
+				FlyProgressBarFrame = Instance.new('Frame')
+				FlyProgressBarFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+				FlyProgressBarFrame.Position = UDim2.new(0.5, 0, 1, -100)
+				FlyProgressBarFrame.AnchorPoint = Vector2.new(0.5, 1)
+				FlyProgressBarFrame.Size = UDim2.new(0.2, 0, 0, 15)
+				FlyProgressBarFrame.BackgroundTransparency = 0.5
+				FlyProgressBarFrame.BorderSizePixel = 0
+				FlyProgressBarFrame.Visible = Fly.Enabled
+				FlyProgressBarFrame.Parent = vape.gui
+
+		        local FlyProgressBarFrame2 = Instance.new('Frame')
+				FlyProgressBarFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+				FlyProgressBarFrame2.Position = UDim2.new(0, 0, 0, 0)
+				FlyProgressBarFrame2.AnchorPoint = Vector2.new(0, 0)
+				FlyProgressBarFrame2.Size = UDim2.new(1, 0, 0, 20)
+				FlyProgressBarFrame2.BackgroundTransparency = 0
+				FlyProgressBarFrame2.Parent = FlyProgressBarFrame
+
+				local FlyProgressBarText = Instance.new('TextLabel')
+				FlyProgressBarText.TextColor3 = Color3.fromRGB(230, 230, 230)
+				FlyProgressBarText.Position = UDim2.new(0, 0, -1, 0)
+				FlyProgressBarText.Size = UDim2.new(1, 0, 1, 0)
+				FlyProgressBarText.BackgroundTransparency = 1
+				FlyProgressBarText.TextStrokeTransparency = 0
+				FlyProgressBarText.Font = Enum.Font.Arimo
+				FlyProgressBarText.TextSize = 20
+				FlyProgressBarText.Text = "2s"
+				FlyProgressBarText.Parent = FlyProgressBarFrame
+			else
+				if FlyProgressBarFrame then FlyProgressBarFrame:Destroy() FlyProgressBarFrame = nil end
+			end
+		end
+	})
+	FlyProgressBarColor = Fly:CreateColorSlider({
+		Name = 'Progress Bar Color',
+		Darker = true,
+		DefaultHue = 0.6,
+		DefaultOpacity = 1,
+		Visible = false,
+		Function = function(hue, sat, val, opacity)
+            if FlyProgressBarFrame and FlyProgressBarFrame.Frame then
+                FlyProgressBarFrame.Frame.BackgroundColor3 = Color3.fromHSV(hue, sat, val)
+                FlyProgressBarFrame.Frame.BackgroundTransparency = 1 - opacity
+            end
+		end
 	})
 end)
 
