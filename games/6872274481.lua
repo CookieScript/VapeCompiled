@@ -1749,7 +1749,6 @@ run(function()
 		if entitylib.isAlive then
 			return entitylib.character.Humanoid.FloorMaterial ~= Enum.Material.Air
 		end
-
 		return false
 	end
 
@@ -1774,7 +1773,7 @@ run(function()
 						if closestEntity then
 							local root = entitylib.character.RootPart
 							root.CFrame = root.CFrame + Vector3.new(0, 38, 0)
-							root.AssemblyLinearVelocity = Vector3.new(0, -120, 0)
+							root.AssemblyLinearVelocity = Vector3.new(0, 1, 0)
 						end
 					end
 				end))
@@ -2816,7 +2815,7 @@ run(function()
 					if entitylib.isAlive and store.matchState == 1 then
 						local root = entitylib.character.RootPart
 				        local Velo = root.Velocity
-						if Velo.Y < -45 then
+						if Velo.Y < -25 then
 							root.Velocity = Vector3.new(0, 5, 0)
 							entitylib.character.Humanoid:ChangeState(Enum.HumanoidStateType.Landed)
 							runService.RenderStepped:Wait()
