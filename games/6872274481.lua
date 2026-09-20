@@ -1968,6 +1968,7 @@ run(function()
 		Name = 'Progress Bar',
 		Default = false,
 		Function = function(callback)
+			FlyProgressBarColor.Object.Visible = callback
 			if callback then
 				FlyProgressBarFrame = Instance.new('Frame')
 				FlyProgressBarFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
@@ -1984,17 +1985,18 @@ run(function()
 				FlyProgressBarFrame2.Position = UDim2.new(0, 0, 0, 0)
 				FlyProgressBarFrame2.AnchorPoint = Vector2.new(0, 0)
 				FlyProgressBarFrame2.Size = UDim2.new(1, 0, 0, 20)
+				FlyProgressBarFrame2.BorderSizePixel = 0
 				FlyProgressBarFrame2.BackgroundTransparency = 0
 				FlyProgressBarFrame2.Parent = FlyProgressBarFrame
 
 				local FlyProgressBarText = Instance.new('TextLabel')
 				FlyProgressBarText.TextColor3 = Color3.fromRGB(230, 230, 230)
-				FlyProgressBarText.Position = UDim2.new(0, 0, -1, 0)
+				FlyProgressBarText.Position = UDim2.new(0, 0, -1, 5)
 				FlyProgressBarText.Size = UDim2.new(1, 0, 1, 0)
 				FlyProgressBarText.BackgroundTransparency = 1
 				FlyProgressBarText.TextStrokeTransparency = 0
 				FlyProgressBarText.Font = Enum.Font.Arimo
-				FlyProgressBarText.TextSize = 20
+				FlyProgressBarText.TextSize = 18
 				FlyProgressBarText.Text = "2s"
 				FlyProgressBarText.Parent = FlyProgressBarFrame
 			else
@@ -2005,8 +2007,7 @@ run(function()
 	FlyProgressBarColor = Fly:CreateColorSlider({
 		Name = 'Progress Bar Color',
 		Darker = true,
-		DefaultHue = 0.6,
-		DefaultOpacity = 1,
+		DefaultOpacity = 0.9,
 		Visible = false,
 		Function = function(hue, sat, val, opacity)
             if FlyProgressBarFrame and FlyProgressBarFrame.Frame then
