@@ -1986,7 +1986,7 @@ run(function()
 				FlyProgressBarFrame2.AnchorPoint = Vector2.new(0, 0)
 				FlyProgressBarFrame2.Size = UDim2.new(1, 0, 0, 20)
 				FlyProgressBarFrame2.BorderSizePixel = 0
-				FlyProgressBarFrame2.BackgroundTransparency = 0
+				FlyProgressBarFrame2.BackgroundTransparency = 1 - FlyProgressBarColor.Opacity
 				FlyProgressBarFrame2.Parent = FlyProgressBarFrame
 
 				local FlyProgressBarText = Instance.new('TextLabel')
@@ -3818,7 +3818,6 @@ run(function()
 	local function refreshAdornee(v)
 		local chest = v.Adornee:FindFirstChild('ChestFolderValue')
 		chest = chest and chest.Value or nil
-
         if not chest then
 		    v.Enabled = false
 			return
