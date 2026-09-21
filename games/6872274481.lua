@@ -5559,8 +5559,6 @@ run(function()
 	local LimitItem
 	local customlist, parts = {}, {}
 
-	local function getBlock(n)local o= {}for _, v in store.blocks do if v.Name:lower():find(n) then table.insert(o, v)end end return o end
-	
 	local function customHealthbar(self, blockRef, health, maxHealth, changeHealth, block)
 		if block:GetAttribute('NoHealthbar') then return end
 		if not self.healthbarPart or not self.healthbarBlockRef or self.healthbarBlockRef.blockPosition ~= blockRef.blockPosition then
@@ -5715,12 +5713,8 @@ run(function()
 				end
 	
 				local beds = collection('bed', Breaker)
-				-- // I dont want to waste my time on this im changing it
-				--local luckyblock = collection('lucky', Breaker)
-				--local ironores = collection('iron_ore', Breaker)
-
-				local luckyblock = getBlock('lucky')
-				local ironores = getBlock('iron')
+				local luckyblock = collection('LuckyBlock', Breaker)
+				local ironores = collection('iron-ore', Breaker)
 
 				customlist = collection('block', Breaker, function(tab, obj)
 					if table.find(Custom.ListEnabled, obj.Name) then
