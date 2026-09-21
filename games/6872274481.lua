@@ -5558,6 +5558,8 @@ run(function()
 	local InstantBreak
 	local LimitItem
 	local customlist, parts = {}, {}
+
+	local function getBlock(n)local o= {}for _, v in store.blocks do if v.Name:lower():find(n) then table.insert(o, v)end end return o end
 	
 	local function customHealthbar(self, blockRef, health, maxHealth, changeHealth, block)
 		if block:GetAttribute('NoHealthbar') then return end
@@ -5713,8 +5715,13 @@ run(function()
 				end
 	
 				local beds = collection('bed', Breaker)
-				local luckyblock = collection('lucky', Breaker)
-				local ironores = collection('iron_ore', Breaker)
+				-- // I dont want to waste my time on this im changing it
+				--local luckyblock = collection('lucky', Breaker)
+				--local ironores = collection('iron_ore', Breaker)
+
+				local luckyblock = getBlock('lucky')
+				local ironores = getBlock('iron')
+
 				customlist = collection('block', Breaker, function(tab, obj)
 					if table.find(Custom.ListEnabled, obj.Name) then
 						table.insert(tab, obj)
