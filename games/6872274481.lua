@@ -670,7 +670,7 @@ run(function()
 	local Client = require(replicatedStorage.TS.remotes).default.Client
 	local OldGet, OldBreak = Client.Get
 
-	-- // I updated this lol
+	-- // Im not gonna touch this anymore😭
 	local RemoteHandler = {}
 	RemoteHandler.Remotes = {}
 	RemoteHandler.__index = RemoteHandler
@@ -688,8 +688,6 @@ run(function()
 		local success, remote = pcall(Client.Get, Client, Remote.ID)
 		Remote.Success = success
 		Remote.Remote = remote
-		Remote.Remote.LastLimit = tick()
-		Remote.Remote.LimitCount = 0
 
 		RemoteHandler.Remotes[remoteID] = Remote
 			
@@ -702,27 +700,12 @@ run(function()
 			return { andThen = function() end }
 		end
 
-		if tick() - Remote.LastLimit >= 1 then
-			RemoteHandler:ResetRateLimit()
-		end
-
-		if Remote.LimitCount >= 20 then
-			return
-		end
-
-		Remote.LimitCount += 1
-
 		local func = (method and Remote[method]) or (Remote.CallServer or Remote.CallServerAsync or Remote.SendToServer)
 	    if func then
 			return func(Remote, ...)
 		end
 
 		return
-	end
-
-	function RemoteHandler:ResetRateLimit()
-		self.Remote.LastLimit = tick()
-		self.Remote.LimitCount = 0
 	end
 
 	bedwars = setmetatable({
