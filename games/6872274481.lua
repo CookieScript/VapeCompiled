@@ -7441,15 +7441,25 @@ run(function()
 end)
 
 run(function()
-	vape.Legit:CreateModule({
+	local CleanKit
+	local OldZephy
+	pcall(function()
+		OldZephy = bedwars.WindWalkerController.spawnOrb
+	end)
+
+	CleanKit = vape.Legit:CreateModule({
 		Name = 'Clean Kit',
 		Function = function(callback)
+			repeat task.wait() until store.matchState ~= 0 or (not CleanKit.Enabled)
 			if callback then
+				OldZephy = bedwars.WindWalkerController.spawnOrb
 				bedwars.WindWalkerController.spawnOrb = function() end
 				local zephyreffect = lplr.PlayerGui:FindFirstChild('WindWalkerEffect', true)
-				if zephyreffect then 
-					zephyreffect.Visible = false 
-				end
+				if zephyreffect then zephyreffect.Visible = false end
+			else
+				bedwars.WindWalkerController.spawnOrb = OldZephy
+				local zephyreffect = lplr.PlayerGui:FindFirstChild('WindWalkerEffect', true)
+				if zephyreffect then zephyreffect.Visible = true end
 			end
 		end,
 		Tooltip = 'Removes zephyr status indicator'
@@ -8411,7 +8421,7 @@ run(function()
 	Depth = Viewmodel:CreateSlider({
 		Name = 'Depth',
 		Min = 0,
-		Max = 2,
+		Max = 3,
 		Default = 0.8,
 		Decimal = 10,
 		Function = function(val)
@@ -8423,7 +8433,7 @@ run(function()
 	Horizontal = Viewmodel:CreateSlider({
 		Name = 'Horizontal',
 		Min = 0,
-		Max = 2,
+		Max = 3,
 		Default = 0.8,
 		Decimal = 10,
 		Function = function(val)
@@ -8435,7 +8445,7 @@ run(function()
 	Vertical = Viewmodel:CreateSlider({
 		Name = 'Vertical',
 		Min = -0.2,
-		Max = 2,
+		Max = 3,
 		Default = -0.2,
 		Decimal = 10,
 		Function = function(val)
