@@ -5551,6 +5551,8 @@ run(function()
 	local Bed
 	local LuckyBlock
 	local IronOre
+	local Hive
+	local Tesla
 	local Effect
 	local CustomHealth = {}
 	local Animation
@@ -5713,8 +5715,10 @@ run(function()
 				end
 	
 				local beds = collection('bed', Breaker)
+				local teslas = collection('tesla-trap', Breaker)
+				local hives = collection('beehive', Breaker)
 				local luckyblock = collection('LuckyBlock', Breaker)
-				local ironores = collection('iron-ore', Breaker)
+				local ironores = collection('iron_ore_mesh_block', Breaker)
 
 				customlist = collection('block', Breaker, function(tab, obj)
 					if table.find(Custom.ListEnabled, obj.Name) then
@@ -5730,6 +5734,8 @@ run(function()
 	
 						if attemptBreak(Bed.Enabled and beds, localPosition) then continue end
 						if attemptBreak(customlist, localPosition) then continue end
+						if attemptBreak(Hive.Enabled and hives, localPosition) then continue end
+						if attemptBreak(Tesla.Enabled and teslas, localPosition) then continue end
 						if attemptBreak(LuckyBlock.Enabled and luckyblock, localPosition) then continue end
 						if attemptBreak(IronOre.Enabled and ironores, localPosition) then continue end
 	
@@ -5795,6 +5801,14 @@ run(function()
 	IronOre = Breaker:CreateToggle({
 		Name = 'Break Iron Ore',
 		Default = true
+	})
+	Hive = Breaker:CreateToggle({
+		Name = 'Break Hives',
+		Default = false
+	})
+	Tesla = Breaker:CreateToggle({
+		Name = 'Break Tesla',
+		Default = false
 	})
 	Effect = Breaker:CreateToggle({
 		Name = 'Show Healthbar & Effects',
