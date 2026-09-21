@@ -670,6 +670,7 @@ run(function()
 	local Client = require(replicatedStorage.TS.remotes).default.Client
 	local OldGet, OldBreak = Client.Get
 
+	-- // I updated this lol
 	local RemoteHandler = {}
 	RemoteHandler.Remotes = {}
 	RemoteHandler.__index = RemoteHandler
@@ -687,6 +688,8 @@ run(function()
 		local success, remote = pcall(Client.Get, Client, Remote.ID)
 		Remote.Success = success
 		Remote.Remote = remote
+		Remote.Remote.LastLimit = tick()
+		Remote.Remote.LimitCount = 0
 
 		RemoteHandler.Remotes[remoteID] = Remote
 			
@@ -699,12 +702,27 @@ run(function()
 			return { andThen = function() end }
 		end
 
+		if tick() - Remote.LastLimit >= 1 then
+			RemoteHandler:ResetRateLimit()
+		end
+
+		if Remote.LimitCount >= 20 then
+			return
+		end
+
+		Remote.LimitCount += 1
+
 		local func = (method and Remote[method]) or (Remote.CallServer or Remote.CallServerAsync or Remote.SendToServer)
 	    if func then
 			return func(Remote, ...)
 		end
 
 		return
+	end
+
+	function RemoteHandler:ResetRateLimit()
+		self.Remote.LastLimit = tick()
+		self.Remote.LimitCount = 0
 	end
 
 	bedwars = setmetatable({
@@ -5712,8 +5730,8 @@ run(function()
 				end
 	
 				local beds = collection('bed', Breaker)
-				local luckyblock = collection('LuckyBlock', Breaker)
-				local ironores = collection('iron-ore', Breaker)
+				local luckyblock = collection('lucky', Breaker)
+				local ironores = collection('iron_ore', Breaker)
 				customlist = collection('block', Breaker, function(tab, obj)
 					if table.find(Custom.ListEnabled, obj.Name) then
 						table.insert(tab, obj)
@@ -7450,7 +7468,7 @@ run(function()
 	CleanKit = vape.Legit:CreateModule({
 		Name = 'Clean Kit',
 		Function = function(callback)
-			repeat task.wait() until store.matchState ~= 0 or (not CleanKit.Enabled)
+			repeat task.wait() until store.matchState ~= 0 and lplr.PlayerGui:FindFirstChild('WindWalkerEffect', true) or (not CleanKit.Enabled)
 			if callback then
 				OldZephy = bedwars.WindWalkerController.spawnOrb
 				bedwars.WindWalkerController.spawnOrb = function() end
