@@ -3985,7 +3985,7 @@ run(function()
 	
 	local function Added(v)
 		local chest = v:WaitForChild('ChestFolderValue', 10) -- // 10 seconds check because sometimes when you lag the game doesn't create the map properly.
-		chest = chest chest.Value
+		chest = chest and chest.Value
 		if not chest or not StorageESP.Enabled then return end
 		local billboard = Instance.new('BillboardGui')
 		billboard.Parent = Folder
