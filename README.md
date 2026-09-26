@@ -10,13 +10,13 @@
   <br/>
 </h2>
 
-# Usage
+## Usage
 - Copy and execute the provided loadstring below.
 ```
 loadstring(game:HttpGet("https://raw.githubusercontent.com/CookieScript/VapeCompiled/refs/heads/main/loader.lua", true))()
 ```
 
-# Server
+## Server
 [Vape V4 Reborn](https://discord.gg/mhsPvg8dPb)
 [Original Vape V4](https://discord.gg/VZEQJxMSn)
 This is open source made by dino (@tssodino).
