@@ -2757,7 +2757,7 @@ run(function()
 						local knockbackBoost = bedwars.KnockbackUtil.calculateKnockbackVelocity(Vector3.one, 1, {
 							vertical = 0,
 							horizontal = (damageTable.knockbackMultiplier and damageTable.knockbackMultiplier.horizontal or 1)
-						}).Magnitude * 1.1
+						}).Magnitude * 1.3
 	
 						if knockbackBoost >= JumpSpeed then
 							local pos = damageTable.fromPosition and Vector3.new(damageTable.fromPosition.X, damageTable.fromPosition.Y, damageTable.fromPosition.Z) or damageTable.fromEntity and damageTable.fromEntity.PrimaryPart.Position
@@ -2788,7 +2788,7 @@ run(function()
 							if entitylib.character.Humanoid.FloorMaterial == Enum.Material.Air and not start then
 								root.AssemblyLinearVelocity += Vector3.new(0, dt * (workspace.Gravity - 23), 0)
 							else
-								root.AssemblyLinearVelocity = Vector3.new(root.AssemblyLinearVelocity.X, 15, root.AssemblyLinearVelocity.Z)
+								root.AssemblyLinearVelocity = Vector3.new(root.AssemblyLinearVelocity.X, 10, root.AssemblyLinearVelocity.Z)
 							end
 							start = nil
 						else
@@ -3954,7 +3954,7 @@ run(function()
 	
 	local function refreshAdornee(v)
 		local chest = v.Adornee:FindFirstChild('ChestFolderValue')
-		chest = chest and chest.Value or nil
+		chest = chest and chest.Value
         if not chest then
 		    v.Enabled = false
 			return
@@ -3967,10 +3967,10 @@ run(function()
 			end
 		end
 
-		--[[v.Enabled = false
+		v.Enabled = false
 		local alreadygot = {}
 		for _, item in chestitems do
-			if not alreadygot[item.Name] and (table.find(List.ListEnabled, item.Name) or nearStorageItem(item.Name)) then
+			if not alreadygot[item.Name] and table.find(List.ListEnabled, item.Name) then -- // nearStorageItem(item.Name))
 				alreadygot[item.Name] = true
 				v.Enabled = true
 				local blockimage = Instance.new('ImageLabel')
@@ -3979,23 +3979,23 @@ run(function()
 				blockimage.Image = bedwars.getIcon({itemType = item.Name}, true)
 				blockimage.Parent = v.Frame
 			end
-		end]]
+		end
 
-		for _, item in chestitems do
+		--[[for _, item in chestitems do
 			local blockimage = Instance.new('ImageLabel')
 			blockimage.Size = UDim2.fromOffset(32, 32)
 			blockimage.BackgroundTransparency = 1
 			blockimage.Image = bedwars.getIcon({itemType = item.Name}, true)
 			blockimage.Parent = v.Frame
-		end
+		end]]
 
 		table.clear(chestitems)
 	end
 	
 	local function Added(v)
-		local chest = v:WaitForChild('ChestFolderValue', 3)
-		if not (chest and StorageESP.Enabled) then return end
-		chest = chest.Value
+		local chest = v:WaitForChild('ChestFolderValue', 5)
+		chest = chest and chest.Value
+		if not chest or not StorageESP.Enabled or Reference[v] then return end
 		local billboard = Instance.new('BillboardGui')
 		billboard.Parent = Folder
 		billboard.Name = 'chest'
