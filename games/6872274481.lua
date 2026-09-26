@@ -2756,7 +2756,7 @@ run(function()
 						local knockbackBoost = bedwars.KnockbackUtil.calculateKnockbackVelocity(Vector3.one, 1, {
 							vertical = 0,
 							horizontal = (damageTable.knockbackMultiplier and damageTable.knockbackMultiplier.horizontal or 1)
-						}).Magnitude * 1.3
+						}).Magnitude * 1.45
 	
 						if knockbackBoost >= JumpSpeed then
 							local pos = damageTable.fromPosition and Vector3.new(damageTable.fromPosition.X, damageTable.fromPosition.Y, damageTable.fromPosition.Z) or damageTable.fromEntity and damageTable.fromEntity.PrimaryPart.Position
@@ -2787,7 +2787,7 @@ run(function()
 							if entitylib.character.Humanoid.FloorMaterial == Enum.Material.Air and not start then
 								root.AssemblyLinearVelocity += Vector3.new(0, dt * (workspace.Gravity - 23), 0)
 							else
-								root.AssemblyLinearVelocity = Vector3.new(root.AssemblyLinearVelocity.X, 10, root.AssemblyLinearVelocity.Z)
+								root.AssemblyLinearVelocity = Vector3.new(root.AssemblyLinearVelocity.X, 15, root.AssemblyLinearVelocity.Z)
 							end
 							start = nil
 						else
@@ -2828,7 +2828,7 @@ run(function()
 	Value = LongJump:CreateSlider({
 		Name = 'Speed',
 		Min = 1,
-		Max = 60,
+		Max = 40,
 		Default = 37,
 		Suffix = function(val)
 			return val == 1 and 'stud' or 'studs'
