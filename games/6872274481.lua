@@ -4045,7 +4045,6 @@ run(function()
 	})
 	List = StorageESP:CreateTextList({
 		Name = 'Item',
-		Default = { 'wool', 'apple', 'pie', 'potion', 'mine', 'obsidian', 'land', 'trap', 'tnt', 'diamond', 'wood', 'iron', 'emerald', 'rage', 'sword', 'telepearl', 'snow', 'arrow', 'fire', 'bow', 'balloon' },
 		Function = function()
 			for _, v in Reference do
 				task.spawn(refreshAdornee, v)
