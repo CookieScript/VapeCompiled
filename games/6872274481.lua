@@ -819,7 +819,7 @@ run(function()
 		remotes[i] = remote
 	end
 
-	print(bedwars.BowConstantsTable)
+	print(bedwars.BowConstantsTable.RelX..bedwars.BowConstantsTable.RelY..bedwars.BowConstantsTable.RelZ)
 	OldBreak = bedwars.BlockController.isBlockBreakable
 
 	Client.Get = function(self, remoteName)
