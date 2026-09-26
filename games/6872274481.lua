@@ -708,6 +708,19 @@ run(function()
 		return
 	end
 
+	function GetBowConstants()
+		local enableBeam = Knit.Controllers.ProjectileController.enableBeam
+		if typeof(enableBeam) == "function" then
+			for _, v in enableBeam do
+				if typeof(v) == "table" and v.RelX and v.RelY and v.RelZ then
+					return v
+				end
+			end
+		end
+
+		return { RelX = 0, RelY = 0, RelZ = 0 }
+	end
+
 	bedwars = setmetatable({
 		AbilityController = Flamework.resolveDependency('@easy-games/game-core:client/controllers/ability/ability-controller@AbilityController'),
 		AbilityIndicatorUtil = require(replicatedStorage.TS.games.bedwars.items['ability-indicator']['ability-indicator-util']).AbilityIndicatorUtil,
@@ -720,7 +733,7 @@ run(function()
 		BlockController = require(replicatedStorage['rbxts_include']['node_modules']['@easy-games']['block-engine'].out).BlockEngine,
 		BlockEngine = require(lplr.PlayerScripts.TS.lib['block-engine']['client-block-engine']).ClientBlockEngine,
 		BlockPlacer = require(replicatedStorage['rbxts_include']['node_modules']['@easy-games']['block-engine'].out.client.placement['block-placer']).BlockPlacer,
-		BowConstantsTable = { RelX = 1, RelY = 1.5, RelZ = 1.5 }, -- // This no longer works sadly debug.getupvalue(Knit.Controllers.ProjectileController.enableBeam, 8),
+		BowConstantsTable = GetBowConstants(), -- // This no longer works sadly debug.getupvalue(Knit.Controllers.ProjectileController.enableBeam, 8),
 		ClickHold = require(replicatedStorage['rbxts_include']['node_modules']['@easy-games']['game-core'].out.client.ui.lib.util['click-hold']).ClickHold,
 		Client = Client,
 		ClientConstructor = require(replicatedStorage['rbxts_include']['node_modules']['@rbxts'].net.out.client),
@@ -806,6 +819,7 @@ run(function()
 		remotes[i] = remote
 	end
 
+	print(bedwars.BowConstantsTable)
 	OldBreak = bedwars.BlockController.isBlockBreakable
 
 	Client.Get = function(self, remoteName)
