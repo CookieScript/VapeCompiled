@@ -4660,7 +4660,11 @@ run(function()
 	
 		custommsg = custommsg and custommsg:gsub('<obj>', obj or '') or ''
 		if textChatService.ChatVersion == Enum.ChatVersion.TextChatService then
-			textChatService.ChatInputBarConfiguration.TargetTextChannel:SendAsync(custommsg)
+			if textChatService:CanUserChatAsync(LocalPlayer.UserId) then
+			    textChatService.ChatInputBarConfiguration.TargetTextChannel:SendAsync(custommsg)
+			else
+				textChatService.ChatInputBarConfiguration.TargetTextChannel:SendPresetAsync('So close')
+			end
 		else
 			replicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer(custommsg, 'All')
 		end
