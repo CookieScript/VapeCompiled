@@ -711,7 +711,7 @@ run(function()
 	function GetBowConstants()
 		local enableBeam = Knit.Controllers.ProjectileController.enableBeam
 		if typeof(enableBeam) == "function" then
-			for _, v in enableBeam do
+			for _, v in debug.getupvalues(enableBeam) do
 				if typeof(v) == "table" and v.RelX and v.RelY and v.RelZ then
 					return v
 				end
