@@ -3946,31 +3946,31 @@ run(function()
 	local Folder = Instance.new('Folder')
 	Folder.Parent = vape.gui
 	
-	--[[local function nearStorageItem(item)
+	local function nearStorageItem(item)
 		for _, v in List.ListEnabled do
-			if item:find(v) then return v end
+			if item:find(v, 1, true) then return v end
 		end
-	end]]
+	end
 	
 	local function refreshAdornee(v)
 		local chest = v.Adornee:FindFirstChild('ChestFolderValue')
-		chest = chest and chest.Value
-        if not chest then
-		    v.Enabled = false
+		chest = chest and chest.Value -- // you don't really need or nil.
+		if not chest then
+			v.Enabled = false
 			return
 		end
-
+	
 		local chestitems = chest and chest:GetChildren() or {}
 		for _, obj in v.Frame:GetChildren() do
 			if obj:IsA('ImageLabel') and obj.Name ~= 'Blur' then
 				obj:Destroy()
 			end
 		end
-
+	
 		v.Enabled = false
 		local alreadygot = {}
 		for _, item in chestitems do
-			if not alreadygot[item.Name] and table.find(List.ListEnabled, item.Name) then -- // nearStorageItem(item.Name))
+			if not alreadygot[item.Name] and (table.find(List.ListEnabled, item.Name) or nearStorageItem(item.Name)) then
 				alreadygot[item.Name] = true
 				v.Enabled = true
 				local blockimage = Instance.new('ImageLabel')
@@ -3980,22 +3980,13 @@ run(function()
 				blockimage.Parent = v.Frame
 			end
 		end
-
-		--[[for _, item in chestitems do
-			local blockimage = Instance.new('ImageLabel')
-			blockimage.Size = UDim2.fromOffset(32, 32)
-			blockimage.BackgroundTransparency = 1
-			blockimage.Image = bedwars.getIcon({itemType = item.Name}, true)
-			blockimage.Parent = v.Frame
-		end]]
-
 		table.clear(chestitems)
 	end
 	
 	local function Added(v)
-		local chest = v:WaitForChild('ChestFolderValue', 5)
-		chest = chest and chest.Value
-		if not chest or not StorageESP.Enabled or Reference[v] then return end
+		local chest = v:WaitForChild('ChestFolderValue', 10) -- // 10 seconds check because sometimes when you lag the game doesn't create the map properly.
+		chest = chest chest.Value
+		if not chest or not StorageESP.Enabled then return end
 		local billboard = Instance.new('BillboardGui')
 		billboard.Parent = Folder
 		billboard.Name = 'chest'
@@ -4024,21 +4015,15 @@ run(function()
 		corner.CornerRadius = UDim.new(0, 4)
 		corner.Parent = frame
 		Reference[v] = billboard
-		--[[StorageESP:Clean(chest.ChildAdded:Connect(function(item)
-			if table.find(List.ListEnabled, item.Name) or nearStorageItem(item.Name) then
-				refreshAdornee(billboard)
-			end
-		end))
-		StorageESP:Clean(chest.ChildRemoved:Connect(function(item)
-			if table.find(List.ListEnabled, item.Name) or nearStorageItem(item.Name) then
-				refreshAdornee(billboard)
-			end
-		end))]]
 		StorageESP:Clean(chest.ChildAdded:Connect(function(item)
-			refreshAdornee(billboard)
+			if table.find(List.ListEnabled, item.Name) or nearStorageItem(item.Name) then
+				refreshAdornee(billboard)
+			end
 		end))
 		StorageESP:Clean(chest.ChildRemoved:Connect(function(item)
-			refreshAdornee(billboard)
+			if table.find(List.ListEnabled, item.Name) or nearStorageItem(item.Name) then
+				refreshAdornee(billboard)
+			end
 		end))
 		task.spawn(refreshAdornee, billboard)
 	end
@@ -4060,6 +4045,7 @@ run(function()
 	})
 	List = StorageESP:CreateTextList({
 		Name = 'Item',
+		Default = { 'wool', 'apple', 'pie', 'potion', 'mine', 'obsidian', 'land', 'trap', 'tnt', 'diamond', 'wood', 'iron', 'emerald', 'rage', 'sword', 'telepearl', 'snow', 'arrow', 'fire', 'bow', 'balloon' },
 		Function = function()
 			for _, v in Reference do
 				task.spawn(refreshAdornee, v)
