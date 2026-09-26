@@ -718,7 +718,7 @@ run(function()
 			end
 		end
 
-		return { RelX = 0, RelY = 0, RelZ = 0 }
+		return { RelX = 0.8, RelY = -0.6, RelZ = 0 }
 	end
 
 	bedwars = setmetatable({
@@ -819,7 +819,6 @@ run(function()
 		remotes[i] = remote
 	end
 
-	print(bedwars.BowConstantsTable.RelX..bedwars.BowConstantsTable.RelY..bedwars.BowConstantsTable.RelZ)
 	OldBreak = bedwars.BlockController.isBlockBreakable
 
 	Client.Get = function(self, remoteName)
