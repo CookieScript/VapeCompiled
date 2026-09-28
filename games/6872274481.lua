@@ -2124,6 +2124,7 @@ end)
 run(function()
 	-- // Raycast check is removed because its not necessary.
 	local InfiniteFlyPart
+	local VerticalValue
 	local up, down, FlyPos = 0, 0, 0
 	local rayCheck = RaycastParams.new()
     rayCheck.FilterType = Enum.RaycastFilterType.Exclude
@@ -2133,13 +2134,25 @@ run(function()
 		workspace.CurrentCamera.CameraSubject = obj
 	end
 
+	local function getLowGround()
+		local mag = math.huge
+		for _, pos in bedwars.BlockController:getStore():getAllBlockPositions() do
+			pos = pos * 3
+			if pos.Y < mag and not getPlacedBlock(pos + Vector3.new(0, 3, 0)) then
+				mag = pos.Y
+			end
+		end
+		return mag
+	end
+
 	InfiniteFly = vape.Categories.Blatant:CreateModule({
 		Name = 'InfiniteFly',
 		Function = function(callback)
 			updateVelocity()
 			if callback then
-				up, down = 0, 0
-				FlyPos = lplr.Character.Head.Position.Y
+				up, down, FlyPos = 0, 0, lplr.Character.Head.Position.Y
+
+                local LowPos = getLowGround() - 2
 
 				InfiniteFlyPart = Instance.new("Part")
 				InfiniteFlyPart.Size = Vector3.new(0, 0, 0)
@@ -2155,11 +2168,11 @@ run(function()
 						local velo = getSpeed()
 						local velocity = root.AssemblyLinearVelocity
 
-						if root.CFrame.Position.Y <= 2000 then
-							root.CFrame += Vector3.new(0, 10000, 0)
+						if root.CFrame.Position.Y <= 10 then
+							root.CFrame += Vector3.new(0, 300, 0)
 						end
 
-						FlyPos += (up + down) * velo * dt
+						FlyPos += ((up + down) * VerticalValue.Value) * velo * dt
 						InfiniteFlyPart.Position = Vector3.new(root.Position.X, FlyPos, root.Position.Z)
 						root.AssemblyLinearVelocity = Vector3.new(moveDirection.X * velo, velocity.Y, moveDirection.Z * velo)
 					end
@@ -2205,6 +2218,15 @@ run(function()
 			end
 		end,
 		Tooltip = 'Lets you fly forever.'
+	})
+	VerticalValue = InfiniteFly:CreateSlider({
+		Name = 'Vertical Speed',
+		Min = 1,
+		Max = 150,
+		Default = 50,
+		Suffix = function(val)
+			return val == 1 and 'stud' or 'studs'
+		end
 	})
 end)
 
