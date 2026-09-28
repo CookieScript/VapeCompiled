@@ -2172,8 +2172,8 @@ run(function()
 						local velo = getSpeed()
 						local velocity = root.AssemblyLinearVelocity
 
-						if root.CFrame.Position.Y <= (HigherTp.Enabled and (LowPos + 50) or LowPos) then
-							root.CFrame += Vector3.new(0, 200, 0)
+						if root.CFrame.Position.Y <= (HigherTp.Enabled and (FlyPos + 50) or LowPos) then
+							root.CFrame += Vector3.new(0, (HigherTp.Enabled and 50 or 200), 0)
 						end
 
 						FlyPos += ((up + down) * VerticalValue.Value)
@@ -2966,8 +2966,8 @@ run(function()
 					if entitylib.isAlive and store.matchState == 1 and not (vape.Modules.InfiniteFly and vape.Modules.InfiniteFly.Enabled) then
 						local root = entitylib.character.RootPart
 				        local Velo = root.Velocity
-						if Velo.Y < -25 then
-							root.Velocity = Vector3.new(0, 5, 0)
+						if Velo.Y < -45 then
+							root.Velocity = Vector3.new(0, 50, 0)
 							entitylib.character.Humanoid:ChangeState(Enum.HumanoidStateType.Landed)
 							runService.RenderStepped:Wait()
 							root.Velocity = Velo
