@@ -2211,7 +2211,7 @@ run(function()
 
 				local root = entitylib.character.RootPart
 				root.CFrame = CFrame.new(root.Position.X, LowPos + 200, root.Position.Z)
-				root.Velocity = Vector3.new(0, -200, 0)
+				root.Velocity = Vector3.new(0, -400, 0)
 				entitylib.character.Humanoid:ChangeState(Enum.HumanoidStateType.Landed)
 				notif('InfiniteFly', 'Landed!', 5.5, 'Alert')
 			end
@@ -5730,9 +5730,11 @@ run(function()
 				table.insert(blocks, {item.itemType, block.health})
 			end
 		end
-		table.sort(blocks, function(a, b) 
-			return a[2] > b[2]
-		end)
+		if #blocks > 1 then
+			table.sort(blocks, function(a, b) 
+				return a[2] > b[2]
+			end)
+		end
 		return blocks
 	end
 	
@@ -5754,12 +5756,13 @@ run(function()
 		Function = function(callback)
 			if callback then
 				local bed = getBedNear()
-				bed = bed and bed.Position or nil
+				bed = bed and bed.Position -- // "or nil" isnt needed at all.
 				if bed then
 					for i, block in getBlocks() do
 						for _, pos in getPyramid(i, 3) do
 							if not BedProtector.Enabled then break end
 							if getPlacedBlock(bed + pos) then continue end
+							task.wait()
 							bedwars.placeBlock(bed + pos, block[1], false)
 						end
 					end
