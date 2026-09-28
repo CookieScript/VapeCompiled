@@ -2613,7 +2613,6 @@ end)
 run(function()
 	local Value
 	local CameraDir
-	local ProJump
 	local start
 	local JumpTick, JumpSpeed, Direction = tick(), 0
 	local projectileRemote = {InvokeServer = function() end}
@@ -2777,12 +2776,12 @@ run(function()
 						Direction = Vector3.new(vec.X, 0, vec.Z).Unit
 					end
 				end))
-
+	
 				start = entitylib.isAlive and entitylib.character.RootPart.Position or nil
 				LongJump:Clean(runService.PreSimulation:Connect(function(dt)
 					local root = entitylib.isAlive and entitylib.character.RootPart or nil
 	
-					if not ProJump.Enabled and root and isnetworkowner(root) then
+					if root and isnetworkowner(root) then
 						if JumpTick > tick() then
 							root.AssemblyLinearVelocity = Direction * (getSpeed() + ((JumpTick - tick()) > 1.1 and JumpSpeed or 0)) + Vector3.new(0, root.AssemblyLinearVelocity.Y, 0)
 							if entitylib.character.Humanoid.FloorMaterial == Enum.Material.Air and not start then
@@ -2802,39 +2801,18 @@ run(function()
 						start = nil
 					end
 				end))
-
-				if not ProJump.Enabled then
-					if store.hand and LongJumpMethods[store.hand.tool.Name] then
-						task.spawn(LongJumpMethods[store.hand.tool.Name], getItem(store.hand.tool.Name), start, (CameraDir.Enabled and gameCamera or entitylib.character.RootPart).CFrame.LookVector)
-						return
-					end
-
-					for i, v in LongJumpMethods do
-						local item = getItem(i)
-						if item or store.equippedKit == i then
-							task.spawn(v, item, start, (CameraDir.Enabled and gameCamera or entitylib.character.RootPart).CFrame.LookVector)
-							break
-						end
-					end
+	
+				if store.hand and LongJumpMethods[store.hand.tool.Name] then
+					task.spawn(LongJumpMethods[store.hand.tool.Name], getItem(store.hand.tool.Name), start, (CameraDir.Enabled and gameCamera or entitylib.character.RootPart).CFrame.LookVector)
+					return
 				end
-
-				if ProJump.Enabled then
-					local SpeedTick = tick() + 0.14
-					local Direction = CameraDir.Enabled and gameCamera.CFrame.LookVector or RootPart.CFrame.LookVector
-					LongJump:Clean(runService.PreSimulation:Connect(function(dt)
-						if entitylib.isAlive then
-							local RootPart = entitylib.character.RootPart
-							local speed = getSpeed() + (tick() < SpeedTick and 30 or 0)
-							if RootPart and isnetworkowner(RootPart) then
-							    RootPart.AssemblyLinearVelocity = Vector3.new(Direction.X, 0, Direction.Z).Unit * speed + Vector3.new(0, RootPart.AssemblyLinearVelocity, 0)
-							    if entitylib.character.Humanoid.FloorMaterial == Enum.Material.Air then
-						    		RootPart.AssemblyLinearVelocity += Vector3.new(0, dt * workspace.Gravity, 0)
-					    		else
-				    			    RootPart.AssemblyLinearVelocity = Vector3.new(RootPart.AssemblyLinearVelocity.X, 240, RootPart.AssemblyLinearVelocity.Z)
-			    				end
-		    				end
-						end
-					end))
+	
+				for i, v in LongJumpMethods do
+					local item = getItem(i)
+					if item or store.equippedKit == i then
+						task.spawn(v, item, start, (CameraDir.Enabled and gameCamera or entitylib.character.RootPart).CFrame.LookVector)
+						break
+					end
 				end
 			else
 				JumpTick = tick()
@@ -2858,10 +2836,6 @@ run(function()
 	})
 	CameraDir = LongJump:CreateToggle({
 		Name = 'Camera Direction'
-	})
-	ProJump = LongJump:CreateToggle({
-		Name = 'Pro Jump',
-		Tooltip = 'Lets you jump without anything'
 	})
 end)
 
