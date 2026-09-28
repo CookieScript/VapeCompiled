@@ -2209,6 +2209,7 @@ run(function()
 				setCamera(lplr.Character.Humanoid)
 				InfiniteFlyPart:Destroy()
 
+				local root = entitylib.character.RootPart
 				root.CFrame = CFrame.new(root.Position.X, LowPos + 200, root.Position.Z)
 				root.Velocity = Vector3.new(0, 5, 0)
 				entitylib.character.Humanoid:ChangeState(Enum.HumanoidStateType.Landed)
