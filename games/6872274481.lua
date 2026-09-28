@@ -2859,7 +2859,7 @@ run(function()
 		Name = 'Camera Direction'
 	})
 	ProJump = LongJump:CreateToggle({
-		Name = 'Pro Jump'
+		Name = 'Pro Jump',
 		Tooltip = 'Lets you jump without anything'
 	})
 end)
