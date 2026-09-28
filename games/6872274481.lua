@@ -1666,7 +1666,7 @@ run(function()
 									local lastTeleport = lplr:GetAttribute('LastTeleported')
 									local connection
 									connection = runService.PreSimulation:Connect(function()
-										if vape.Modules.Fly.Enabled or vape.Modules.LongJump.Enabled then
+										if vape.Modules.Fly.Enabled or (vape.Modules.InfiniteFly and vape.Modules.InfiniteFly.Enabled) or vape.Modules.LongJump.Enabled then
 											connection:Disconnect()
 											AntiFallDirection = nil
 											return
@@ -1808,6 +1808,7 @@ end)
 
 local Fly
 local LongJump
+local InfiniteFly
 run(function()
 	local Value
 	local VerticalValue
@@ -2117,6 +2118,85 @@ run(function()
 		Suffix = function(val)
 			return val == 1 and 'stud' or 'studs'
 		end
+	})
+end)
+
+run(function()
+	local InfiniteFlyPart
+	local up, down = 0, 0
+	local Params = RaycastParams.new()
+	Params.FilterType = Enum.RaycastFilterType.Exclude
+	Params.FilterDescendantsInstances = {lplr.Character, gameCamera, AntiFallPart}
+	
+	local function setCamera(obj)
+		workspace.CurrentCamera.CameraSubject = obj
+	end
+
+	InfiniteFly = vape.Categories.Blatant:CreateModule({
+		Name = 'InfiniteFly',
+		Function = function(callback)
+			local Raycast = workspace:Raycast(lplr.Character.HumanoidRootPart.Position, Vector3.new(0, -1000, 0), Params)
+
+			if Raycast then
+				notif('InfiniteFly', 'Cannot fly in this state.', 5, 'warning')
+				return
+			end
+
+			updateVelocity()
+			if callback then
+				up, down = 0, 0
+				local FlyPos = lplr.Character.Head.Position.Y
+
+				InfiniteFlyPart = Instance.new("Part")
+				InfiniteFlyPart.Size = Vector3.new(0, 0, 0)
+				InfiniteFlyPart.Transparency = 1
+				InfiniteFlyPart.Position = lplr.Character.Head.Position
+				InfiniteFlyPart.Parent = workspace
+
+				setCamera(InfiniteFlyPart)
+
+				InfiniteFly:Clean(runService.Heartbeat:Connect(function(dt)
+					if entitylib.isAlive and lplr.Character and lplr.Character:FindFirstChild('HumanoidRootPart') and isnetworkowner(entitylib.character.RootPart) then
+						local root, moveDirection = entitylib.character.RootPart, entitylib.character.Humanoid.MoveDirection
+						local velo = getSpeed()
+						local velocity = root.AssemblyLinearVelocity
+
+						FlyPos += (up + down) * velo * dt
+						InfiniteFlyPart.Position = Vector3.new(root.Position.X, FlyPos, root.Position.Z)
+						root.AssemblyLinearVelocity = Vector3.new(moveDirection.X * velo, velocity.Y, moveDirection.Z * velo)
+					end
+				end))
+
+				InfiniteFly:Clean(inputService.InputBegan:Connect(function(input)
+					if not inputService:GetFocusedTextBox() then
+						if input.KeyCode == Enum.KeyCode.Space or input.KeyCode == Enum.KeyCode.ButtonA then
+							up = 1
+						elseif input.KeyCode == Enum.KeyCode.LeftShift or input.KeyCode == Enum.KeyCode.ButtonL2 then
+							down = -1
+						end
+					end
+				end))
+				InfiniteFly:Clean(inputService.InputEnded:Connect(function(input)
+					if input.KeyCode == Enum.KeyCode.Space or input.KeyCode == Enum.KeyCode.ButtonA then
+						up = 0
+					elseif input.KeyCode == Enum.KeyCode.LeftShift or input.KeyCode == Enum.KeyCode.ButtonL2 then
+						down = 0
+					end
+				end))
+				if inputService.TouchEnabled then
+					pcall(function()
+						local jumpButton = lplr.PlayerGui.TouchGui.TouchControlFrame.JumpButton
+						InfiniteFly:Clean(jumpButton:GetPropertyChangedSignal('ImageRectOffset'):Connect(function()
+							up = jumpButton.ImageRectOffset.X == 146 and 1 or 0
+						end))
+					end)
+				end
+			else
+				setCamera(lplr.Character.Humanoid)
+				InfiniteFlyPart:Destroy()
+			end
+		end,
+		Tooltip = 'Lets you fly forever.'
 	})
 end)
 
