@@ -2757,7 +2757,7 @@ run(function()
 						local knockbackBoost = bedwars.KnockbackUtil.calculateKnockbackVelocity(Vector3.one, 1, {
 							vertical = 0,
 							horizontal = (damageTable.knockbackMultiplier and damageTable.knockbackMultiplier.horizontal or 1)
-						}).Magnitude * 1.45
+						}).Magnitude * 1.4
 	
 						if knockbackBoost >= JumpSpeed then
 							local pos = damageTable.fromPosition and Vector3.new(damageTable.fromPosition.X, damageTable.fromPosition.Y, damageTable.fromPosition.Z) or damageTable.fromEntity and damageTable.fromEntity.PrimaryPart.Position
@@ -2782,7 +2782,7 @@ run(function()
 				LongJump:Clean(runService.PreSimulation:Connect(function(dt)
 					local root = entitylib.isAlive and entitylib.character.RootPart or nil
 	
-					if root and isnetworkowner(root) then
+					if not ProJump.Enabled and root and isnetworkowner(root) then
 						if JumpTick > tick() then
 							root.AssemblyLinearVelocity = Direction * (getSpeed() + ((JumpTick - tick()) > 1.1 and JumpSpeed or 0)) + Vector3.new(0, root.AssemblyLinearVelocity.Y, 0)
 							if entitylib.character.Humanoid.FloorMaterial == Enum.Material.Air and not start then
