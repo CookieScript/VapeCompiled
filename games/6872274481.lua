@@ -2127,7 +2127,6 @@ run(function()
 	local rayCheck = RaycastParams.new()
 	rayCheck.RespectCanCollide = true
 	rayCheck.FilterDescendantsInstances = {lplr.Character, gameCamera, AntiFallPart}
-	rayCheck.CollisionGroup = root.CollisionGroup
 
 	local function setCamera(obj)
 		workspace.CurrentCamera.CameraSubject = obj
