@@ -2960,7 +2960,7 @@ run(function()
 		Function = function(callback)
 			if callback then
 				NoFall:Clean(runService.Heartbeat:Connect(function(dt)
-					if entitylib.isAlive and store.matchState == 1 then
+					if entitylib.isAlive and store.matchState == 1 and not (vape.Modules.InfiniteFly and vape.Modules.InfiniteFly.Enabled) then
 						local root = entitylib.character.RootPart
 				        local Velo = root.Velocity
 						if Velo.Y < -25 then
