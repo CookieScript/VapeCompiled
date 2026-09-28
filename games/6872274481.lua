@@ -2826,12 +2826,14 @@ run(function()
 							local RootPart = entitylib.character.RootPart
 							local Direction = CameraDir.Enabled and gameCamera.CFrame.LookVector or RootPart.CFrame.LookVector
 							local speed = getSpeed()
-							RootPart.AssemblyLinearVelocity = Vector3.new(Direction.X, 0, Direction.Z).Unit * speed
-							if entitylib.character.Humanoid.FloorMaterial == Enum.Material.Air then
-								RootPart.AssemblyLinearVelocity += Vector3.new(0, dt * (workspace.Gravity * 2 - 23), 0)
-							else
-							    RootPart.AssemblyLinearVelocity = Vector3.new(RootPart.AssemblyLinearVelocity.X, 50, RootPart.AssemblyLinearVelocity.Z)
-							end
+							if RootPart and isnetworkowner(RootPart) then
+							    RootPart.AssemblyLinearVelocity = Vector3.new(Direction.X, 0, Direction.Z).Unit * speed
+							    if entitylib.character.Humanoid.FloorMaterial == Enum.Material.Air then
+						    		RootPart.AssemblyLinearVelocity += Vector3.new(0, dt * (workspace.Gravity * 2 - 23), 0)
+					    		else
+				    			    RootPart.AssemblyLinearVelocity = Vector3.new(RootPart.AssemblyLinearVelocity.X, 50, RootPart.AssemblyLinearVelocity.Z)
+			    				end
+		    				end
 						end
 					end))
 				end
