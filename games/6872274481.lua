@@ -2174,7 +2174,7 @@ run(function()
 							root.CFrame += Vector3.new(0, 200, 0)
 						end
 
-						FlyPos += ((up + down) * VerticalValue.Value) * velo * dt
+						FlyPos += ((up + down) * VerticalValue.Value)
 						InfiniteFlyPart.Position = Vector3.new(root.Position.X, FlyPos, root.Position.Z)
 						root.AssemblyLinearVelocity = Vector3.new(moveDirection.X * velo, velocity.Y, moveDirection.Z * velo)
 					end
