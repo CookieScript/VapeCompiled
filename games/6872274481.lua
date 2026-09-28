@@ -2131,6 +2131,7 @@ run(function()
 
 	local InfiniteFlyPart
 	local VerticalValue
+	local High
 	local up, down, FlyPos, LowPos = 0, 0, 0, 0
 
 	local function setCamera(obj)
@@ -2171,8 +2172,8 @@ run(function()
 						local velo = getSpeed()
 						local velocity = root.AssemblyLinearVelocity
 
-						if root.CFrame.Position.Y <= LowPos then
-							root.CFrame += Vector3.new(0, 200, 0)
+						if root.CFrame.Position.Y <= (High.Enabled and 2000 or LowPos) then
+							root.CFrame += Vector3.new(0, (High.Enabled and 1000000 or 200), 0)
 						end
 
 						FlyPos += ((up + down) * VerticalValue.Value)
@@ -2226,6 +2227,11 @@ run(function()
 		Suffix = function(val)
 			return val == 1 and 'stud' or 'studs'
 		end
+	})
+	High = InfiniteFly:CreateToggle({
+		Name = 'High',
+		Default = false,
+		Tooltip = 'Sets you higher into the sky.'
 	})
 end)
 
