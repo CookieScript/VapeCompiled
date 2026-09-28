@@ -2124,10 +2124,11 @@ end)
 run(function()
 	local InfiniteFlyPart
 	local up, down = 0, 0
-	local Params = RaycastParams.new()
-	Params.FilterType = Enum.RaycastFilterType.Exclude
-	Params.FilterDescendantsInstances = {lplr.Character, gameCamera, AntiFallPart}
-	
+	local rayCheck = RaycastParams.new()
+	rayCheck.RespectCanCollide = true
+	rayCheck.FilterDescendantsInstances = {lplr.Character, gameCamera, AntiFallPart}
+	rayCheck.CollisionGroup = root.CollisionGroup
+
 	local function setCamera(obj)
 		workspace.CurrentCamera.CameraSubject = obj
 	end
@@ -2135,9 +2136,9 @@ run(function()
 	InfiniteFly = vape.Categories.Blatant:CreateModule({
 		Name = 'InfiniteFly',
 		Function = function(callback)
-			local Raycast = workspace:Raycast(lplr.Character.HumanoidRootPart.Position, Vector3.new(0, -1000, 0), Params)
+			local Raycast = workspace:Raycast(lplr.Character.HumanoidRootPart.Position, Vector3.new(0, -1000, 0), rayCheck)
 
-			if Raycast then
+			if Raycast and Raycast.Instance then
 				notif('InfiniteFly', 'Cannot fly in this state.', 5, 'warning')
 				return
 			end
