@@ -2820,7 +2820,7 @@ run(function()
 					end
 				end
 
-				if not MethodJumpUsed and ProJump.Enabled then
+				if ProJump.Enabled and not MethodJumpUsed then
 					LongJump:Clean(runService.PreSimulation:Connect(function(dt)
 						if entitylib.isAlive then
 							local RootPart = entitylib.character.RootPart
