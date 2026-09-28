@@ -2155,8 +2155,8 @@ run(function()
 						local velo = getSpeed()
 						local velocity = root.AssemblyLinearVelocity
 
-						if root.CFrame.Position.Y <= -10 then
-							root.CFrame += Vector3.new(0, 100, 0)
+						if root.CFrame.Position.Y <= 2000 then
+							root.CFrame += Vector3.new(0, 10000, 0)
 						end
 
 						FlyPos += (up + down) * velo * dt
