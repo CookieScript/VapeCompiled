@@ -2131,6 +2131,7 @@ run(function()
 
 	local InfiniteFlyPart
 	local VerticalValue
+	local HigherTp
 	local up, down, FlyPos, LowPos = 0, 0, 0, 0
 
 	local function setCamera(obj)
@@ -2153,7 +2154,7 @@ run(function()
 		Function = function(callback)
 			updateVelocity()
 			if callback then
-				up, down, FlyPos, LowPos = 0, 0, lplr.Character.Head.Position.Y, getLowGround() - 2
+				up, down, FlyPos, LowPos = 0, 0, lplr.Character.Head.Position.Y, getLowGround()
 
 				InfiniteFlyPart = Instance.new("Part")
 				InfiniteFlyPart.Size = Vector3.new(0, 0, 0)
@@ -2171,7 +2172,7 @@ run(function()
 						local velo = getSpeed()
 						local velocity = root.AssemblyLinearVelocity
 
-						if root.CFrame.Position.Y <= 10 then
+						if root.CFrame.Position.Y <= (HigherTp.Enabled and (LowPos + 50) or LowPos) then
 							root.CFrame += Vector3.new(0, 200, 0)
 						end
 
@@ -2226,6 +2227,11 @@ run(function()
 		Suffix = function(val)
 			return val == 1 and 'stud' or 'studs'
 		end
+	})
+	HigherTp = InfiniteFly:CreateToggle({
+		Name = 'Higher Tp',
+		Default = false,
+		Tooltip = 'Less fall damage.'
 	})
 end)
 
