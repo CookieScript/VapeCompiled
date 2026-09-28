@@ -7316,7 +7316,7 @@ run(function()
 		Function = function(callback)
             if callback then
 			    InfiniteJump:Clean(inputService.JumpRequest:Connect(function()
-                    if entitylib.isAlive then
+                    if entitylib.isAlive and not (vape.Modules.InfiniteFly and vape.Modules.InfiniteFly.Enabled) then
 					    entitylib.character.Humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
 					end
 				end))
