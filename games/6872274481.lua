@@ -2158,6 +2158,8 @@ run(function()
 				InfiniteFlyPart.Size = Vector3.new(0, 0, 0)
 				InfiniteFlyPart.Transparency = 1
 				InfiniteFlyPart.Position = lplr.Character.Head.Position
+				InfiniteFlyPart.CanCollide = false
+				InfiniteFlyPart.Anchored = true
 				InfiniteFlyPart.Parent = workspace
 
 				setCamera(InfiniteFlyPart)
@@ -2169,7 +2171,7 @@ run(function()
 						local velocity = root.AssemblyLinearVelocity
 
 						if root.CFrame.Position.Y <= 10 then
-							root.CFrame += Vector3.new(0, 300, 0)
+							root.CFrame += Vector3.new(0, 200, 0)
 						end
 
 						FlyPos += ((up + down) * VerticalValue.Value) * velo * dt
