@@ -2139,7 +2139,6 @@ run(function()
 
 			if Raycast and Raycast.Instance then
 				notif('InfiniteFly', 'Cannot fly in this state.', 5, 'warning')
-				InfiniteFly:Toggle()
 				return
 			end
 
