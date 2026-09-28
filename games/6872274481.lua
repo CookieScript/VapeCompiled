@@ -2124,7 +2124,11 @@ end)
 run(function()
 	-- // Raycast check is removed because its not necessary.
 	local InfiniteFlyPart
-	local up, down = 0, 0
+	local up, down, FlyPos = 0, 0, 0
+	local rayCheck = RaycastParams.new()
+    rayCheck.FilterType = Enum.RaycastFilterType.Exclude
+    rayCheck.FilterDescendantsInstances = {lplr.Character, gameCamera, AntiFallPart}
+
 	local function setCamera(obj)
 		workspace.CurrentCamera.CameraSubject = obj
 	end
@@ -2135,7 +2139,7 @@ run(function()
 			updateVelocity()
 			if callback then
 				up, down = 0, 0
-				local FlyPos = lplr.Character.Head.Position.Y
+				FlyPos = lplr.Character.Head.Position.Y
 
 				InfiniteFlyPart = Instance.new("Part")
 				InfiniteFlyPart.Size = Vector3.new(0, 0, 0)
@@ -2150,6 +2154,10 @@ run(function()
 						local root, moveDirection = entitylib.character.RootPart, entitylib.character.Humanoid.MoveDirection
 						local velo = getSpeed()
 						local velocity = root.AssemblyLinearVelocity
+
+						if root.CFrame.Position.Y <= -10 then
+							root.CFrame += Vector3.new(0, 100, 0)
+						end
 
 						FlyPos += (up + down) * velo * dt
 						InfiniteFlyPart.Position = Vector3.new(root.Position.X, FlyPos, root.Position.Z)
@@ -2184,6 +2192,16 @@ run(function()
 			else
 				setCamera(lplr.Character.Humanoid)
 				InfiniteFlyPart:Destroy()
+
+				local root = entitylib.character.RootPart
+				local raycast = root and workspace:Raycast(root.Position, Vector3.new(0, -1000, 0), rayCheck)
+
+				if raycast then
+					root.CFrame = CFrame.new(root.Position.X, raycast.Position.Y + entitylib.character.HipHeight, root.Position.Z)
+					root.AssemblyLinearVelocity = Vector3.new(0, 5, 0)
+					entitylib.character.Humanoid:ChangeState(Enum.HumanoidStateType.Landed)
+					notif('InfiniteFly', 'Landed!', 5.5, 'Alert')
+				end
 			end
 		end,
 		Tooltip = 'Lets you fly forever.'
