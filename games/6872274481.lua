@@ -2778,7 +2778,6 @@ run(function()
 					end
 				end))
 
-				local MethodJumpUsed = false
 				start = entitylib.isAlive and entitylib.character.RootPart.Position or nil
 				LongJump:Clean(runService.PreSimulation:Connect(function(dt)
 					local root = entitylib.isAlive and entitylib.character.RootPart or nil
@@ -2803,24 +2802,23 @@ run(function()
 						start = nil
 					end
 				end))
-	
-				if store.hand and LongJumpMethods[store.hand.tool.Name] then
-					task.spawn(LongJumpMethods[store.hand.tool.Name], getItem(store.hand.tool.Name), start, (CameraDir.Enabled and gameCamera or entitylib.character.RootPart).CFrame.LookVector)
-					MethodJumpUsed = true
-				end
 
-				if not MethodJumpUsed then
+				if not ProJump.Enabled then
+					if store.hand and LongJumpMethods[store.hand.tool.Name] then
+						task.spawn(LongJumpMethods[store.hand.tool.Name], getItem(store.hand.tool.Name), start, (CameraDir.Enabled and gameCamera or entitylib.character.RootPart).CFrame.LookVector)
+						return
+					end
+
 					for i, v in LongJumpMethods do
 						local item = getItem(i)
 						if item or store.equippedKit == i then
 							task.spawn(v, item, start, (CameraDir.Enabled and gameCamera or entitylib.character.RootPart).CFrame.LookVector)
-							MethodJumpUsed = true
 							break
 						end
 					end
 				end
 
-				if ProJump.Enabled and not MethodJumpUsed then
+				if ProJump.Enabled then
 					LongJump:Clean(runService.PreSimulation:Connect(function(dt)
 						if entitylib.isAlive then
 							local RootPart = entitylib.character.RootPart
