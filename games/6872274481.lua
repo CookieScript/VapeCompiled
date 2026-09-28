@@ -2122,13 +2122,16 @@ run(function()
 end)
 
 run(function()
-	-- // Raycast check is removed because its not necessary.
+	--[[
+
+		I know your here just for the InfiniteFly you little skidder🥺 when you skid make sure to credit.
+		Made by dino (@tssodino) Discord and Tiktok
+
+	]]
+
 	local InfiniteFlyPart
 	local VerticalValue
-	local up, down, FlyPos = 0, 0, 0
-	local rayCheck = RaycastParams.new()
-    rayCheck.FilterType = Enum.RaycastFilterType.Exclude
-    rayCheck.FilterDescendantsInstances = {lplr.Character, gameCamera, AntiFallPart}
+	local up, down, FlyPos, LowPos = 0, 0, 0, 0
 
 	local function setCamera(obj)
 		workspace.CurrentCamera.CameraSubject = obj
@@ -2150,9 +2153,7 @@ run(function()
 		Function = function(callback)
 			updateVelocity()
 			if callback then
-				up, down, FlyPos = 0, 0, lplr.Character.Head.Position.Y
-
-                local LowPos = getLowGround() - 2
+				up, down, FlyPos, LowPos = 0, 0, lplr.Character.Head.Position.Y, getLowGround() - 2
 
 				InfiniteFlyPart = Instance.new("Part")
 				InfiniteFlyPart.Size = Vector3.new(0, 0, 0)
@@ -2208,15 +2209,10 @@ run(function()
 				setCamera(lplr.Character.Humanoid)
 				InfiniteFlyPart:Destroy()
 
-				local root = entitylib.character.RootPart
-				local raycast = root and workspace:Raycast(root.Position, Vector3.new(0, -1000, 0), rayCheck)
-
-				if raycast then
-					root.CFrame = CFrame.new(root.Position.X, raycast.Position.Y + entitylib.character.HipHeight, root.Position.Z)
-					root.AssemblyLinearVelocity = Vector3.new(0, 5, 0)
-					entitylib.character.Humanoid:ChangeState(Enum.HumanoidStateType.Landed)
-					notif('InfiniteFly', 'Landed!', 5.5, 'Alert')
-				end
+				root.CFrame = CFrame.new(root.Position.X, LowPos + 200, root.Position.Z)
+				root.Velocity = Vector3.new(0, 5, 0)
+				entitylib.character.Humanoid:ChangeState(Enum.HumanoidStateType.Landed)
+				notif('InfiniteFly', 'Landed!', 5.5, 'Alert')
 			end
 		end,
 		Tooltip = 'Lets you fly forever.'
