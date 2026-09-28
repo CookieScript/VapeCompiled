@@ -1362,13 +1362,13 @@ run(function()
 		Function = function(callback)
 			if callback then
 				AutoClicker:Clean(inputService.InputBegan:Connect(function(input)
-					if input.UserInputType == Enum.UserInputType.MouseButton1 then
+					if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
 						AutoClick()
 					end
 				end))
 	
 				AutoClicker:Clean(inputService.InputEnded:Connect(function(input)
-					if input.UserInputType == Enum.UserInputType.MouseButton1 and Thread then
+					if (input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch) and Thread then
 						task.cancel(Thread)
 						Thread = nil
 					end
@@ -2613,6 +2613,7 @@ end)
 run(function()
 	local Value
 	local CameraDir
+	local ProJump
 	local start
 	local JumpTick, JumpSpeed, Direction = tick(), 0
 	local projectileRemote = {InvokeServer = function() end}
@@ -2776,7 +2777,8 @@ run(function()
 						Direction = Vector3.new(vec.X, 0, vec.Z).Unit
 					end
 				end))
-	
+
+				local MethodJumpUsed = false
 				start = entitylib.isAlive and entitylib.character.RootPart.Position or nil
 				LongJump:Clean(runService.PreSimulation:Connect(function(dt)
 					local root = entitylib.isAlive and entitylib.character.RootPart or nil
@@ -2804,15 +2806,34 @@ run(function()
 	
 				if store.hand and LongJumpMethods[store.hand.tool.Name] then
 					task.spawn(LongJumpMethods[store.hand.tool.Name], getItem(store.hand.tool.Name), start, (CameraDir.Enabled and gameCamera or entitylib.character.RootPart).CFrame.LookVector)
-					return
+					MethodJumpUsed = true
 				end
-	
-				for i, v in LongJumpMethods do
-					local item = getItem(i)
-					if item or store.equippedKit == i then
-						task.spawn(v, item, start, (CameraDir.Enabled and gameCamera or entitylib.character.RootPart).CFrame.LookVector)
-						break
+
+				if not MethodJumpUsed then
+					for i, v in LongJumpMethods do
+						local item = getItem(i)
+						if item or store.equippedKit == i then
+							task.spawn(v, item, start, (CameraDir.Enabled and gameCamera or entitylib.character.RootPart).CFrame.LookVector)
+							MethodJumpUsed = true
+							break
+						end
 					end
+				end
+
+				if not MethodJumpUsed and ProJump.Enabled then
+					LongJump:Clean(runService.PreSimulation:Connect(function(dt)
+						if entitylib.isAlive then
+							local RootPart = entitylib.character.RootPart
+							local Direction = CameraDir.Enabled and gameCamera.CFrame.LookVector or RootPart.CFrame.LookVector
+							local speed = getSpeed()
+							RootPart.AssemblyLinearVelocity = Vector3.new(Direction.X, 0, Direction.Z).Unit * speed
+							if entitylib.character.Humanoid.FloorMaterial == Enum.Material.Air then
+								RootPart.AssemblyLinearVelocity += Vector3.new(0, dt * (workspace.Gravity * 2 - 23), 0)
+							else
+							    RootPart.AssemblyLinearVelocity = Vector3.new(RootPart.AssemblyLinearVelocity.X, 50, RootPart.AssemblyLinearVelocity.Z)
+							end
+						end
+					end))
 				end
 			else
 				JumpTick = tick()
@@ -2836,6 +2857,10 @@ run(function()
 	})
 	CameraDir = LongJump:CreateToggle({
 		Name = 'Camera Direction'
+	})
+	ProJump = LongJump:CreateToggle({
+		Name = 'Pro Jump'
+		Tooltip = 'Lets you jump without anything'
 	})
 end)
 
