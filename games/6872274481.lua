@@ -2132,6 +2132,7 @@ run(function()
 	local InfiniteFlyPart
 	local VerticalValue
 	local High
+	local FreeFall
 	local up, down, FlyPos, LowPos = 0, 0, 0, 0
 
 	local function setCamera(obj)
@@ -2172,7 +2173,7 @@ run(function()
 						local velo = getSpeed()
 						local velocity = root.AssemblyLinearVelocity
 
-						if root.CFrame.Position.Y <= (High.Enabled and (LowPos + 2) or (LowPos - 200)) then
+						if root.CFrame.Position.Y <= (High.Enabled and (LowPos + 2) or -200) then
 							root.CFrame += Vector3.new(0, (High.Enabled and 200 or 180), 0)
 						end
 
@@ -2208,12 +2209,12 @@ run(function()
 				end
 			else
 				local root = entitylib.character.RootPart
-				if High.Enabled then
+				if FreeFall.Enabled then
 					root.CFrame = CFrame.new(root.Position.X, LowPos + 200, root.Position.Z)
+					root.Velocity = Vector3.new(0, -400, 0)
 				else
 					root.CFrame = CFrame.new(root.Position.X, InfiniteFlyPart.Position.Y, root.Position.Z)
 				end
-				root.Velocity = Vector3.new(0, -400, 0)
 				entitylib.character.Humanoid:ChangeState(Enum.HumanoidStateType.Landed)
 				setCamera(lplr.Character.Humanoid)
 				InfiniteFlyPart:Destroy()
@@ -2235,6 +2236,11 @@ run(function()
 		Name = 'High',
 		Default = false,
 		Tooltip = 'Sets you higher into the sky.'
+	})
+	FreeFall = InfiniteFly:CreateToggle({
+		Name = 'Free Fall',
+		Default = false,
+		Tooltip = 'Teleports you high into the sky.'
 	})
 end)
 
