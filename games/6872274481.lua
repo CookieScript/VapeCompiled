@@ -2134,6 +2134,9 @@ run(function()
 	local High
 	local FreeFall
 	local up, down, FlyPos, LowPos = 0, 0, 0, 0
+	local rayCheck = RaycastParams.new()
+    rayCheck.FilterType = Enum.RaycastFilterType.Exclude
+    rayCheck.FilterDescendantsInstances = {lplr.Character, gameCamera, AntiFallPart}
 
 	local function setCamera(obj)
 		workspace.CurrentCamera.CameraSubject = obj
@@ -2163,9 +2166,14 @@ run(function()
 				InfiniteFlyPart.Position = lplr.Character.Head.Position
 				InfiniteFlyPart.CanCollide = false
 				InfiniteFlyPart.Anchored = true
+				InfiniteFlyPart.CanQuery = false
 				InfiniteFlyPart.Parent = workspace
 
 				setCamera(InfiniteFlyPart)
+
+				if not High.Enabled then
+					root.CFrame = CFrame.new(InfiniteFlyPart.CFrame.X, -200, InfiniteFlyPart.CFrame.Z)
+				end
 
 				InfiniteFly:Clean(runService.Heartbeat:Connect(function(dt)
 					if entitylib.isAlive and lplr.Character and lplr.Character:FindFirstChild('HumanoidRootPart') and isnetworkowner(entitylib.character.RootPart) then
@@ -2173,7 +2181,7 @@ run(function()
 						local velo = getSpeed()
 						local velocity = root.AssemblyLinearVelocity
 
-						if root.CFrame.Position.Y <= (High.Enabled and (LowPos + 2) or -200) then
+						if root.CFrame.Position.Y <= (High.Enabled and (LowPos + 2) or -300) then
 							root.CFrame += Vector3.new(0, (High.Enabled and 200 or 180), 0)
 						end
 
@@ -2213,7 +2221,9 @@ run(function()
 					root.CFrame = CFrame.new(root.Position.X, LowPos + 200, root.Position.Z)
 					root.Velocity = Vector3.new(0, -400, 0)
 				else
-					root.CFrame = CFrame.new(root.Position.X, InfiniteFlyPart.Position.Y, root.Position.Z)
+					local raycast = workspace:Raycast(Vector3.new(InfiniteFlyPart.Position.X, InfiniteFlyPart.Position.Y + 1000, InfiniteFlyPart.Position.Z), Vector3.new(0, -2000, 0), rayCheck)
+				    root.CFrame = CFrame.new(root.Position.X, raycast.Position.Y + entitylib.character.HipHeight, root.Position.Z)
+					root.Velocity = Vector3.new(0, 5, 0)
 				end
 				entitylib.character.Humanoid:ChangeState(Enum.HumanoidStateType.Landed)
 				setCamera(lplr.Character.Humanoid)
