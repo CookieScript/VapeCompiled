@@ -2172,7 +2172,7 @@ run(function()
 						local velo = getSpeed()
 						local velocity = root.AssemblyLinearVelocity
 
-						if root.CFrame.Position.Y <= (High.Enabled and (LowPos + 2) or (LowPos - 50)) then
+						if root.CFrame.Position.Y <= (High.Enabled and (LowPos + 2) or (LowPos - 200)) then
 							root.CFrame += Vector3.new(0, (High.Enabled and 200 or 180), 0)
 						end
 
