@@ -4429,10 +4429,13 @@ run(function()
 					LastHeldItem = nil
 					watchCharacter(character)
 					task.spawn(function()
-						repeat
-							task.wait(0.4)
+						for i = 1, 5 do
+							task.wait(0.5)
+							if not SkinChanger.Enabled then
+                                break
+							end
 							refreshSkins()
-						until not SkinChanger.Enabled
+						end
 					end)
 				end))
 
