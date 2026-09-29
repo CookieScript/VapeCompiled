@@ -2172,7 +2172,7 @@ run(function()
 				setCamera(InfiniteFlyPart)
 
 				if not High.Enabled then
-					root.CFrame = CFrame.new(InfiniteFlyPart.CFrame.X, -200, InfiniteFlyPart.CFrame.Z)
+					root.CFrame = CFrame.new(InfiniteFlyPart.Position.X, -200, InfiniteFlyPart.Position.Z)
 				end
 
 				InfiniteFly:Clean(runService.Heartbeat:Connect(function(dt)
