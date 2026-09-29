@@ -2171,8 +2171,8 @@ run(function()
 
 				setCamera(InfiniteFlyPart)
 
-				if not High.Enabled then
-					root.CFrame = CFrame.new(InfiniteFlyPart.Position.X, -200, InfiniteFlyPart.Position.Z)
+				if not High.Enabled and entitylib.isAlive and lplr.Character and lplr.Character:FindFirstChild('HumanoidRootPart') then
+					entitylib.character.RootPart.CFrame = CFrame.new(InfiniteFlyPart.Position.X, -200, InfiniteFlyPart.Position.Z)
 				end
 
 				InfiniteFly:Clean(runService.Heartbeat:Connect(function(dt)
