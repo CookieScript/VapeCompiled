@@ -2172,7 +2172,7 @@ run(function()
 						local velo = getSpeed()
 						local velocity = root.AssemblyLinearVelocity
 
-						if root.CFrame.Position.Y <= (High.Enabled and (LowPos + 2) or (LowPos - 10)) then
+						if root.CFrame.Position.Y <= (High.Enabled and (LowPos + 2) or (LowPos - 50)) then
 							root.CFrame += Vector3.new(0, (High.Enabled and 200 or 180), 0)
 						end
 
@@ -5718,7 +5718,7 @@ end)
 
 run(function()
 	local BedProtector
-	
+
 	local function getBedNear()
 		local localPosition = entitylib.isAlive and entitylib.character.RootPart.Position or Vector3.zero
 		for _, v in collectionService:GetTagged('bed') do
@@ -5762,14 +5762,14 @@ run(function()
 		Function = function(callback)
 			if callback then
 				local bed = getBedNear()
-				bed = bed and bed.Position -- // "or nil" isnt needed at all.
 				if bed then
 					for i, block in getBlocks() do
 						for _, pos in getPyramid(i, 3) do
 							if not BedProtector.Enabled then break end
-							if getPlacedBlock(bed + pos) then continue end
+							local WorldPos = (bed.CFrame * CFrame.new(pos)).Position
+							if getPlacedBlock(WorldPos) then continue end
 							task.wait()
-							bedwars.placeBlock(bed + pos, block[1], false)
+							bedwars.placeBlock(WorldPos, block[1], false)
 						end
 					end
 					if BedProtector.Enabled then 
@@ -5807,6 +5807,9 @@ run(function()
 	local function customHealthbar(self, blockRef, health, maxHealth, changeHealth, block)
 		if block:GetAttribute('NoHealthbar') then return end
 		if not self.healthbarPart or not self.healthbarBlockRef or self.healthbarBlockRef.blockPosition ~= blockRef.blockPosition then
+			if self.healthbarPart then
+				bedwars.QueryUtil:setQueryIgnored(self.healthbarPart, true)
+			end
 			self.healthbarMaid:DoCleaning()
 			self.healthbarBlockRef = blockRef
 			local create = bedwars.Roact.createElement
@@ -5819,8 +5822,8 @@ run(function()
 			part.Anchored = true
 			part.CanCollide = false
 			part.Parent = workspace
-			self.healthbarPart = part
 			bedwars.QueryUtil:setQueryIgnored(self.healthbarPart, true)
+			self.healthbarPart = part
 	
 			local mounted = bedwars.Roact.mount(create('BillboardGui', {
 				Size = UDim2.fromOffset(249, 102),
