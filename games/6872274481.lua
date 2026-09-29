@@ -2172,8 +2172,8 @@ run(function()
 						local velo = getSpeed()
 						local velocity = root.AssemblyLinearVelocity
 
-						if root.CFrame.Position.Y <= (High.Enabled and 2000 or LowPos) then
-							root.CFrame += Vector3.new(0, (High.Enabled and 1000000 or 200), 0)
+						if root.CFrame.Position.Y <= (High.Enabled and (LowPos + 80) or LowPos) then
+							root.CFrame += Vector3.new(0, (High.Enabled and 300 or 200), 0)
 						end
 
 						FlyPos += ((up + down) * VerticalValue.Value)
@@ -2222,8 +2222,8 @@ run(function()
 	VerticalValue = InfiniteFly:CreateSlider({
 		Name = 'Vertical Speed',
 		Min = 1,
-		Max = 150,
-		Default = 50,
+		Max = 15,
+		Default = 5,
 		Suffix = function(val)
 			return val == 1 and 'stud' or 'studs'
 		end
