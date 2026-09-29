@@ -2207,13 +2207,16 @@ run(function()
 					end)
 				end
 			else
-				setCamera(lplr.Character.Humanoid)
-				InfiniteFlyPart:Destroy()
-
 				local root = entitylib.character.RootPart
-				root.CFrame = CFrame.new(root.Position.X, LowPos + 200, root.Position.Z)
+				if High.Enabled then
+					root.CFrame = CFrame.new(root.Position.X, LowPos + 200, root.Position.Z)
+				else
+					root.CFrame = CFrame.new(root.Position.X, InfiniteFlyPart.Position.Y, root.Position.Z)
+				end
 				root.Velocity = Vector3.new(0, -400, 0)
 				entitylib.character.Humanoid:ChangeState(Enum.HumanoidStateType.Landed)
+				setCamera(lplr.Character.Humanoid)
+				InfiniteFlyPart:Destroy()
 				notif('InfiniteFly', 'Landed!', 5.5, 'Alert')
 			end
 		end,
