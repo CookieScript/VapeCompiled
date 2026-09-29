@@ -743,6 +743,7 @@ run(function()
 		DefaultKillEffect = require(lplr.PlayerScripts.TS.controllers.global.locker['kill-effect'].effects['default-kill-effect']),
 		EmoteType = require(replicatedStorage.TS.locker.emote['emote-type']).EmoteType,
 		GameAnimationUtil = require(replicatedStorage.TS.animation['animation-util']).GameAnimationUtil,
+		getItemSkinMeta = require(replicatedStorage.TS.games.bedwars['item-skin']['item-skin-meta']).getItemSkinMeta,
 		getIcon = function(item, showinv)
 			local itemmeta = bedwars.ItemMeta[item.itemType]
 			return itemmeta and showinv and itemmeta.image or ''
@@ -759,6 +760,7 @@ run(function()
 		Handler = RemoteHandler,
 		HudAliveCount = require(lplr.PlayerScripts.TS.controllers.global['top-bar'].ui.game['hud-alive-player-counts']).HudAlivePlayerCounts,
 		ItemMeta = debug.getupvalue(require(replicatedStorage.TS.item['item-meta']).getItemMeta, 1),
+		ItemSkinType = require(replicatedStorage.TS.games.bedwars['item-skin']['item-skin-types']).ItemSkinType,
 		KillEffectMeta = require(replicatedStorage.TS.locker['kill-effect']['kill-effect-meta']).KillEffectMeta,
 		KillFeedController = Flamework.resolveDependency('client/controllers/game/kill-feed/kill-feed-controller@KillFeedController'),
 		Knit = Knit,
@@ -4209,6 +4211,286 @@ run(function()
 		end,
 		Darker = true
 	})
+end)
+
+run(function()
+	local ItemSkins, SkinGroups, SkinFamilies, SkinOrder, SkinLabels, ExtraSkins, OriginalSounds, Ddowns, OriginalTransparency, SkinChanger, CharCon, PendingUpdate, LastHeldItem = {}, {}, {}, {}, {}, {}, {}, {}, {}, nil, nil, false, nil
+
+	local function formatName(text)
+		return (tostring(text):gsub('_', ' '):gsub('%a+', function(word)
+			return `{word:sub(1, 1):upper()}{word:sub(2)}`
+		end))
+	end
+
+	for _, skinId in bedwars.ItemSkinType do
+		local skinData = bedwars.getItemSkinMeta(skinId)
+		local itemData = skinData and skinData.itemType and bedwars.ItemMeta[skinData.itemType]
+		if itemData and not itemData.block then
+			local displayName = `_{skinId}_`
+
+			for section in skinData.itemType:gmatch('[^_]+') do
+				displayName = displayName:gsub(`_{section}_`, '_')
+			end
+
+			displayName = displayName:gsub('^_+', ''):gsub('_+$', '')
+			displayName = formatName(displayName ~= '' and displayName or skinId)
+
+			ItemSkins[skinData.itemType] = ItemSkins[skinData.itemType] or {}
+			ItemSkins[skinData.itemType][displayName] = skinId
+		end
+	end
+
+	for itemName in ItemSkins do
+		local groupName = itemName:gsub('_%d+$', '')
+		local tierName, baseName = groupName:match('^([^_]+)_(.+)$')
+
+		if tierName and ({leather = true, chainmail = true, wood = true, stone = true, gold = true, iron = true, diamond = true, emerald = true})[tierName] then
+			groupName = baseName
+		end
+
+		if SkinGroups[groupName] == nil then
+			SkinGroups[groupName] = {}
+			table.insert(SkinOrder, groupName)
+		end
+
+		SkinFamilies[itemName] = groupName
+		table.insert(SkinGroups[groupName], itemName)
+	end
+
+	for groupName, itemList in SkinGroups do
+		SkinLabels[groupName] = formatName(#itemList > 1 and groupName or itemList[1])
+	end
+
+	table.sort(SkinOrder, function(first, second)
+		return SkinLabels[first] < SkinLabels[second]
+	end)
+
+	for _, itemName in {'bear_claws', 'lobby_kaida_claw', 'summoner_claw_1', 'summoner_claw_2', 'summoner_claw_3', 'summoner_claw_4'} do
+		if replicatedStorage.Items:FindFirstChild(itemName) then
+			ExtraSkins[formatName(itemName:gsub('^lobby_', ''))] = itemName
+		end
+	end
+
+	local function updateSwordSounds()
+		for itemName in ItemSkins do
+			local itemData = bedwars.ItemMeta[itemName]
+			if itemData and itemData.sword then
+				local groupName = SkinFamilies[itemName]
+				local selector = groupName and Ddowns[groupName]
+				local selectedName = selector and selector.Value
+				local selectedSkin = selectedName and not ExtraSkins[selectedName] and ItemSkins[itemName][selectedName]
+				local selectedData = selectedSkin and bedwars.getItemSkinMeta(selectedSkin)
+				local selectedSword = selectedData and selectedData.sword
+				if selectedSword and (selectedSword.swingSounds or selectedSword.hitSounds) then
+					if OriginalSounds[itemName] == nil then
+						OriginalSounds[itemName] = {
+							Swing = itemData.sword.swingSounds,
+							Hit = itemData.sword.hitSounds
+						}
+					end
+					itemData.sword.swingSounds = selectedSword.swingSounds or OriginalSounds[itemName].Swing
+					itemData.sword.hitSounds = selectedSword.hitSounds or OriginalSounds[itemName].Hit
+				elseif OriginalSounds[itemName] then
+					itemData.sword.swingSounds = OriginalSounds[itemName].Swing
+					itemData.sword.hitSounds = OriginalSounds[itemName].Hit
+					OriginalSounds[itemName] = nil
+				end
+			end
+		end
+	end
+
+	local function updateInventory()
+		local inventoryState = store.inventory.inventory
+		for _, inventoryItem in inventoryState.items do
+			local groupName = SkinChanger.Enabled and SkinFamilies[inventoryItem.itemType]
+			local selector = groupName and Ddowns[groupName]
+			local selectedName = selector and selector.Value
+			local selectedSkin = selectedName and not ExtraSkins[selectedName] and ItemSkins[inventoryItem.itemType][selectedName]
+			inventoryItem.itemSkin = selectedSkin
+		end
+
+		if inventoryState.hand then
+			local heldItem = inventoryState.hand
+			local groupName = SkinChanger.Enabled and SkinFamilies[heldItem.itemType]
+			local selector = groupName and Ddowns[groupName]
+			local selectedName = selector and selector.Value
+			local selectedSkin = selectedName and not ExtraSkins[selectedName] and ItemSkins[heldItem.itemType][selectedName]
+			heldItem.itemSkin = selectedSkin
+		end
+	end
+
+	local function applyAccessory(accessory)
+		local itemName = accessory.Name
+		local groupName = SkinChanger.Enabled and SkinFamilies[itemName]
+		local selector = groupName and Ddowns[groupName]
+		local selectedName = selector and selector.Value
+		local selectedModel = selectedName and (ExtraSkins[selectedName] or ItemSkins[itemName] and ItemSkins[itemName][selectedName])
+		local handle = accessory:FindFirstChild('Handle')
+		local template = selectedModel and replicatedStorage.Items:FindFirstChild(selectedModel)
+
+		if handle and template and template:FindFirstChild('Handle') then
+			local templateHandle = template.Handle
+			local oldGrip = handle:FindFirstChild('RightGripAttachment')
+			local newGrip = templateHandle:FindFirstChild('RightGripAttachment')
+
+			for _, child in handle:GetChildren() do
+				if child:IsA('BasePart') and OriginalTransparency[child] == nil then
+					OriginalTransparency[child] = child.Transparency
+					child.Transparency = 1
+				end
+			end
+
+			if handle:IsA('MeshPart') and templateHandle:IsA('MeshPart') then
+				handle:ApplyMesh(templateHandle)
+			end
+
+			handle.Size = templateHandle.Size
+			if oldGrip and newGrip then
+				oldGrip.CFrame = newGrip.CFrame
+			end
+
+			for _, templatePart in templateHandle:GetChildren() do
+				if templatePart:IsA('BasePart') then
+					local clone = templatePart:Clone()
+					clone.CanCollide = false
+					clone.CanTouch = false
+					clone.CFrame = handle.CFrame * (templateHandle.CFrame:Inverse() * templatePart.CFrame)
+					clone.Massless = true
+					clone.CanQuery = false
+					clone.Parent = handle
+
+					local connection = Instance.new('WeldConstraint')
+					connection.Part0 = handle
+					connection.Part1 = clone
+					connection.Parent = clone
+				end
+			end
+		end
+	end
+
+	local function refreshAccessories()
+		if lplr.Character then
+			for _, characterObject in lplr.Character:GetChildren() do
+				if characterObject:IsA('Accessory') then
+					applyAccessory(characterObject)
+				end
+			end
+		end
+	end
+
+	local function refreshSkins()
+		updateSwordSounds()
+		updateInventory()
+
+		local currentHand = store.inventory.inventory.hand
+		local currentItem = currentHand and currentHand.itemType
+
+		if currentItem ~= LastHeldItem then
+			LastHeldItem = currentItem
+			bedwars.InventoryViewmodelController:handleStore(bedwars.Store:getState())
+		end
+
+		refreshAccessories()
+	end
+
+	local function scheduleRefresh()
+		if PendingUpdate then
+			return
+		end
+
+		PendingUpdate = true
+
+		task.defer(function()
+			PendingUpdate = false
+			if SkinChanger.Enabled then
+				refreshSkins()
+			end
+		end)
+	end
+
+	local function watchCharacter(character)
+		if CharCon then
+			CharCon:Disconnect()
+			CharCon = nil
+		end
+
+		CharCon = character.ChildAdded:Connect(function(object)
+			if object:IsA('Accessory') and object:WaitForChild('Handle', 3) and SkinChanger.Enabled then
+				applyAccessory(object)
+			end
+		end)
+	end
+
+	SkinChanger = vape.Categories.Render:CreateModule({
+		Name = 'SkinChanger',
+		Function = function(enabled)
+			if enabled then
+				SkinChanger:Clean(lplr.CharacterAdded:Connect(function(character)
+					LastHeldItem = nil
+					watchCharacter(character)
+					task.spawn(function()
+						repeat
+							task.wait(0.4)
+							refreshSkins()
+						until not SkinChanger.Enabled
+					end)
+				end))
+
+				SkinChanger:Clean(vapeEvents.InventoryAmountChanged.Event:Connect(scheduleRefresh))
+				SkinChanger:Clean(vapeEvents.InventoryChanged.Event:Connect(scheduleRefresh))
+
+				if lplr.Character then
+					watchCharacter(lplr.Character)
+				end
+			else
+				if CharCon then
+					CharCon:Disconnect()
+					CharCon = nil
+				end
+			end
+			refreshSkins()
+		end,
+		Tooltip = 'Changes your item.'
+	})
+
+	for _, groupName in SkinOrder do
+		local AvaSkins, Added, containsSword = {}, {}, false
+		for _, itemName in SkinGroups[groupName] do
+			for displayName in ItemSkins[itemName] do
+				if not Added[displayName] then
+					Added[displayName] = true
+					table.insert(AvaSkins, displayName)
+				end
+			end
+		end
+
+		for _, itemName in SkinGroups[groupName] do
+			local itemData = bedwars.ItemMeta[itemName]
+			if itemData and itemData.sword then
+				containsSword = true
+				break
+			end
+		end
+
+		if containsSword then
+			for displayName in ExtraSkins do
+				table.insert(AvaSkins, displayName)
+			end
+		end
+
+		table.sort(AvaSkins)
+		table.insert(AvaSkins, 1, 'None')
+
+		Ddowns[groupName] = SkinChanger:CreateDropdown({
+			Name = SkinLabels[groupName],
+			List = AvaSkins,
+			Function = function()
+				if SkinChanger.Enabled then
+					refreshSkins()
+				end
+			end
+		})
+	end
 end)
 
 run(function()
