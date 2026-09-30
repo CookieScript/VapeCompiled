@@ -4506,6 +4506,118 @@ run(function()
 end)
 
 run(function()
+	local Trajectories
+	local Thickness
+	local Time
+	local Color
+	local Transparency
+
+	local rayCheck = RaycastParams.new()
+	rayCheck.FilterType = Enum.RaycastFilterType.Exclude
+
+	local function SpawnTracer(origin, velocityunit, velocitymagnitude, thickness, color, transparency, lifetime)
+		local points, steps, gravity = {}, 50, 196.2
+		local velocity = velocityunit * velocitymagnitude
+		local position = origin
+
+		for i = 0, steps do
+			points[#points + 1] = position
+
+			local nextVelocity = velocity + Vector3.new(0, -gravity * 0.05, 0)
+			local nextPosition = position + velocity * 0.05
+			local result = workspace:Raycast(position, nextPosition - position, rayCheck)
+
+			if result then
+				points[#points + 1] = result.Position
+				break
+			end
+
+			position = nextPosition
+			velocity = nextVelocity
+		end
+
+		for i = 1, #points - 1 do
+			local start = points[i]
+			local finish = points[i + 1]
+			local distance = (finish - start).Magnitude
+			if distance <= 0 then
+				continue
+			end
+
+			local part = Instance.new('Part')
+			part.Anchored = true
+			part.CanCollide = false
+			part.CanQuery = false
+			part.CanTouch = false
+			part.Material = Enum.Material.Neon
+			part.Size = Vector3.new(thickness, thickness, distance)
+			part.Color = color
+			part.Transparency = transparency
+			part.CFrame = CFrame.lookAt((start + finish) / 2, finish)
+			part.Parent = workspace
+
+			game:GetService('Debris'):AddItem(part, math.max(lifetime, 0.05))
+		end
+	end
+
+	Trajectories = vape.Categories.Utility:CreateModule({
+		Name = 'Trajectories',
+		Function = function(callback)
+			if callback then
+				Trajectories:Clean(workspace.ChildAdded:Connect(function(obj)
+					task.delay(0, function()
+						if Trajectories.Enabled and obj:GetAttribute('ProjectileShooter') == lplr.UserId then
+							rayCheck.FilterDescendantsInstances = {obj, lplr.Character, gameCamera, AntiFallPart}
+
+							local Origin = obj:GetPivot().Position
+							local Velocity = obj.PrimaryPart and obj.PrimaryPart.Velocity or Vector3.zero
+							local VelocityMagnitude = Velocity.Magnitude
+
+							if VelocityMagnitude > 0 then
+								local VelocityUnit = Velocity / VelocityMagnitude
+								local color = Color3.fromHSV(Color.Hue, Color.Sat, Color.Value)
+								local thickness = Thickness.Value / 100
+								local transparency = Transparency.Value / 100
+								local lifetime = Time.Value
+
+								SpawnTracer(Origin, VelocityUnit, VelocityMagnitude, thickness, color, transparency, lifetime)
+							end
+						end
+					end)
+				end))
+			end
+		end,
+		Tooltip = 'Predicts trajectory position'
+	})
+	Color = Trajectories:CreateColorSlider({
+		Name = 'Color',
+		DefaultHue = 0.6,
+		DefaultSat = 1,
+		DefaultValue = 1,
+		DefaultOpacity = 0.5,
+	})
+	Thickness = Trajectories:CreateSlider({
+		Name = 'Thickness',
+		Min = 1,
+		Max = 100,
+		Default = 20,
+		Decimal = 10,
+	})
+	Transparency = Trajectories:CreateSlider({
+		Name = 'Transparency',
+		Min = 0,
+		Max = 100,
+		Default = 30,
+	})
+	Time = Trajectories:CreateSlider({
+		Name = 'Duration',
+		Min = 1,
+		Max = 100,
+		Default = 20,
+	})
+end)
+
+run(function()
 	local AutoBalloon
 	
 	AutoBalloon = vape.Categories.Utility:CreateModule({
