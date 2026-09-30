@@ -2219,11 +2219,20 @@ run(function()
 				end
 			else
 				local root = entitylib.character.RootPart
+				local x, y, z = InfiniteFlyPart.Position.X, InfiniteFlyPart.Position.Y, InfiniteFlyPart.Position.Z
 				if FreeFall.Enabled then
 					root.CFrame = CFrame.new(root.Position.X, LowPos + 200, root.Position.Z)
 					root.Velocity = Vector3.new(0, -400, 0)
 				else
-					local raycast = workspace:Raycast(Vector3.new(InfiniteFlyPart.Position.X, InfiniteFlyPart.Position.Y + 1000, InfiniteFlyPart.Position.Z), Vector3.new(0, -2000, 0), rayCheck)
+					repeat
+                        runService.Heartbeat:Wait()
+                        if not getPlacedBlock(Vector3.new(x, y, z)) then
+							break
+						end
+                        y += 3
+                    until false
+
+					local raycast = workspace:Raycast(Vector3.new(x, y, z), Vector3.new(0, -2000, 0), rayCheck)
 				    root.CFrame = CFrame.new(root.Position.X, raycast.Position.Y + entitylib.character.HipHeight + 14, root.Position.Z)
 					root.AssemblyLinearVelocity = Vector3.new(0, 5, 0)
 					root.Velocity = Vector3.new(0, 5, 0)
