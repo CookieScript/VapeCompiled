@@ -4515,8 +4515,8 @@ run(function()
 	local rayCheck = RaycastParams.new()
 	rayCheck.FilterType = Enum.RaycastFilterType.Exclude
 
-	local function SpawnTracer(origin, velocityunit, velocitymagnitude, thickness, color, transparency, lifetime)
-		local points, steps, gravity = {}, 50, 196.2
+	local function SpawnTracer(origin, velocityunit, velocitymagnitude, gravity, thickness, color, transparency, lifetime)
+		local points, steps = {}, 50
 		local velocity = velocityunit * velocitymagnitude
 		local position = origin
 
@@ -4560,7 +4560,7 @@ run(function()
 		end
 	end
 
-	Trajectories = vape.Categories.Utility:CreateModule({
+	Trajectories = vape.Categories.Render:CreateModule({
 		Name = 'Trajectories',
 		Function = function(callback)
 			if callback then
@@ -4579,8 +4579,9 @@ run(function()
 								local thickness = Thickness.Value / 100
 								local transparency = Transparency.Value / 100
 								local lifetime = Time.Value
+								local Gravity = bedwars.ProjectileMeta[obj.Name].gravitationalAcceleration
 
-								SpawnTracer(Origin, VelocityUnit, VelocityMagnitude, thickness, color, transparency, lifetime)
+								SpawnTracer(Origin, VelocityUnit, VelocityMagnitude, Gravity, thickness, color, transparency, lifetime)
 							end
 						end
 					end)
@@ -4611,9 +4612,10 @@ run(function()
 	})
 	Time = Trajectories:CreateSlider({
 		Name = 'Duration',
-		Min = 1,
-		Max = 100,
+		Min = 0,
+		Max = 10,
 		Default = 20,
+		Decimal = 10,
 	})
 end)
 
