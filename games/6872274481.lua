@@ -2270,23 +2270,6 @@ run(function()
 end)
 
 run(function()
-    local InfiniteShield
-    
-    InfiniteShield = vape.Categories.Blatant:CreateModule({
-        Name = 'InfiniteShield',
-        Function = function(callback)
-            if callback then
-                repeat
-					bedwars.Handler:Get('PlayerEatCake'):Fire('SendToServer', {block = lplr})
-                    task.wait(0.05)
-                until not InfiniteShield.Enabled
-            end
-        end,
-        Tooltip = 'Makes your shield last longer'
-    })
-end)
-
-run(function()
 	vape.Categories.Blatant:CreateModule({
 		Name = 'KeepSprint',
 		Function = function(callback)
