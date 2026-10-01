@@ -2309,11 +2309,13 @@ run(function()
 	local LegitAura
 	local Particles, Boxes = {}, {}
 	local anims, AnimDelay, AnimTween, armC0 = vape.Libraries.auraanims, tick()
-	local oldSwing = bedwars.ViewmodelController.playAnimation
 
-	pcall(function()
-		oldSwing = bedwars.SwordController.playSwordEffect
-	end)
+    -- // Im gonna debug first if i cant fix this i guess just fix it yourself lol
+	for i = 1, 100 do
+		local name, value = debug.getupvalue(bedwars.SwordController.playSwordEffect, i)
+		if not name then break end
+		print(i, name, value)
+	end
 
 	local function getAttackData()
 		if Mouse.Enabled then
@@ -2364,7 +2366,7 @@ run(function()
 							}
 						}
 					}
-					debug.setupvalue(oldSwing or bedwars.SwordController.playSwordEffect, 6, fake)
+					debug.setupvalue(oldSwing or bedwars.SwordController.playSwordEffect, 7, fake)
 					debug.setupvalue(bedwars.ScytheController.playLocalAnimation, 3, fake)
 
                     task.spawn(function()
@@ -2513,7 +2515,7 @@ run(function()
 						lplr.PlayerGui.MobileUI['2'].Visible = true
 					end)
 				end
-				debug.setupvalue(oldSwing or bedwars.SwordController.playSwordEffect, 6, bedwars.Knit)
+				debug.setupvalue(oldSwing or bedwars.SwordController.playSwordEffect, 7, bedwars.Knit)
 				debug.setupvalue(bedwars.ScytheController.playLocalAnimation, 3, bedwars.Knit)
 				Attacking = false
 				if armC0 then
