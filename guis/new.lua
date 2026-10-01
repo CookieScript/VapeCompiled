@@ -4542,8 +4542,12 @@ components = {
 			icon.ImageColor3 = color.Dark(uipallet.Text, 0.16)
 			icon.Position = UDim2.fromOffset(16, 13)
 			icon.Size = props.Size
-			icon.Parent = button
+			icon.Parent = children
 			component.Icon = icon
+
+			button.BackgroundTransparency = 1
+			buttin.Position = UDim2.new(1.3, 0, 0, 0)
+			button.Parent = icon
 		end
 		
 		if props.Name == 'Profiles' then
