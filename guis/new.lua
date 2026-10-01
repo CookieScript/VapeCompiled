@@ -1174,7 +1174,7 @@ function vape:LoadGUI()
 		Function = function(callback)
 			ScaleSlider.Object.Visible = not callback
 			if callback then
-				scale.Scale = math.max(gui.AbsoluteSize.X / 1920, 0.35)
+				scale.Scale = math.max(gui.AbsoluteSize.X / 1920, 0.45)
 			else
 				scale.Scale = ScaleSlider.Value
 			end
@@ -2826,7 +2826,8 @@ components = {
 		icon.BackgroundTransparency = 1
 		icon.Image = props.Icon
 		icon.ImageColor3 = uipallet.Text
-		icon.Position = UDim2.fromOffset(12, (icon.Size.X.Offset > 20 and 14 or 13))
+		icon.Position = UDim2.new(0, 12, 0.5, 0)
+		icon.AnchorPoint = Vector2.new(0, 0.5)
 		icon.Size = props.Size
 		icon.Parent = window
 		local title = Instance.new('TextLabel')
