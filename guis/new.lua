@@ -1174,7 +1174,7 @@ function vape:LoadGUI()
 		Function = function(callback)
 			ScaleSlider.Object.Visible = not callback
 			if callback then
-				scale.Scale = math.max(gui.AbsoluteSize.X / 1920, 0.467)
+				scale.Scale = math.max(gui.AbsoluteSize.X / 1920, 0.4)
 			else
 				scale.Scale = ScaleSlider.Value
 			end
