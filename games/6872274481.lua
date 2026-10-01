@@ -2309,6 +2309,11 @@ run(function()
 	local LegitAura
 	local Particles, Boxes = {}, {}
 	local anims, AnimDelay, AnimTween, armC0 = vape.Libraries.auraanims, tick()
+	local oldSwing = bedwars.ViewmodelController.playAnimation
+
+	pcall(function()
+		oldSwing = bedwars.ViewmodelController.playAnimation
+	end)
 
 	local function getAttackData()
 		if Mouse.Enabled then
