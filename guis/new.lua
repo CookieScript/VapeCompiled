@@ -1174,7 +1174,7 @@ function vape:LoadGUI()
 		Function = function(callback)
 			ScaleSlider.Object.Visible = not callback
 			if callback then
-				scale.Scale = math.max(gui.AbsoluteSize.X / 1920, 0.45)
+				scale.Scale = math.max(gui.AbsoluteSize.X / 1920, 0.46)
 			else
 				scale.Scale = ScaleSlider.Value
 			end
@@ -3099,14 +3099,13 @@ components = {
 		title.BackgroundTransparency = 1
 		title.FontFace = uipallet.Font
 		title.Name = 'Title'
-		title.Size = UDim2.new(1, 50, 0, 20)
-		title.Position = UDim2.new(2, 0, 0.5, 0)
-		title.AnchorPoint = Vector2.new(0, 0.5)
+		title.Size = UDim2.new(1, -(props.Size.X.Offset > 20 and 44 or 36), 0, 20)
+		title.Position = UDim2.fromOffset(math.abs(title.Size.X.Offset), 12)
 		title.Text = props.Name
 		title.TextColor3 = uipallet.Text
 		title.TextSize = 13
 		title.TextXAlignment = Enum.TextXAlignment.Left
-		title.Parent = icon
+		title.Parent = window
 		local arrowbutton = Instance.new('TextButton')
 		arrowbutton.BackgroundTransparency = 1
 		arrowbutton.Name = 'Arrow'
@@ -6064,12 +6063,12 @@ components = {
 		title.BackgroundTransparency = 1
 		title.FontFace = uipallet.Font
 		title.Size = UDim2.new(1, -32, 0, 41)
-		title.Position = UDim2.new(1.3, 0, 0, 0)
+		title.Position = UDim2.fromOffset(math.abs(title.Size.X.Offset), 0)
 		title.Text = props.Name
 		title.TextColor3 = uipallet.Text
 		title.TextSize = 13
 		title.TextXAlignment = Enum.TextXAlignment.Left
-		title.Parent = icon
+		title.Parent = window
 		local pin = Instance.new('ImageButton')
 		pin.Name = 'Pin'
 		pin.Size = UDim2.fromOffset(14, 14)
