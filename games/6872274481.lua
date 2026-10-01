@@ -2270,6 +2270,23 @@ run(function()
 end)
 
 run(function()
+    local InfiniteShield
+    
+    InfiniteShield = vape.Categories.Blatant:CreateModule({
+        Name = 'InfiniteShield',
+        Function = function(callback)
+            if callback then
+                repeat
+					bedwars.Handler:Get('PlayerEatCake'):Fire('SendToServer', {block = lplr})
+                    task.wait(0.05)
+                until not InfiniteShield.Enabled
+            end
+        end,
+        Tooltip = 'Makes your shield last longer'
+    })
+end)
+
+run(function()
 	vape.Categories.Blatant:CreateModule({
 		Name = 'KeepSprint',
 		Function = function(callback)
@@ -2359,7 +2376,7 @@ run(function()
 							}
 						}
 					}
-					debug.setupvalue(oldSwing or bedwars.SwordController.playSwordEffect, 7, fake)
+					debug.setupvalue(oldSwing or bedwars.SwordController.playSwordEffect, 6, fake)
 					debug.setupvalue(bedwars.ScytheController.playLocalAnimation, 3, fake)
 
                     task.spawn(function()
@@ -2508,7 +2525,7 @@ run(function()
 						lplr.PlayerGui.MobileUI['2'].Visible = true
 					end)
 				end
-				debug.setupvalue(oldSwing or bedwars.SwordController.playSwordEffect, 7, bedwars.Knit)
+				debug.setupvalue(oldSwing or bedwars.SwordController.playSwordEffect, 6, bedwars.Knit)
 				debug.setupvalue(bedwars.ScytheController.playLocalAnimation, 3, bedwars.Knit)
 				Attacking = false
 				if armC0 then
@@ -5199,7 +5216,7 @@ run(function()
 	
 		custommsg = custommsg and custommsg:gsub('<obj>', obj or '') or ''
 		if textChatService.ChatVersion == Enum.ChatVersion.TextChatService then
-			if textChatService:CanUserChatAsync(LocalPlayer.UserId) then
+			if textChatService:CanUserChatAsync(lplr.UserId) then
 			    textChatService.ChatInputBarConfiguration.TargetTextChannel:SendAsync(custommsg)
 			else
 				textChatService.ChatInputBarConfiguration.TargetTextChannel:SendPresetAsync('So close')
