@@ -4548,13 +4548,15 @@ components = {
 			icon.BackgroundTransparency = 1
 			icon.Image = props.Icon
 			icon.ImageColor3 = color.Dark(uipallet.Text, 0.16)
-			icon.Position = UDim2.new(0, 16, 0, 13)
+			icon.Position = UDim2.new(0, 16, 0.5, 0)
+			icon.AnchorPoint = Vector2.new(0, 0.5)
 			icon.Size = props.Size
 			icon.Parent = Frame
 			component.Icon = icon
 
 			button.BackgroundTransparency = 1
-			button.Position = UDim2.new(1.3, 0, 0, 0)
+			button.Position = UDim2.new(1.3, 0, 0.5, 0)
+			button.AnchorPoint = Vector2.new(0, 0.5)
 			button.Parent = icon
 		end
 		
