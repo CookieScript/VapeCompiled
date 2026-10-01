@@ -890,11 +890,6 @@ function vape:LoadGUI()
 		Icon = getvapeasset('newvape/assets/new/inventory.png'),
 		Size = UDim2.fromOffset(15, 14)
 	})
-	vape:CreateCategory({
-		Name = 'Test',
-		Icon = getvapeasset('newvape/assets/new/inventory.png'),
-		Size = UDim2.fromOffset(15, 14)
-	})
 	vape.Categories.Main:CreateDivider({
 		Text = 'misc'
 	})
@@ -1179,7 +1174,7 @@ function vape:LoadGUI()
 		Function = function(callback)
 			ScaleSlider.Object.Visible = not callback
 			if callback then
-				scale.Scale = math.max(gui.AbsoluteSize.X / 1920, 0.46)
+				scale.Scale = math.max(gui.AbsoluteSize.X / 1920, 0.467)
 			else
 				scale.Scale = ScaleSlider.Value
 			end
@@ -4536,28 +4531,14 @@ components = {
 		
 		local icon
 		if props.Icon then
-			local Frame = Instance.new('Frame')
-			Frame.BackgroundColor3 = uipallet.Main
-			Frame.BorderSizePixel = 0
-			Frame.BackgroundTransparency = 1
-			Frame.Name = props.Name
-			Frame.Size = UDim2.fromOffset(220, 40)
-			Frame.Parent = children
-
 			icon = Instance.new('ImageLabel')
 			icon.BackgroundTransparency = 1
 			icon.Image = props.Icon
 			icon.ImageColor3 = color.Dark(uipallet.Text, 0.16)
-			icon.Position = UDim2.new(0, 16, 0.5, 0)
-			icon.AnchorPoint = Vector2.new(0, 0.5)
+			icon.Position = UDim2.fromOffset(16, 13)
 			icon.Size = props.Size
-			icon.Parent = Frame
+			icon.Parent = button
 			component.Icon = icon
-
-			button.BackgroundTransparency = 1
-			button.Position = UDim2.new(1, 2, 0.5, 0)
-			button.AnchorPoint = Vector2.new(0, 0.5)
-			button.Parent = icon
 		end
 		
 		if props.Name == 'Profiles' then
