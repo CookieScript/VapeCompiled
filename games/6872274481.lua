@@ -2310,14 +2310,7 @@ run(function()
 	local Particles, Boxes = {}, {}
 	local anims, AnimDelay, AnimTween, armC0 = vape.Libraries.auraanims, tick()
 
-    -- // Im gonna debug first if i cant fix this i guess just fix it yourself lol
-	for i = 1, 100 do
-		local name, value = debug.getupvalue(bedwars.SwordController.playSwordEffect, i)
-		if not name then break end
-		print(i, name, value)
-	end
-
-	local function getAttackData()
+    local function getAttackData()
 		if Mouse.Enabled then
 			if not inputService:IsMouseButtonPressed(0) then return false end
 		end
