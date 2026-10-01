@@ -1174,7 +1174,7 @@ function vape:LoadGUI()
 		Function = function(callback)
 			ScaleSlider.Object.Visible = not callback
 			if callback then
-				--scale.Scale = math.max(gui.AbsoluteSize.X / 1920, 0.6)
+				scale.Scale = math.max(gui.AbsoluteSize.X / 1920, 0.6)
 			else
 				scale.Scale = ScaleSlider.Value
 			end
@@ -3100,7 +3100,7 @@ components = {
 		title.FontFace = uipallet.Font
 		title.Name = 'Title'
 		title.Size = UDim2.new(1, -(props.Size.X.Offset > 20 and 44 or 36), 0, 20)
-		title.Position = UDim2.new(1.25, 0, 0, 12)
+		title.Position = UDim2.new(1.3, 0, 0, 12)
 		title.Text = props.Name
 		title.TextColor3 = uipallet.Text
 		title.TextSize = 13
