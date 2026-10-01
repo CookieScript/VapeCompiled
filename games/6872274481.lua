@@ -2312,7 +2312,7 @@ run(function()
 	local oldSwing = bedwars.ViewmodelController.playAnimation
 
 	pcall(function()
-		oldSwing = bedwars.ViewmodelController.playAnimation
+		oldSwing = bedwars.SwordController.playSwordEffect
 	end)
 
 	local function getAttackData()
@@ -2365,7 +2365,7 @@ run(function()
 						}
 					}
 					debug.setupvalue(oldSwing or bedwars.SwordController.playSwordEffect, 6, fake)
-					-- // error!!!! debug.setupvalue(bedwars.ScytheController.playLocalAnimation, 3, fake)
+					debug.setupvalue(bedwars.ScytheController.playLocalAnimation, 3, fake)
 
                     task.spawn(function()
 						local started = false
@@ -2514,7 +2514,7 @@ run(function()
 					end)
 				end
 				debug.setupvalue(oldSwing or bedwars.SwordController.playSwordEffect, 6, bedwars.Knit)
-				-- // Errorrrr!!!!!! debug.setupvalue(bedwars.ScytheController.playLocalAnimation, 3, bedwars.Knit)
+				debug.setupvalue(bedwars.ScytheController.playLocalAnimation, 3, bedwars.Knit)
 				Attacking = false
 				if armC0 then
 					AnimTween = tweenService:Create(gameCamera.Viewmodel.RightHand.RightWrist, TweenInfo.new(AnimationTween.Enabled and 0.001 or 0.3, Enum.EasingStyle.Exponential), {
