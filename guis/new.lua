@@ -1174,7 +1174,7 @@ function vape:LoadGUI()
 		Function = function(callback)
 			ScaleSlider.Object.Visible = not callback
 			if callback then
-				scale.Scale = math.max(gui.AbsoluteSize.X / 1920, 0.6)
+				scale.Scale = math.max(gui.AbsoluteSize.X / 1920, 0.35)
 			else
 				scale.Scale = ScaleSlider.Value
 			end
@@ -2833,12 +2833,13 @@ components = {
 		title.BackgroundTransparency = 1
 		title.FontFace = uipallet.Font
 		title.Size = UDim2.new(1, -(props.Size.X.Offset > 18 and 40 or 33), 0, 41)
-		title.Position = UDim2.fromOffset(math.abs(title.Size.X.Offset), 0)
+		title.Position = UDim2.new(1.3, 0, 0.5, 0)
+		title.AnchorPoint = Vector2.new(0, 0.5)
 		title.Text = props.Name
 		title.TextColor3 = uipallet.Text
 		title.TextSize = 13
 		title.TextXAlignment = Enum.TextXAlignment.Left
-		title.Parent = window
+		title.Parent = icon
 		local pencilbutton = Instance.new('TextButton')
 		pencilbutton.BackgroundTransparency = 1
 		pencilbutton.Position = UDim2.new(1, -49, 0, 0)
@@ -3100,7 +3101,7 @@ components = {
 		title.FontFace = uipallet.Font
 		title.Name = 'Title'
 		title.Size = UDim2.new(1, -(props.Size.X.Offset > 20 and 44 or 36), 0, 20)
-		title.Position = UDim2.new(1.3, 0, 0, 12)
+		title.Position = UDim2.fromOffset(math.abs(title.Size.X.Offset), 12)
 		title.Text = props.Name
 		title.TextColor3 = uipallet.Text
 		title.TextSize = 13
