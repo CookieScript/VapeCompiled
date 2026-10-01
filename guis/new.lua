@@ -4546,7 +4546,7 @@ components = {
 			component.Icon = icon
 
 			button.BackgroundTransparency = 1
-			buttin.Position = UDim2.new(1.3, 0, 0, 0)
+			button.Position = UDim2.new(1.3, 0, 0, 0)
 			button.Parent = icon
 		end
 		
