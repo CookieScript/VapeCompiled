@@ -4555,7 +4555,7 @@ components = {
 			component.Icon = icon
 
 			button.BackgroundTransparency = 1
-			button.Position = UDim2.new(1.3, 0, 0.5, 0)
+			button.Position = UDim2.new(1, 2, 0.5, 0)
 			button.AnchorPoint = Vector2.new(0, 0.5)
 			button.Parent = icon
 		end
