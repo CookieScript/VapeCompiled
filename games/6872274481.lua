@@ -2024,6 +2024,9 @@ run(function()
 	FlyProgressBarColor = Fly:CreateColorSlider({
 		Name = 'Progress Bar Color',
 		Darker = true,
+		DefaultHue = 0.46,
+		DefaultSat = 0.96,
+		DefaultValue = 0.52,
 		DefaultOpacity = 0.9,
 		Visible = false,
 		Function = function(hue, sat, val, opacity)
@@ -4510,7 +4513,6 @@ run(function()
 	local Thickness
 	local Time
 	local Color
-	local Transparency
 
 	local rayCheck = RaycastParams.new()
 	rayCheck.FilterType = Enum.RaycastFilterType.Exclude
@@ -4576,8 +4578,8 @@ run(function()
 							if VelocityMagnitude > 0 then
 								local VelocityUnit = Velocity / VelocityMagnitude
 								local color = Color3.fromHSV(Color.Hue, Color.Sat, Color.Value)
+								local transparency = 1 - Color.Opacity
 								local thickness = Thickness.Value / 100
-								local transparency = Transparency.Value / 100
 								local lifetime = Time.Value
 								local Gravity = bedwars.ProjectileMeta[obj.Name].gravitationalAcceleration
 
@@ -4603,12 +4605,6 @@ run(function()
 		Max = 100,
 		Default = 20,
 		Decimal = 10,
-	})
-	Transparency = Trajectories:CreateSlider({
-		Name = 'Transparency',
-		Min = 0,
-		Max = 100,
-		Default = 30,
 	})
 	Time = Trajectories:CreateSlider({
 		Name = 'Duration',
