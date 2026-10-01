@@ -4536,13 +4536,21 @@ components = {
 		
 		local icon
 		if props.Icon then
+			local Frame = Instance.new('Frame')
+			Frame.BackgroundColor3 = uipallet.Main
+			Frame.BorderSizePixel = 0
+			Frame.BackgroundTransparency = 1
+			Frame.Name = props.Name
+			Frame.Size = UDim2.fromOffset(220, 40)
+			Frame.Parent = children
+
 			icon = Instance.new('ImageLabel')
 			icon.BackgroundTransparency = 1
 			icon.Image = props.Icon
 			icon.ImageColor3 = color.Dark(uipallet.Text, 0.16)
-			icon.Position = UDim2.fromOffset(16, 13)
+			icon.Position = UDim2.new(0, 16, 0, 13)
 			icon.Size = props.Size
-			icon.Parent = children
+			icon.Parent = Frame
 			component.Icon = icon
 
 			button.BackgroundTransparency = 1
