@@ -667,43 +667,6 @@ run(function()
 	local Client = require(replicatedStorage.TS.remotes).default.Client
 	local OldGet, OldBreak = Client.Get
 
-	local RemoteHandler = {}
-	RemoteHandler.Remotes = {}
-	RemoteHandler.__index = RemoteHandler
-
-	function RemoteHandler.Get(self, remoteID)
-		if RemoteHandler.Remotes[remoteID] then
-			return RemoteHandler.Remotes[remoteID]
-		end
-
-		local Remote = {}
-		setmetatable(Remote, RemoteHandler)
-
-		Remote.ID = remoteID
-
-		local success, remote = pcall(Client.Get, Client, Remote.ID)
-		Remote.Success = success
-		Remote.Remote = remote
-
-		RemoteHandler.Remotes[remoteID] = Remote
-			
-		return Remote
-	end
-
-	function RemoteHandler:Fire(method, ...)
-		local Remote = self.Remote
-		if not self.Success or not Remote then
-			return { andThen = function() end }
-		end
-
-		local func = (method and Remote[method]) or (Remote.CallServer or Remote.CallServerAsync or Remote.SendToServer)
-	    if func then
-			return func(Remote, ...)
-		end
-
-		return
-	end
-
 	bedwars = setmetatable({
 		AbilityController = Flamework.resolveDependency('@easy-games/game-core:client/controllers/ability/ability-controller@AbilityController'),
 		AnimationType = require(replicatedStorage.TS.animation['animation-type']).AnimationType,
@@ -722,7 +685,7 @@ run(function()
 		ClientDamageBlock = require(replicatedStorage['rbxts_include']['node_modules']['@easy-games']['block-engine'].out.shared.remotes).BlockEngineRemotes.Client,
 		CombatConstant = require(replicatedStorage.TS.combat['combat-constant']).CombatConstant,
 		DamageIndicator = Knit.Controllers.DamageIndicatorController.spawnDamageIndicator,
-		DefaultKillEffect = require(lplr.PlayerScripts.TS.controllers.global.locker['kill-effect'].effects['default-kill-effect']),
+		DefaultKillEffect = require(lplr.PlayerScripts.TS.controllers.game.locker['kill-effect'].effects['default-kill-effect']),
 		EmoteType = require(replicatedStorage.TS.locker.emote['emote-type']).EmoteType,
 		GameAnimationUtil = require(replicatedStorage.TS.animation['animation-util']).GameAnimationUtil,
 		getItemSkinMeta = require(replicatedStorage.TS.games.bedwars['item-skin']['item-skin-meta']).getItemSkinMeta,
@@ -739,7 +702,6 @@ run(function()
 				armor = {}
 			}
 		end,
-		Handler = RemoteHandler,
 		HudAliveCount = require(lplr.PlayerScripts.TS.controllers.global['top-bar'].ui.game['hud-alive-player-counts']).HudAlivePlayerCounts,
 		ItemMeta = debug.getupvalue(require(replicatedStorage.TS.item['item-meta']).getItemMeta, 1),
 		ItemSkinType = require(replicatedStorage.TS.games.bedwars['item-skin']['item-skin-types']).ItemSkinType,
@@ -2301,6 +2263,10 @@ run(function()
 	local LegitAura
 	local Particles, Boxes = {}, {}
 	local anims, AnimDelay, AnimTween, armC0 = vape.Libraries.auraanims, tick()
+	local AttackRemote = {FireServer = function() end}
+	task.spawn(function()
+		AttackRemote = bedwars.Client:Get(remotes.AttackEntity).instance
+	end)
 
 	local function getAttackData()
 		if Mouse.Enabled then
@@ -2449,7 +2415,7 @@ run(function()
 									store.attackReach = (delta.Magnitude * 100) // 1 / 100
 									store.attackReachUpdate = tick() + 1
 
-									bedwars.Handler:Get(remotes.AttackEntity):Fire('SendToServer', {
+									AttackRemote:FireServer({
 										weapon = sword.tool,
 										chargedAttack = {chargeRatio = 0},
 										entityInstance = v.Character,
@@ -2758,7 +2724,7 @@ run(function()
 	local JumpTick, JumpSpeed, Direction = tick(), 0
 	local projectileRemote = {InvokeServer = function() end}
 	task.spawn(function()
-		projectileRemote = bedwars.Handler:Get(remotes.FireProjectile).Remote.instance
+		projectileRemote = bedwars.Client:Get(remotes.FireProjectile).instance
 	end)
 	
 	local function launchProjectile(item, pos, proj, speed, dir)
@@ -2793,7 +2759,7 @@ run(function()
 						switchItem(tool.tool)
 					end
 	
-					bedwars.Handler:Get(remotes.CannonAim):Fire('SendToServer', {
+					bedwars.Client:Get(remotes.CannonAim):SendToServer({
 						cannonBlockPos = blockpos,
 						lookVector = dir
 					})
@@ -2806,7 +2772,7 @@ run(function()
 	
 					task.delay(broken, function()
 						for _ = 1, 3 do
-							local call = bedwars.Handler:Get(remotes.CannonLaunch):Fire('CallServer', {cannonBlockPos = blockpos})
+							local call = bedwars.Client:Get(remotes.CannonLaunch):CallServer({cannonBlockPos = blockpos})
 							if call then
 								bedwars.breakBlock(block, true, true)
 								JumpSpeed = 5.25 * Value.Value
@@ -3147,7 +3113,7 @@ run(function()
 	local projectileRemote = {InvokeServer = function() end}
 	local FireDelays = {}
 	task.spawn(function()
-		projectileRemote = bedwars.Handler:Get(remotes.FireProjectile).Remote.instance
+		projectileRemote = bedwars.Client:Get(remotes.FireProjectile).instance
 	end)
 	
 	local function getAmmo(check)
@@ -4682,12 +4648,12 @@ run(function()
 		end,
 		beekeeper = function()
 			kitCollection('bee', function(v)
-				bedwars.Handler:Get(remotes.BeePickup):Fire('SendToServer', {beeId = v:GetAttribute('BeeId')})
+				bedwars.Client:Get(remotes.BeePickup):SendToServer({beeId = v:GetAttribute('BeeId')})
 			end, 18, false)
 		end,
 		bigman = function()
 			kitCollection('treeOrb', function(v)
-				if bedwars.Handler:Get(remotes.ConsumeTreeOrb):Fire('CallServer', {treeOrbSecret = v:GetAttribute('TreeOrbSecret')}) then
+				if bedwars.Client:Get(remotes.ConsumeTreeOrb):CallServer({treeOrbSecret = v:GetAttribute('TreeOrbSecret')}) then
 					v:Destroy()
 				end
 			end, 12, false)
@@ -4755,14 +4721,14 @@ run(function()
 			kitCollection('KaliyahPunchInteraction', function(v)
 				bedwars.DragonSlayerController:deleteEmblem(v)
 				bedwars.DragonSlayerController:playPunchAnimation(Vector3.zero)
-				bedwars.Handler:Get(remotes.KaliyahPunch):Fire('SendToServer', {
+				bedwars.Client:Get(remotes.KaliyahPunch):SendToServer({
 					target = v
 				})
 			end, 18, true)
 		end,
 		farmer_cletus = function()
 			kitCollection('HarvestableCrop', function(v)
-				if bedwars.Handler:Get(remotes.HarvestCrop):Fire('CallServer', {position = bedwars.BlockController:getBlockPosition(v.Position)}) then
+				if bedwars.Client:Get(remotes.HarvestCrop):CallServer({position = bedwars.BlockController:getBlockPosition(v.Position)}) then
 					bedwars.GameAnimationUtil:playAnimation(lplr.Character, bedwars.AnimationType.PUNCH)
 					bedwars.SoundManager:playSound(bedwars.SoundList.CROP_HARVEST)
 				end
@@ -4799,7 +4765,7 @@ run(function()
 		end,
 		hannah = function()
 			kitCollection('HannahExecuteInteraction', function(v)
-				local billboard = bedwars.Handler:Get(remotes.HannahKill):Fire('CallServer', {
+				local billboard = bedwars.Client:Get(remotes.HannahKill):CallServer({
 					user = lplr,
 					victimEntity = v
 				}) and v:FindFirstChild('Hannah Execution Icon')
@@ -4817,7 +4783,7 @@ run(function()
 		grim_reaper = function()
 			kitCollection(bedwars.GrimReaperController.soulsByPosition, function(v)
 				if entitylib.isAlive and lplr.Character:GetAttribute('Health') <= (lplr.Character:GetAttribute('MaxHealth') / 4) and (not lplr.Character:GetAttribute('GrimReaperChannel')) then
-					bedwars.Handler:Get(remotes.ConsumeSoul):Fire('CallServer', {
+					bedwars.Client:Get(remotes.ConsumeSoul):CallServer({
 						secret = v:GetAttribute('GrimReaperSoulSecret')
 					})
 				end
@@ -4839,7 +4805,7 @@ run(function()
 				end
 	
 				if ent and getItem('guitar') then
-					bedwars.Handler:Get(remotes.GuitarHeal):Fire('SendToServer', {
+					bedwars.Client:Get(remotes.GuitarHeal):SendToServer({
 						healTarget = ent.Character
 					})
 				end
@@ -4849,14 +4815,14 @@ run(function()
 		end,
 		metal_detector = function()
 			kitCollection('hidden-metal', function(v)
-				bedwars.Handler:Get(remotes.PickupMetal):Fire('SendToServer', {
+				bedwars.Client:Get(remotes.PickupMetal):SendToServer({
 					id = v:GetAttribute('Id')
 				})
 			end, 20, false)
 		end,
 		miner = function()
 			kitCollection('petrified-player', function(v)
-			    bedwars.Handler:Get(remotes.MinerDig):Fire('SendToServer', {
+				bedwars.Client:Get(remotes.MinerDig):SendToServer({
 					petrifyId = v:GetAttribute('PetrifyId')
 				})
 			end, 6, true)
@@ -4864,7 +4830,7 @@ run(function()
 		pinata = function()
 			kitCollection(lplr.Name..':pinata', function(v)
 				if getItem('candy') then
-					bedwars.Handler:Get(remotes.DepositPinata):Fire('CallServer', {v})
+					bedwars.Client:Get(remotes.DepositPinata):CallServer(v)
 				end
 			end, 6, true)
 		end,
@@ -4892,7 +4858,7 @@ run(function()
 					local shootDir = CFrame.lookAt(localPosition, plr.RootPart.Position).LookVector
 					localPosition += shootDir * math.max((localPosition - plr.RootPart.Position).Magnitude - 16, 0)
 	
-					bedwars.Handler:Get(remotes.SummonerClawAttack):Fire('SendToServer', {
+					bedwars.Client:Get(remotes.SummonerClawAttack):SendToServer({
 						position = localPosition,
 						direction = shootDir,
 						clientTime = workspace:GetServerTimeNow()
@@ -4933,7 +4899,7 @@ run(function()
 					})
 	
 					if plr then
-					    bedwars.Handler:Get(remotes.DragonBreath):Fire('SendToServer', {
+						bedwars.Client:Get(remotes.DragonBreath):SendToServer({
 							player = lplr,
 							targetPoint = plr.RootPart.Position
 						})
@@ -5024,7 +4990,7 @@ run(function()
 	rayCheck.RespectCanCollide = true
 	local projectileRemote = {InvokeServer = function() end}
 	task.spawn(function()
-		projectileRemote = bedwars.Handler:Get(remotes.FireProjectile).Remote.instance
+		projectileRemote = bedwars.Client:Get(remotes.FireProjectile).instance
 	end)
 	
 	local function firePearl(pos, spot, item)
@@ -5292,7 +5258,7 @@ run(function()
 								for _, item in {'iron', 'diamond', 'emerald', 'gold'} do
 									item = getItem(item)
 									if item then
-										item = bedwars.Handler:Get(remotes.DropItem):Fire('CallServer', {
+										item = bedwars.Client:Get(remotes.DropItem):CallServer({
 											item = item.tool,
 											amount = item.amount
 										})
@@ -5383,7 +5349,7 @@ run(function()
 							if (localPosition - v.Position).Magnitude <= Range.Value then
 								if Lower.Enabled and (localPosition.Y - v.Position.Y) < (entitylib.character.HipHeight - 1) then continue end
 								task.spawn(function()
-									bedwars.Handler:Get(remotes.PickupItem):Fire('CallServerAsync', {
+									bedwars.Client:Get(remotes.PickupItem):CallServerAsync({
 										itemDrop = v
 									}):andThen(function(suc)
 										if suc and bedwars.SoundList then
@@ -5438,7 +5404,7 @@ run(function()
 				})
 	
 				if getItem('raven') and plr then
-					bedwars.Handler:Get(remotes.SpawnRaven):Fire('CallServerAsync'):andThen(function(projectile)
+					bedwars.Client:Get(remotes.SpawnRaven):CallServerAsync():andThen(function(projectile)
 						if projectile then
 							local bodyforce = Instance.new('BodyForce')
 							bodyforce.Force = Vector3.new(0, projectile.PrimaryPart.AssemblyMass * workspace.Gravity, 0)
@@ -5865,7 +5831,7 @@ run(function()
 					end
 				end
 	
-				bedwars.Handler:Get(remotes.AfkStatus):Fire('SendToServer', {
+				bedwars.Client:Get(remotes.AfkStatus):SendToServer({
 					afk = false
 				})
 			end
@@ -6219,6 +6185,9 @@ run(function()
 	local function customHealthbar(self, blockRef, health, maxHealth, changeHealth, block)
 		if block:GetAttribute('NoHealthbar') then return end
 		if not self.healthbarPart or not self.healthbarBlockRef or self.healthbarBlockRef.blockPosition ~= blockRef.blockPosition then
+			if self.healthbarPart then
+				bedwars.QueryUtil:setQueryIgnored(self.healthbarPart, true)
+			end
 			self.healthbarMaid:DoCleaning()
 			self.healthbarBlockRef = blockRef
 			local create = bedwars.Roact.createElement
@@ -6231,8 +6200,8 @@ run(function()
 			part.Anchored = true
 			part.CanCollide = false
 			part.Parent = workspace
-			self.healthbarPart = part
 			bedwars.QueryUtil:setQueryIgnored(self.healthbarPart, true)
+			self.healthbarPart = part
 	
 			local mounted = bedwars.Roact.mount(create('BillboardGui', {
 				Size = UDim2.fromOffset(249, 102),
@@ -7070,7 +7039,7 @@ run(function()
 	local function buyItem(item, currencytable)
 		if not id then return end
 		notif('AutoBuy', 'Bought '..bedwars.ItemMeta[item.itemType].displayName, 3)
-		bedwars.Handler:Get('BedwarsPurchaseItem'):Fire('CallServerAsync', {
+		bedwars.Client:Get('BedwarsPurchaseItem'):CallServerAsync({
 			shopItem = item,
 			shopId = id
 		}):andThen(function(suc)
@@ -7335,7 +7304,7 @@ run(function()
 				local speedpotion = getItem('speed_potion')
 				if speedpotion and (not lplr.Character:GetAttribute('StatusEffect_speed')) then
 					for _ = 1, 4 do
-						if bedwars.Handler:Get(remotes.ConsumeItem):Fire('CallServer', {item = speedpotion.tool}) then break end
+						if bedwars.Client:Get(remotes.ConsumeItem):CallServer({item = speedpotion.tool}) then break end
 					end
 				end
 			end
@@ -7345,7 +7314,7 @@ run(function()
 					local apple = getItem('orange') or (not lplr.Character:GetAttribute('StatusEffect_golden_apple') and getItem('golden_apple')) or getItem('apple')
 					
 					if apple then
-					    bedwars.Handler:Get(remotes.ConsumeItem):Fire('CallServerAsync', {
+						bedwars.Client:Get(remotes.ConsumeItem):CallServerAsync({
 							item = apple.tool
 						})
 					end
@@ -7357,7 +7326,7 @@ run(function()
 					local shield = getItem('big_shield') or getItem('mini_shield')
 	
 					if shield then
-						bedwars.Handler:Get(remotes.ConsumeItem):Fire('CallServerAsync', {
+						bedwars.Client:Get(remotes.ConsumeItem):CallServerAsync({
 							item = shield.tool
 						})
 					end
