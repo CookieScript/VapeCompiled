@@ -4596,6 +4596,34 @@ run(function()
 end)
 
 run(function()
+	local AntiSuffocate
+
+	local function IsSuffocating(Pos)
+		if getPlacedBlock(Pos) then
+			return true
+		end
+		return false
+	end
+
+	AntiSuffocate = vape.Categories.Utility:CreateModule({
+		Name = 'AntiSuffocate',
+		Function = function(callback)
+			if callback then
+				AntiSuffocate:Clean(runService.Heartbeat:Connect(function()
+					if entitylib.isAlive and AntiSuffocate.Enabled then
+						local root = entitylib.character.RootPart
+						if IsSuffocating(root.Position) then
+							root.CFrame += Vector3.new(0, 4, 0)
+						end
+					end
+				end))
+			end
+		end,
+		Tooltip = 'Prevents you from suffocation.'
+	})
+end)
+
+run(function()
 	local AutoKit
 	local Legit
 	local Toggles = {}
