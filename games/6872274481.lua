@@ -1730,25 +1730,6 @@ run(function()
     rayCheck.FilterType = Enum.RaycastFilterType.Include
     rayCheck.FilterDescendantsInstances = {map}
 
-	local function GetSafePos(Pos)
-		local positions = {}
-
-		for _, dir in { Vector3.new(1, 0, 0), Vector3.new(0, 0, 1), Vector3.new(-1, 0, 0), Vector3.new(0, 0, -1) } do
-			for i = 1, 18 do
-				local hit = workspace:Raycast(Pos + Vector3.new(0, 500, 0) + dir * i, Vector3.new(0, -1000, 0), rayCheck)
-				if hit then
-					table.insert(positions, hit.Position)
-				end
-			end
-		end
-
-		table.sort(positions, function(a, b)
-			return (Vector3.new(Pos.X, a.Y, Pos.Z) - a).Magnitude < (Vector3.new(Pos.X, b.Y, Pos.Z) - b).Magnitude
-		end)
-
-		return positions[1]
-	end
-
 	AntiVoidDeath = vape.Categories.Blatant:CreateModule({
 		Name = 'AntiVoidDeath',
 		Function = function(callback)
@@ -1758,17 +1739,11 @@ run(function()
 
 				AntiVoidDeath:Clean(runService.PreSimulation:Connect(function(dt)
 					if entitylib.isAlive and AntiVoidDeath.Enabled and lplr.Character and lplr.Character:FindFirstChild("HumanoidRootPart") and lplr.Character:FindFirstChild("Humanoid") and not isnetworkowner(lplr.Character.HumanoidRootPart) and not workspace:Raycast(lplr.Character.HumanoidRootPart.Position, Vector3.new(0, -1000, 0), rayCheck) then
-						lplr.Character.HumanoidRootPart.AssemblyLinearVelocity = Vector3.new(0, ((1 + workspace.Gravity) * 2) * dt, 0)
+						lplr.Character.HumanoidRootPart.AssemblyLinearVelocity = Vector3.new(0, ((1 + workspace.Gravity) * 3) * dt, 0)
 						flagged = true
 						lplr.Character.Humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
 						replicatesignal(seat.RemoteCreateSeatWeld, lplr.Character.Humanoid)
 					elseif entitylib.isAlive and AntiVoidDeath.Enabled and lplr.Character and lplr.Character:FindFirstChild("HumanoidRootPart") and isnetworkowner(lplr.Character.HumanoidRootPart) and flagged then
-						local SafePosition = GetSafePos(lplr.Character.HumanoidRootPart.Position)
-						if SafePosition then
-							notif('AntiVoidDeath', 'Teleported!', 8)
-							lplr.Character.HumanoidRootPart.AssemblyLinearVelocity = Vector3.new(0, 2.5, 0)
-							lplr.Character.HumanoidRootPart.CFrame = CFrame.lookAlong(SafePosition + Vector3.new(0, 2.5, 0), lplr.Character.HumanoidRootPart.CFrame.LookVector)
-						end
 						replicatesignal(seat.RemoteDestroySeatWeld)
 					    flagged = false
 					end
