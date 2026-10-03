@@ -1716,41 +1716,73 @@ run(function()
 	})
 end)
 
--- // This is for testing only lol im gonna delete this if it doesn't work
 run(function()
-	local AntiNetwork
-    local SimRad, MaxSimRad = gethiddenproperty(lplr, "SimulationRadius") or 1000, gethiddenproperty(lplr, "MaxSimulationRadius") or 1000
+	--[[
+
+		I know your here just for the AntiVoidDeath you little skidder🥺 when you skid make sure to credit.
+		Made by dino (@tssodino) Discord and Tiktok
+
+	]]
+
+	local AntiVoidDeath
     local rayCheck = RaycastParams.new()
     rayCheck.FilterType = Enum.RaycastFilterType.Exclude
     rayCheck.FilterDescendantsInstances = {lplr.Character, gameCamera, AntiFallPart}
 
-	AntiNetwork = vape.Categories.Blatant:CreateModule({
-		Name = 'AntiNetwork',
+	local function GetSafePos(Pos)
+		local positions = {}
+
+		for _, dir in { Vector3.new(1, 0, 0), Vector3.new(0, 0, 1), Vector3.new(-1, 0, 0), Vector3.new(0, 0, -1) } do
+			for i = 1, 16 do
+				local hit = workspace:Raycast(Pos + Vector3.new(0, 500, 0) + dir * i, Vector3.new(0, -1000, 0), rayCheck)
+				if hit then
+					table.insert(positions, hit.Position)
+				end
+			end
+		end
+
+		table.sort(positions, function(a, b)
+			local ref = Vector3.new(Pos.X, a.Y, Pos.Z)
+			local refB = Vector3.new(Pos.X, b.Y, Pos.Z)
+			return (ref - a).Magnitude < (refB - b).Magnitude
+		end)
+
+		return positions[1]
+	end
+
+	AntiVoidDeath = vape.Categories.Blatant:CreateModule({
+		Name = 'AntiVoidDeath',
 		Function = function(callback)
 			if callback then
-				pcall(function()
-					sethiddenproperty(lplr, "SimulationRadius", math.huge)
-					sethiddenproperty(lplr, "MaxSimulationRadius", math.huge)
-				end)
+				local seat = replicatedStorage.Assets.Effects.snowball_rider.Handle.Seat
+				local flagged = false
 
-				AntiNetwork:Clean(runService.Heartbeat:Connect(function(dt)
-					if entitylib.isAlive and AntiNetwork.Enabled and not isnetworkowner(entitylib.character.RootPart) then
-						local root = entitylib.character.RootPart
-					    local raycast = workspace:Raycast(root.Position, Vector3.new(0, -2000, 0), rayCheck)
-						if not raycast then
-							root.AssemblyLinearVelocity = Vector3.new(0, 1000*dt, 0)
-							root.Velocity = Vector3.new(0, 1*dt, 0)
+				AntiVoidDeath:Clean(runService.Heartbeat:Connect(function(dt)
+					if entitylib.isAlive and AntiVoidDeath.Enabled and lplr.Character and lplr.Character:FindFirstChild("HumanoidRootPart") and lplr.Character:FindFirstChild("Humanoid") and not isnetworkowner(lplr.Character.HumanoidRootPart) and not workspace:Raycast(lplr.Character.HumanoidRootPart.Position, Vector3.new(0, -1000, 0), rayCheck) then
+						lplr.Character.HumanoidRootPart.AssemblyLinearVelocity = Vector3.new(0, 1*dt, 0)
+						lplr.Character.Humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+						replicatesignal(seat.RemoteCreateSeatWeld, lplr.Character.Humanoid)
+						flagged = true
+					elseif entitylib.isAlive and AntiVoidDeath.Enabled and lplr.Character and lplr.Character:FindFirstChild("HumanoidRootPart") and isnetworkowner(lplr.Character.HumanoidRootPart) and flagged then
+						local SafePosition = GetSafePos(lplr.Character.HumanoidRootPart.Position)
+						if SafePosition then
+							lplr.Character.HumanoidRootPart.AssemblyLinearVelocity = Vector3.new(0, 2.5, 0)
+							lplr.Character.HumanoidRootPart.CFrame = CFrame.lookAlong(SafePosition + Vector3.new(0, 2.5, 0), lplr.Character.HumanoidRootPart.CFrame.LookVector)
 						end
+						replicatesignal(seat.RemoteDestroySeatWeld)
+					    flagged = false
 					end
 				end))
-			else
-				pcall(function()
-					sethiddenproperty(lplr, "SimulationRadius", SimRad)
-					sethiddenproperty(lplr, "MaxSimulationRadius", MaxSimRad)
-				end)
+
+				AntiVoidDeath:Clean(lplr.CharacterAdded:Connect(function()
+                    if flagged then
+                        replicatesignal(seat.RemoteDestroySeatWeld)
+                        flagged = false
+                    end
+                end))
 			end
 		end,
-		Tooltip = 'Fights network ownership.'
+		Tooltip = 'Prevents you from dying on void.'
 	})
 end)
 
