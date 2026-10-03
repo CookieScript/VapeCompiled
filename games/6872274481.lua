@@ -279,7 +279,7 @@ local function getShieldAttribute(char)
 	return returned
 end
 
-local KnockbackTick, KnockbackSpeed = tick(), 0
+local KnockbackTick, KnockbackSpeed, KrystalSpeed = tick(), 0, { Value = 1 }
 local function getSpeed()
 	local multi, increase, modifiers = 0, true, bedwars.SprintController:getMovementStatusModifier():getModifiers()
 
@@ -300,7 +300,7 @@ local function getSpeed()
 	end
 
 	if vape.Modules.KrystalDisabler and vape.Modules.KrystalDisabler.Enabled and bedwars.Store:getState().Bedwars.kit == 'glacial_skater' and bedwars.Store:getState().Game.matchState == 1 then
-		multi += 3
+		multi += KrystalSpeed.Value
 	end
 
 	return (20 + (KnockbackTick > tick() and KnockbackSpeed or 0)) * (multi + 1)
@@ -5331,6 +5331,13 @@ run(function()
 		end,
 		Tooltip = 'Abuses krystal momentum.'
 	})
+	KrystalSpeed = KrystalDisabler:CreateSlider({
+        Name = 'Speed',
+        Min = 1,
+        Max = 3,
+        Decimal = 10,
+        Default = 1,
+    })
 end)
 
 run(function()
