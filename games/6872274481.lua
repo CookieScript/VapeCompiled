@@ -1758,14 +1758,14 @@ run(function()
 
 				AntiVoidDeath:Clean(runService.PreSimulation:Connect(function(dt)
 					if entitylib.isAlive and AntiVoidDeath.Enabled and lplr.Character and lplr.Character:FindFirstChild("HumanoidRootPart") and lplr.Character:FindFirstChild("Humanoid") and not isnetworkowner(lplr.Character.HumanoidRootPart) and not workspace:Raycast(lplr.Character.HumanoidRootPart.Position, Vector3.new(0, -1000, 0), rayCheck) then
-						local oldvelo = lplr.Character.HumanoidRootPart.Velocity
-						lplr.Character.HumanoidRootPart.AssemblyLinearVelocity = Vector3.new(oldvelo.X, (1 + workspace.Gravity) * dt, oldvelo.Z)
+						lplr.Character.HumanoidRootPart.AssemblyLinearVelocity = Vector3.new(0, ((1 + workspace.Gravity) * 2) * dt, 0)
 						flagged = true
 						lplr.Character.Humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
 						replicatesignal(seat.RemoteCreateSeatWeld, lplr.Character.Humanoid)
 					elseif entitylib.isAlive and AntiVoidDeath.Enabled and lplr.Character and lplr.Character:FindFirstChild("HumanoidRootPart") and isnetworkowner(lplr.Character.HumanoidRootPart) and flagged then
 						local SafePosition = GetSafePos(lplr.Character.HumanoidRootPart.Position)
 						if SafePosition then
+							notif('AntiVoidDeath', 'Teleported!', 8)
 							lplr.Character.HumanoidRootPart.AssemblyLinearVelocity = Vector3.new(0, 2.5, 0)
 							lplr.Character.HumanoidRootPart.CFrame = CFrame.lookAlong(SafePosition + Vector3.new(0, 2.5, 0), lplr.Character.HumanoidRootPart.CFrame.LookVector)
 						end
