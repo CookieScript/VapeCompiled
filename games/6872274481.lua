@@ -5160,6 +5160,15 @@ run(function()
 	local Toggles, Lists, said, dead = {}, {}, {}
 
 	local function GetPresetId(msg)
+		for _, g in textChatService:GetPresetsAsync().categoryGroups do
+			for _, c in g.categories do
+				for _, m in c.messages do
+					if m.value == msg then
+						return m.presetId
+					end
+				end
+			end
+		end
 		return msg
 	end
 
