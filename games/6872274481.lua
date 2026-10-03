@@ -5157,19 +5157,23 @@ end)
 run(function()
 	local AutoToxic
 	local GG
+	local PresetIds = {}
 	local Toggles, Lists, said, dead = {}, {}, {}
 
-	local function GetPresetId(msg)
-		for _, g in textChatService:GetPresetsAsync().categoryGroups do
-			for _, c in g.categories do
-				for _, m in c.messages do
-					if m.value == msg then
-						return m.presetId
+	task.spawn(function()
+		pcall(function()
+			for _, g in textChatService:GetPresetsAsync().categoryGroups do
+				for _, c in g.categories do
+					for _, m in c.messages do
+						PresetIds[m.value] = m.presetId
 					end
 				end
 			end
-		end
-		return msg
+		end)
+	end)
+
+	local function GetPresetId(msg)
+		return PresetIds[msg] or msg
 	end
 
 	local function sendMessage(name, obj, default)
