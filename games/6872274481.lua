@@ -1724,10 +1724,11 @@ run(function()
 
 	]]
 
+	local map = workspace:WaitForChild('Map', 9e9)
 	local AntiVoidDeath
     local rayCheck = RaycastParams.new()
-    rayCheck.FilterType = Enum.RaycastFilterType.Exclude
-    rayCheck.FilterDescendantsInstances = {lplr.Character, gameCamera, AntiFallPart}
+    rayCheck.FilterType = Enum.RaycastFilterType.Include
+    rayCheck.FilterDescendantsInstances = {map}
 
 	local function GetSafePos(Pos)
 		local positions = {}
