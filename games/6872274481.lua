@@ -299,6 +299,10 @@ local function getSpeed()
 		multi += 0.16 + (0.02 * math.round(multi))
 	end
 
+	if vape.Modules.KrystalDisabler and vape.Modules.KrystalDisabler.Enabled and bedwars.Store:getState().Bedwars.kit == 'glacial_skater' then
+		multi += 3
+	end
+
 	return (20 + (KnockbackTick > tick() and KnockbackSpeed or 0)) * (multi + 1)
 end
 
@@ -5306,6 +5310,26 @@ run(function()
 		Name = 'Owl check',
 		Default = true,
 		Tooltip = 'Refuses to drop items if being picked up by an owl'
+	})
+end)
+
+run(function()
+	local KrystalDisabler
+
+	KrystalDisabler = vape.Categories.Utility:CreateModule({
+		Name = 'KrystalDisabler',
+		Function = function(callback)
+			repeat task.wait() until not KrystalDisabler.Enabled or bedwars.Store:getState().Game.matchState ~= 1
+			if callback then
+				repeat
+					task.wait(0.03)
+					if KrystalDisabler.Enabled and bedwars.Store:getState().Bedwars.kit == 'glacial_skater' then
+						replicatedStorage.rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.MomentumUpdate:FireServer(math.random(1000, 5000))
+					end
+				until not KrystalDisabler.Enabled
+			end
+		end,
+		Tooltip = 'Abuses krystal momentum.'
 	})
 end)
 
