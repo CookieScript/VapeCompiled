@@ -1716,7 +1716,6 @@ run(function()
 	})
 end)
 
--- // im gonna use While Do instead of Runservice heartbeat
 run(function()
 	--[[
 
@@ -1727,9 +1726,9 @@ run(function()
 
 	local map = workspace:WaitForChild('Map', 9e9)
 	local AntiVoidDeath
-	local rayCheck = RaycastParams.new()
-	rayCheck.FilterType = Enum.RaycastFilterType.Include
-	rayCheck.FilterDescendantsInstances = {map}
+    local rayCheck = RaycastParams.new()
+    rayCheck.FilterType = Enum.RaycastFilterType.Include
+    rayCheck.FilterDescendantsInstances = {map}
 
 	local function GetSafePos(Pos)
 		local positions = {}
@@ -1744,9 +1743,9 @@ run(function()
 		end
 
 		table.sort(positions, function(a, b)
-			local refA = Vector3.new(Pos.X, a.Y, Pos.Z)
+			local ref = Vector3.new(Pos.X, a.Y, Pos.Z)
 			local refB = Vector3.new(Pos.X, b.Y, Pos.Z)
-			return (refA - a).Magnitude < (refB - b).Magnitude
+			return (ref - a).Magnitude < (refB - b).Magnitude
 		end)
 
 		return positions[1]
@@ -1759,40 +1758,20 @@ run(function()
 				local seat = replicatedStorage.Assets.Effects.snowball_rider.Handle.Seat
 				local flagged = false
 
-				AntiVoidDeath:Clean(task.spawn(function()
-					while entitylib.isAlive and AntiVoidDeath.Enabled do
-						local char = lplr.Character
-						local root = char and char:FindFirstChild("HumanoidRootPart")
-						local hum = char and char:FindFirstChild("Humanoid")
-
-						if char and root and hum and not isnetworkowner(root) and not workspace:Raycast(root.Position, Vector3.new(0, -1000, 0), rayCheck) then
-							root.AssemblyLinearVelocity = Vector3.zero
-							hum:ChangeState(Enum.HumanoidStateType.Jumping)
-							replicatesignal(seat.RemoteCreateSeatWeld, hum)
-							flagged = true
-						elseif char and root and isnetworkowner(root) and flagged then
-							local SafePosition = GetSafePos(root.Position)
-							if SafePosition then
-								root.AssemblyLinearVelocity = Vector3.new(0, 2.5, 0)
-								root.CFrame = CFrame.lookAlong(SafePosition + Vector3.new(0, 2.5, 0), root.CFrame.LookVector)
-							end
-							replicatesignal(seat.RemoteDestroySeatWeld)
-							flagged = false
+				AntiVoidDeath:Clean(runService.Heartbeat:Connect(function(dt)
+					if entitylib.isAlive and AntiVoidDeath.Enabled and lplr.Character and lplr.Character:FindFirstChild("HumanoidRootPart") and lplr.Character:FindFirstChild("Humanoid") and not isnetworkowner(lplr.Character.HumanoidRootPart) and not workspace:Raycast(lplr.Character.HumanoidRootPart.Position, Vector3.new(0, -1000, 0), rayCheck) then
+						lplr.Character.HumanoidRootPart.AssemblyLinearVelocity = Vector3.new(0, 1*dt, 0)
+						flagged = true
+						lplr.Character.Humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+						replicatesignal(seat.RemoteCreateSeatWeld, lplr.Character.Humanoid)
+					elseif entitylib.isAlive and AntiVoidDeath.Enabled and lplr.Character and lplr.Character:FindFirstChild("HumanoidRootPart") and isnetworkowner(lplr.Character.HumanoidRootPart) and flagged then
+						local SafePosition = GetSafePos(lplr.Character.HumanoidRootPart.Position)
+						if SafePosition then
+							lplr.Character.HumanoidRootPart.AssemblyLinearVelocity = Vector3.new(0, 2.5, 0)
+							lplr.Character.HumanoidRootPart.CFrame = CFrame.lookAlong(SafePosition + Vector3.new(0, 2.5, 0), lplr.Character.HumanoidRootPart.CFrame.LookVector)
 						end
-
-						task.wait()
-					end
-
-					if flagged then
 						replicatesignal(seat.RemoteDestroySeatWeld)
-						flagged = false
-					end
-				end))
-
-				AntiVoidDeath:Clean(lplr.CharacterAdded:Connect(function()
-					if flagged then
-						replicatesignal(seat.RemoteDestroySeatWeld)
-						flagged = false
+					    flagged = false
 					end
 				end))
 			end
