@@ -299,8 +299,8 @@ local function getSpeed()
 		multi += 0.16 + (0.02 * math.round(multi))
 	end
 
-	if vape.Modules.KrystalDisabler and vape.Modules.KrystalDisabler.Enabled and bedwars.Store:getState().Bedwars.kit == 'glacial_skater' then
-		multi += 3
+	if vape.Modules.KrystalDisabler and vape.Modules.KrystalDisabler.Enabled and bedwars.Store:getState().Bedwars.kit == 'glacial_skater' and bedwars.Store:getState().Game.matchState == 1 then
+		multi += 4
 	end
 
 	return (20 + (KnockbackTick > tick() and KnockbackSpeed or 0)) * (multi + 1)
