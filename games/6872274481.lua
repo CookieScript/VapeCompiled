@@ -5156,7 +5156,7 @@ run(function()
 	local Toggles, Lists, said, dead = {}, {}, {}
 
 	local function GetPresetId(msg)
-		return (tostring(str):lower():gsub('^%s*(.-)%s*$', '%1'))
+		return (tostring(msg):lower():gsub('^%s*(.-)%s*$', '%1'))
 	end
 
 	local function sendMessage(name, obj, default)
