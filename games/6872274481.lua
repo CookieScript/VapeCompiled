@@ -300,7 +300,7 @@ local function getSpeed()
 	end
 
 	if vape.Modules.KrystalDisabler and vape.Modules.KrystalDisabler.Enabled and bedwars.Store:getState().Bedwars.kit == 'glacial_skater' and bedwars.Store:getState().Game.matchState == 1 then
-		multi += 2
+		multi += 3
 	end
 
 	return (20 + (KnockbackTick > tick() and KnockbackSpeed or 0)) * (multi + 1)
@@ -5324,7 +5324,7 @@ run(function()
 				repeat
 					task.wait()
 					if KrystalDisabler.Enabled and bedwars.Store:getState().Bedwars.kit == 'glacial_skater' then
-						replicatedStorage.rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.MomentumUpdate:FireServer(math.random(1000, 5000))
+						replicatedStorage.rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.MomentumUpdate:FireServer({momentumValue = 5000})
 					end
 				until not KrystalDisabler.Enabled
 			end
