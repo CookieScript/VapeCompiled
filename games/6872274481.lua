@@ -5322,7 +5322,7 @@ run(function()
 			repeat task.wait() until not KrystalDisabler.Enabled or bedwars.Store:getState().Game.matchState ~= 1
 			if callback then
 				repeat
-					task.wait()
+					task.wait(0.03)
 					if KrystalDisabler.Enabled and bedwars.Store:getState().Bedwars.kit == 'glacial_skater' then
 						replicatedStorage.rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.MomentumUpdate:FireServer(1000 * math.random(1, 5))
 					end
@@ -5333,7 +5333,7 @@ run(function()
 	})
 	KrystalSpeed = KrystalDisabler:CreateSlider({
         Name = 'Speed',
-        Min = 1,
+        Min = 0.1,
         Max = 3,
         Decimal = 10,
         Default = 1,
