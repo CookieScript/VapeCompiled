@@ -1734,7 +1734,7 @@ run(function()
 		local positions = {}
 
 		for _, dir in { Vector3.new(1, 0, 0), Vector3.new(0, 0, 1), Vector3.new(-1, 0, 0), Vector3.new(0, 0, -1) } do
-			for i = 1, 16 do
+			for i = 1, 18 do
 				local hit = workspace:Raycast(Pos + Vector3.new(0, 500, 0) + dir * i, Vector3.new(0, -1000, 0), rayCheck)
 				if hit then
 					table.insert(positions, hit.Position)
@@ -1743,9 +1743,7 @@ run(function()
 		end
 
 		table.sort(positions, function(a, b)
-			local ref = Vector3.new(Pos.X, a.Y, Pos.Z)
-			local refB = Vector3.new(Pos.X, b.Y, Pos.Z)
-			return (ref - a).Magnitude < (refB - b).Magnitude
+			return (Vector3.new(Pos.X, a.Y, Pos.Z) - a).Magnitude < (Vector3.new(Pos.X, b.Y, Pos.Z) - b).Magnitude
 		end)
 
 		return positions[1]
@@ -1758,9 +1756,10 @@ run(function()
 				local seat = replicatedStorage.Assets.Effects.snowball_rider.Handle.Seat
 				local flagged = false
 
-				AntiVoidDeath:Clean(runService.Heartbeat:Connect(function(dt)
+				AntiVoidDeath:Clean(runService.PreSimulation:Connect(function(dt)
 					if entitylib.isAlive and AntiVoidDeath.Enabled and lplr.Character and lplr.Character:FindFirstChild("HumanoidRootPart") and lplr.Character:FindFirstChild("Humanoid") and not isnetworkowner(lplr.Character.HumanoidRootPart) and not workspace:Raycast(lplr.Character.HumanoidRootPart.Position, Vector3.new(0, -1000, 0), rayCheck) then
-						lplr.Character.HumanoidRootPart.AssemblyLinearVelocity = Vector3.new(0, 1*dt, 0)
+						local oldvelo = lplr.Character.HumanoidRootPart.Velocity
+						lplr.Character.HumanoidRootPart.AssemblyLinearVelocity = Vector3.new(oldvelo.X, (1 + workspace.Gravity) * dt, oldvelo.Z)
 						flagged = true
 						lplr.Character.Humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
 						replicatesignal(seat.RemoteCreateSeatWeld, lplr.Character.Humanoid)
