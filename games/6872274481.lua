@@ -5154,7 +5154,11 @@ run(function()
 	local AutoToxic
 	local GG
 	local Toggles, Lists, said, dead = {}, {}, {}
-	
+
+	local function GetPresetId(msg)
+		return (tostring(str):lower():gsub('^%s*(.-)%s*$', '%1'))
+	end
+
 	local function sendMessage(name, obj, default)
 		local tab = Lists[name].ListEnabled
 		local custommsg = #tab > 0 and tab[math.random(1, #tab)] or default
@@ -5172,7 +5176,7 @@ run(function()
 			if textChatService:CanUserChatAsync(lplr.UserId) then
 			    textChatService.ChatInputBarConfiguration.TargetTextChannel:SendAsync(custommsg)
 			else
-				textChatService.ChatInputBarConfiguration.TargetTextChannel:SendPresetAsync('So close')
+				textChatService.ChatInputBarConfiguration.TargetTextChannel:SendPresetAsync(GetPresetId(math.random(1, 2) == 1 and 'So close' or 'My bad'))
 			end
 		else
 			replicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer(custommsg, 'All')
@@ -5209,7 +5213,11 @@ run(function()
 				AutoToxic:Clean(vapeEvents.MatchEndEvent.Event:Connect(function(winstuff)
 					if GG.Enabled then
 						if textChatService.ChatVersion == Enum.ChatVersion.TextChatService then
-							textChatService.ChatInputBarConfiguration.TargetTextChannel:SendAsync('gg')
+							if textChatService:CanUserChatAsync(lplr.UserId) then
+						    	textChatService.ChatInputBarConfiguration.TargetTextChannel:SendAsync('gg')
+							else
+								textChatService.ChatInputBarConfiguration.TargetTextChannel:SendPresetAsync(GetPresetId('Good game'))
+							end
 						else
 							replicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer('gg', 'All')
 						end
