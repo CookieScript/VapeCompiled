@@ -685,7 +685,7 @@ run(function()
 		ClientDamageBlock = require(replicatedStorage['rbxts_include']['node_modules']['@easy-games']['block-engine'].out.shared.remotes).BlockEngineRemotes.Client,
 		CombatConstant = require(replicatedStorage.TS.combat['combat-constant']).CombatConstant,
 		DamageIndicator = Knit.Controllers.DamageIndicatorController.spawnDamageIndicator,
-		DefaultKillEffect = require(lplr.PlayerScripts.TS.controllers.game.locker['kill-effect'].effects['default-kill-effect']),
+		DefaultKillEffect = require(lplr.PlayerScripts.TS.controllers.global.locker['kill-effect'].effects['default-kill-effect']),
 		EmoteType = require(replicatedStorage.TS.locker.emote['emote-type']).EmoteType,
 		GameAnimationUtil = require(replicatedStorage.TS.animation['animation-util']).GameAnimationUtil,
 		getItemSkinMeta = require(replicatedStorage.TS.games.bedwars['item-skin']['item-skin-meta']).getItemSkinMeta,
@@ -4180,7 +4180,7 @@ run(function()
 end)
 
 run(function()
-	local ItemSkins, SkinGroups, SkinFamilies, SkinOrder, SkinLabels, ExtraSkins, OriginalSounds, Ddowns, OriginalTransparency, SkinChanger, CharCon, PendingUpdate, LastHeldItem = {}, {}, {}, {}, {}, {}, {}, {}, {}, nil, nil, false, nil
+	local ItemSkins, SkinGroups, SkinFamilies, SkinOrder, SkinLabels, OriginalSounds, Ddowns, OriginalTransparency, SkinChanger, CharCon, PendingUpdate, LastHeldItem = {}, {}, {}, {}, {}, {}, {}, {}, nil, nil, false, nil
 
 	local function formatName(text)
 		return (tostring(text):gsub('_', ' '):gsub('%a+', function(word)
@@ -4231,12 +4231,6 @@ run(function()
 		return SkinLabels[first] < SkinLabels[second]
 	end)
 
-	for _, itemName in {'bear_claws', 'lobby_kaida_claw', 'summoner_claw_1', 'summoner_claw_2', 'summoner_claw_3', 'summoner_claw_4'} do
-		if replicatedStorage.Items:FindFirstChild(itemName) then
-			ExtraSkins[formatName(itemName:gsub('^lobby_', ''))] = itemName
-		end
-	end
-
 	local function updateSwordSounds()
 		for itemName in ItemSkins do
 			local itemData = bedwars.ItemMeta[itemName]
@@ -4244,7 +4238,7 @@ run(function()
 				local groupName = SkinFamilies[itemName]
 				local selector = groupName and Ddowns[groupName]
 				local selectedName = selector and selector.Value
-				local selectedSkin = selectedName and not ExtraSkins[selectedName] and ItemSkins[itemName][selectedName]
+				local selectedSkin = selectedName and ItemSkins[itemName][selectedName]
 				local selectedData = selectedSkin and bedwars.getItemSkinMeta(selectedSkin)
 				local selectedSword = selectedData and selectedData.sword
 				if selectedSword and (selectedSword.swingSounds or selectedSword.hitSounds) then
@@ -4271,7 +4265,7 @@ run(function()
 			local groupName = SkinChanger.Enabled and SkinFamilies[inventoryItem.itemType]
 			local selector = groupName and Ddowns[groupName]
 			local selectedName = selector and selector.Value
-			local selectedSkin = selectedName and not ExtraSkins[selectedName] and ItemSkins[inventoryItem.itemType][selectedName]
+			local selectedSkin = selectedName and ItemSkins[inventoryItem.itemType][selectedName]
 			inventoryItem.itemSkin = selectedSkin
 		end
 
@@ -4280,7 +4274,7 @@ run(function()
 			local groupName = SkinChanger.Enabled and SkinFamilies[heldItem.itemType]
 			local selector = groupName and Ddowns[groupName]
 			local selectedName = selector and selector.Value
-			local selectedSkin = selectedName and not ExtraSkins[selectedName] and ItemSkins[heldItem.itemType][selectedName]
+			local selectedSkin = selectedName and ItemSkins[heldItem.itemType][selectedName]
 			heldItem.itemSkin = selectedSkin
 		end
 	end
@@ -4290,7 +4284,7 @@ run(function()
 		local groupName = SkinChanger.Enabled and SkinFamilies[itemName]
 		local selector = groupName and Ddowns[groupName]
 		local selectedName = selector and selector.Value
-		local selectedModel = selectedName and (ExtraSkins[selectedName] or ItemSkins[itemName] and ItemSkins[itemName][selectedName])
+		local selectedModel = selectedName and ItemSkins[itemName] and ItemSkins[itemName][selectedName]
 		local handle = accessory:FindFirstChild('Handle')
 		local template = selectedModel and replicatedStorage.Items:FindFirstChild(selectedModel)
 
@@ -4395,7 +4389,7 @@ run(function()
 					LastHeldItem = nil
 					watchCharacter(character)
 					task.spawn(function()
-						for i = 1, 5 do
+						for _ = 1, 5 do
 							task.wait(0.5)
 							if not SkinChanger.Enabled then
                                 break
@@ -4438,12 +4432,6 @@ run(function()
 			if itemData and itemData.sword then
 				containsSword = true
 				break
-			end
-		end
-
-		if containsSword then
-			for displayName in ExtraSkins do
-				table.insert(AvaSkins, displayName)
 			end
 		end
 
