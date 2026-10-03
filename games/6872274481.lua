@@ -5324,7 +5324,7 @@ run(function()
 				repeat
 					task.wait()
 					if KrystalDisabler.Enabled and bedwars.Store:getState().Bedwars.kit == 'glacial_skater' then
-						replicatedStorage.rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.MomentumUpdate:FireServer({momentumValue = 5000})
+						replicatedStorage.rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.MomentumUpdate:FireServer(1000 * math.random(1, 5))
 					end
 				until not KrystalDisabler.Enabled
 			end
