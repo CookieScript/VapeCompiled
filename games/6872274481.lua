@@ -810,7 +810,7 @@ run(function()
 		if remote == '' then
 			notif('Vape', 'Failed to grab remote ('..i..')', 10, 'alert')
 		end]]
-		remotes[i] = remote
+		remotes[i] = v
 	end
 
 	OldBreak = bedwars.BlockController.isBlockBreakable
