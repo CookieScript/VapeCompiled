@@ -1716,6 +1716,44 @@ run(function()
 	})
 end)
 
+-- // This is for testing only lol im gonna delete this if it doesn't work
+run(function()
+	local AntiNetwork
+    local SimRad, MaxSimRad = gethiddenproperty(lplr, "SimulationRadius") or 1000, gethiddenproperty(lplr, "MaxSimulationRadius") or 1000
+    local rayCheck = RaycastParams.new()
+    rayCheck.FilterType = Enum.RaycastFilterType.Exclude
+    rayCheck.FilterDescendantsInstances = {lplr.Character, gameCamera, AntiFallPart}
+
+	AntiNetwork = vape.Categories.Blatant:CreateModule({
+		Name = 'AntiNetwork',
+		Function = function(callback)
+			if callback then
+				pcall(function()
+					sethiddenproperty(lplr, "SimulationRadius", math.huge)
+					sethiddenproperty(lplr, "MaxSimulationRadius", math.huge)
+				end)
+
+				AntiNetwork:Clean(runService.Heartbeat:Connect(function(dt)
+					if entitylib.isAlive and AntiNetwork.Enabled and not isnetworkowner(entitylib.character.RootPart) then
+						local root = entitylib.character.RootPart
+					    local raycast = workspace:Raycast(root.Position, Vector3.new(0, -2000, 0), rayCheck)
+						if not raycast then
+							root.AssemblyLinearVelocity = Vector3.new(0, 1000*dt, 0)
+							root.Velocity = Vector3.new(0, 1*dt, 0)
+						end
+					end
+				end))
+			else
+				pcall(function()
+					sethiddenproperty(lplr, "SimulationRadius", SimRad)
+					sethiddenproperty(lplr, "MaxSimulationRadius", MaxSimRad)
+				end)
+			end
+		end,
+		Tooltip = 'Fights network ownership.'
+	})
+end)
+
 run(function()
 	local DamageBoost
     local cooldown
@@ -6253,9 +6291,6 @@ run(function()
 	local function customHealthbar(self, blockRef, health, maxHealth, changeHealth, block)
 		if block:GetAttribute('NoHealthbar') then return end
 		if not self.healthbarPart or not self.healthbarBlockRef or self.healthbarBlockRef.blockPosition ~= blockRef.blockPosition then
-			if self.healthbarPart then
-				bedwars.QueryUtil:setQueryIgnored(self.healthbarPart, true)
-			end
 			self.healthbarMaid:DoCleaning()
 			self.healthbarBlockRef = blockRef
 			local create = bedwars.Roact.createElement
@@ -6268,9 +6303,9 @@ run(function()
 			part.Anchored = true
 			part.CanCollide = false
 			part.Parent = workspace
-			bedwars.QueryUtil:setQueryIgnored(self.healthbarPart, true)
 			self.healthbarPart = part
-	
+	        bedwars.QueryUtil:setQueryIgnored(self.healthbarPart, true)
+
 			local mounted = bedwars.Roact.mount(create('BillboardGui', {
 				Size = UDim2.fromOffset(249, 102),
 				StudsOffset = Vector3.new(0, 2.5, 0),
