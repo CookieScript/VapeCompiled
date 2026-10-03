@@ -2301,10 +2301,6 @@ run(function()
 	local LegitAura
 	local Particles, Boxes = {}, {}
 	local anims, AnimDelay, AnimTween, armC0 = vape.Libraries.auraanims, tick()
-	local AttackRemote = {FireServer = function() end}
-	task.spawn(function()
-		AttackRemote = bedwars.Handler:Get(remotes.AttackEntity)
-	end)
 
 	local function getAttackData()
 		if Mouse.Enabled then
@@ -2453,7 +2449,7 @@ run(function()
 									store.attackReach = (delta.Magnitude * 100) // 1 / 100
 									store.attackReachUpdate = tick() + 1
 
-									AttackRemote:Fire('SendToServer', {
+									bedwars.Handler:Get(remotes.AttackEntity):Fire('SendToServer', {
 										weapon = sword.tool,
 										chargedAttack = {chargeRatio = 0},
 										entityInstance = v.Character,
