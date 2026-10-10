@@ -1938,6 +1938,7 @@ run(function()
 						bedwars.BalloonController:deflateBalloon()
 					end
 				end
+				if FlyProgressBarFrame then FlyProgressBarFrame.Visible = false end
 			end
 		end,
 		ExtraText = function()
@@ -6299,8 +6300,10 @@ run(function()
 				end
 	
 				local beds = collection('bed', Breaker)
+				local teslas = collection('tesla-trap', Breaker)
+				local hives = collection('beehive', Breaker)
 				local luckyblock = collection('LuckyBlock', Breaker)
-				local ironores = collection('iron-ore', Breaker)
+				local ironores = collection('iron_ore_mesh_block', Breaker)
 				customlist = collection('block', Breaker, function(tab, obj)
 					if table.find(Custom.ListEnabled, obj.Name) then
 						table.insert(tab, obj)
