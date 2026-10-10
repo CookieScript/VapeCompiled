@@ -1,6 +1,12 @@
 repeat task.wait() until game:IsLoaded()
 if shared.vape then shared.vape:Uninject() end
 
+--[[
+
+    hmmmm
+
+]]
+
 local vape
 local loadstring = function(...)
 	local res, err = loadstring(...)
