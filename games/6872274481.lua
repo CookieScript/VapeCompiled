@@ -1203,7 +1203,7 @@ run(function()
 	end)
 end)
 
-for _, v in {'AntiRagdoll', 'TriggerBot', 'SilentAim', 'AutoRejoin', 'Rejoin', 'Disabler', 'Timer', 'ServerHop', 'MouseTP', 'MurderMystery'} do
+for _, v in {'AntiRagdoll', 'TriggerBot', 'SilentAim', 'AutoRejoin', 'Rejoin', 'Disabler', 'TargetStrafe', 'Timer', 'ServerHop', 'MouseTP', 'MurderMystery'} do
 	vape:Remove(v)
 end
 
@@ -1329,13 +1329,13 @@ run(function()
 		Function = function(callback)
 			if callback then
 				AutoClicker:Clean(inputService.InputBegan:Connect(function(input)
-					if input.UserInputType == Enum.UserInputType.MouseButton1 then
+					if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
 						AutoClick()
 					end
 				end))
 	
 				AutoClicker:Clean(inputService.InputEnded:Connect(function(input)
-					if input.UserInputType == Enum.UserInputType.MouseButton1 and Thread then
+					if (input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch) and Thread then
 						task.cancel(Thread)
 						Thread = nil
 					end
@@ -2193,7 +2193,7 @@ run(function()
 
 	local function getHitReg(meta)
 		if meta and meta.sword and meta.sword.attackSpeed then
-			return math.clamp(meta.sword.attackSpeed + (stats.Network.ServerStatsItem["Data Ping"]:GetValue() / 1000) * 0.2, 0.05, 2)
+			return math.clamp(meta.sword.attackSpeed - (stats.Network.ServerStatsItem["Data Ping"]:GetValue() / 1000) * 0.2, 0.05, 2)
 		end
 
 		return 0.3
