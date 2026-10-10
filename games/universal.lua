@@ -9227,6 +9227,35 @@ run(function()
 	corner.CornerRadius = UDim.new(0, 4)
 	corner.Parent = label
 end)
+																																																																																																																																																																																																																																	
+run(function()
+	local originalVolume
+
+	local function GetLobbyMusic()
+		for _, v in soundService:GetDescendants() do
+			if (v:IsA("AudioFader") or v:IsA("AudioPlayer")) and (string.find(v.Name, "Lobby") or string.find(v.Name, "lobby")) then
+				return v
+			end
+		end
+		return nil
+	end
+
+	vape.Legit:CreateModule({
+		Name = 'No Lobby Audio',
+		Function = function(callback)
+			local lobbyMusic = GetLobbyMusic()
+			if lobbyMusic then
+				if callback then
+					originalVolume = lobbyMusic.Volume
+					lobbyMusic.Volume = 0
+				else
+					lobbyMusic.Volume = originalVolume
+				end
+			end
+		end,
+		Tooltip = 'Removes the audio from the lobby'
+	})
+end)
 
 run(function()
 	local Ping
@@ -9279,6 +9308,40 @@ run(function()
 	local corner = Instance.new('UICorner')
 	corner.CornerRadius = UDim.new(0, 4)
 	corner.Parent = label
+end)
+																																																																																																																																																																																																																																					
+run(function()
+    local function restoreExecuter()
+        if identifyexecutor():find('Delta') then
+            for _, d in coreGui:GetDescendants() do
+                if d:IsA("ImageButton") and d.Parent and d.Parent:IsA("ScreenGui") and d.Parent.Parent and d.Parent.Parent:IsA("Folder") and #d.Parent.Parent.Name >= 15 then
+                    d.Visible = true
+                end
+            end
+        end
+    end
+
+    local function removeExecuter()
+        if identifyexecutor():find('Delta') then
+            for _, d in coreGui:GetDescendants() do
+                if d:IsA("ImageButton") and d.Parent and d.Parent:IsA("ScreenGui") and d.Parent.Parent and d.Parent.Parent:IsA("Folder") and #d.Parent.Parent.Name >= 15 then
+                    d.Visible = false
+                end
+            end
+        end
+    end
+
+    vape.Legit:CreateModule({
+        Name = 'Remove Executer',
+        Function = function(callback)
+            if callback then
+                removeExecuter()
+            else
+                restoreExecuter()
+            end
+        end,
+        Tooltip = 'Removes your executer'
+    })
 end)
 
 run(function()
