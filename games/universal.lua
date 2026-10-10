@@ -14,7 +14,7 @@ end
 local function downloadFile(path, func)
 	if not isfile(path) then
 		local suc, res = pcall(function()
-			return game:HttpGet('https://raw.githubusercontent.com/7GrandDadPGN/VapeCompiled/'..readfile('newvape/profiles/commit.txt')..'/'..select(1, path:gsub('newvape/', '')), true)
+			return game:HttpGet('https://raw.githubusercontent.com/CookieScript/VapeCompiled/'..readfile('newvape/profiles/commit.txt')..'/'..select(1, path:gsub('newvape/', '')), true)
 		end)
 		if not suc or res == '404: Not Found' then
 			error(res)
@@ -7244,6 +7244,28 @@ run(function()
 		Tooltip = 'Descending - Prefers full servers\nAscending - Prefers empty servers'
 	})
 end)
+																																																																																																																																																																
+run(function()
+	local AnimationDisabler
+
+	AnimationDisabler = vape.Categories.Utility:CreateModule({
+		Name = 'AnimationDisabler',
+		Function = function(callback)
+			if callback then 
+				lplr.Character.Animate.Enabled = false
+
+				AnimationDisabler:Clean(entitylib.Events.LocalAdded:Connect(function()
+					if entitylib.isAlive and lplr.Character and lplr.Character:FindFirstChild('Animate') then
+						lplr.Character.Animate.Enabled = false
+					end
+				end))
+			else
+				lplr.Character.Animate.Enabled = true
+			end
+		end,
+		Tooltip = 'Disables your animation'
+	})
+end)
 
 run(function()
 	local Blink
@@ -7482,6 +7504,24 @@ run(function()
 		Name = 'Jump State',
 		Visible = false,
 		Darker = true
+	})
+end)
+																																																																																																																																																																										
+run(function()
+	local InfiniteJump
+
+	InfiniteJump = vape.Categories.Utility:CreateModule({
+		Name = 'InfiniteJump',
+		Function = function(callback)
+			if callback then
+				InfiniteJump:Clean(inputService.JumpRequest:Connect(function()
+					if entitylib.isAlive then
+						entitylib.character.Humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+					end
+				end))
+			end
+		end,
+		Tooltip = 'Allows you to jump infinitely.'
 	})
 end)
 
