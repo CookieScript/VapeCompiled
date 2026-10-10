@@ -278,6 +278,7 @@ local function getShieldAttribute(char)
 	return returned
 end
 
+local KnockbackTick, KnockbackSpeed = tick(), 0
 local function getSpeed()
 	local multi, increase, modifiers = 0, true, bedwars.SprintController:getMovementStatusModifier():getModifiers()
 
@@ -297,7 +298,7 @@ local function getSpeed()
 		multi += 0.16 + (0.02 * math.round(multi))
 	end
 
-	return 20 * (multi + 1)
+	return (20 + (KnockbackTick > tick() and KnockbackSpeed or 0)) * (multi + 1)
 end
 
 local function getTableSize(tab)
@@ -1716,6 +1717,28 @@ run(function()
 				AntiFallPart.Transparency = 1 - o
 			end
 		end
+	})
+end)
+
+run(function()
+	local DamageBoost
+    local cooldown
+
+	DamageBoost = vape.Categories.Blatant:CreateModule({
+		Name = 'DamageBoost',
+		Function = function(callback)
+			if callback then
+				DamageBoost:Clean(vapeEvents.EntityDamageEvent.Event:Connect(function(Table)
+					if entitylib.isAlive and tick() > (cooldown or 0) and Table.entityInstance == lplr.Character and not vape.Modules.LongJump.Enabled then
+						local horizontal = (Table.knockbackMultiplier and Table.knockbackMultiplier.horizontal or 0)
+						KnockbackSpeed = bedwars.KnockbackUtil.calculateKnockbackVelocity(Vector3.one, 1, {vertical = 0, horizontal = horizontal}).Magnitude * 0.85
+                        cooldown = tick() + (KnockbackSpeed / 38)
+                        KnockbackTick = tick() + (horizontal / 2.65)
+					end
+				end))
+			end
+		end,
+		Tooltip = 'Makes you faster when damaged'
 	})
 end)
 
