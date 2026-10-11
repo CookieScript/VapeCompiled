@@ -2193,7 +2193,7 @@ run(function()
 
 	local function getHitReg(meta)
 		if meta and meta.sword and meta.sword.attackSpeed then
-			return math.clamp(meta.sword.attackSpeed - (stats.Network.ServerStatsItem["Data Ping"]:GetValue() / 1000) * 0.2, 0.05, 2)
+			return math.clamp(meta.sword.attackSpeed - (stats.Network.ServerStatsItem["Data Ping"]:GetValue() / 1000) * 0.3, 0.05, 2)
 		end
 
 		return 0.3
