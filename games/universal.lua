@@ -5924,6 +5924,69 @@ run(function()
 		Decimal = 10
 	})
 end)
+																																																																																																																															
+run(function()
+	local ServerPosition
+	local HitboxPart
+	local Material
+	local Color
+
+	ServerPosition = vape.Categories.Render:CreateModule({
+		Name = 'ServerPosition',
+		Function = function(callback)
+			if callback then
+				HitboxPart = Instance.new("Part")
+				HitboxPart.Size = Vector3.new(4, 5, 4)
+				HitboxPart.Transparency = 1 - Color.Opacity
+				HitboxPart.Material = Enum.Material[Material.Value]
+				HitboxPart.Color = Color3.fromHSV(Color.Hue, Color.Sat, Color.Value)
+				HitboxPart.Anchored = true
+				HitboxPart.CanCollide = false
+				HitboxPart.Parent = workspace
+
+				ServerPosition:Clean(runService.Heartbeat:Connect(function()
+					if entitylib.isAlive and HitboxPart then
+						HitboxPart.Position = entitylib.character.RootPart.Position
+					end
+				end))
+			else
+				if HitboxPart then
+					HitboxPart:Destroy()
+					HitboxPart = nil
+				end
+			end
+		end,
+		Tooltip = 'Shows your position.'
+	})
+	local materials = {'ForceField'}
+	for _, v in Enum.Material:GetEnumItems() do
+		if v.Name ~= 'ForceField' then
+			table.insert(materials, v.Name)
+		end
+	end
+	Material = ServerPosition:CreateDropdown({
+		Name = 'Material',
+		List = materials,
+		Function = function(val)
+			if HitboxPart then
+				HitboxPart.Material = Enum.Material[val]
+			end
+		end
+	})
+	Color = ServerPosition:CreateColorSlider({
+		Name = 'Color',
+		DefaultHue = 0.6,
+		DefaultSat = 1,
+		DefaultValue = 1,
+		DefaultOpacity = 0.5,
+		Function = function(hue, sat, val, opacity)
+			if HitboxPart then
+				HitboxPart.Color = Color3.fromHSV(hue, sat, val)
+				HitboxPart.Transparency = 1 - opacity
+			end
+		end
+	})
+end)
 
 run(function()
 	local SessionInfo
