@@ -5419,7 +5419,7 @@ run(function()
 						lplr.Character.HumanoidRootPart.CFrame = CFrame.new(LerpCFrame.X, CurrentCFrame.Y, LerpCFrame.Z) * (CurrentCFrame - CurrentCFrame.Position)
 						runService:BindToRenderStep("PingBypassRestore", 199, function()
                             lplr.Character.HumanoidRootPart.CFrame = oldcframe
-                            RunService:UnbindFromRenderStep("PingBypassRestore")
+                            runService:UnbindFromRenderStep("PingBypassRestore")
                         end)
 					end
 				end))
