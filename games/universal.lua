@@ -5936,7 +5936,7 @@ run(function()
 		Function = function(callback)
 			if callback then
 				HitboxPart = Instance.new("Part")
-				HitboxPart.Size = Vector3.new(4, 5, 4)
+				HitboxPart.Size = Vector3.new(3, 5, 3)
 				HitboxPart.Transparency = 1 - Color.Opacity
 				HitboxPart.Material = Enum.Material[Material.Value]
 				HitboxPart.Color = Color3.fromHSV(Color.Hue, Color.Sat, Color.Value)
@@ -5946,7 +5946,7 @@ run(function()
 
 				ServerPosition:Clean(runService.Heartbeat:Connect(function()
 					if entitylib.isAlive and HitboxPart then
-						HitboxPart.Position = entitylib.character.RootPart.Position
+						HitboxPart.CFrame = entitylib.character.RootPart.CFrame * CFrame.new(0, -0.5, 0)
 					end
 				end))
 			else
@@ -5958,9 +5958,9 @@ run(function()
 		end,
 		Tooltip = 'Shows your position.'
 	})
-	local materials = {'ForceField'}
+	local materials = {'Neon'}
 	for _, v in Enum.Material:GetEnumItems() do
-		if v.Name ~= 'ForceField' then
+		if v.Name ~= 'Neon' then
 			table.insert(materials, v.Name)
 		end
 	end
@@ -5975,10 +5975,10 @@ run(function()
 	})
 	Color = ServerPosition:CreateColorSlider({
 		Name = 'Color',
-		DefaultHue = 0.6,
-		DefaultSat = 1,
-		DefaultValue = 1,
-		DefaultOpacity = 0.5,
+		DefaultHue = 0.46,
+		DefaultSat = 0.96,
+		DefaultValue = 0.52,
+		DefaultOpacity = 0.9,
 		Function = function(hue, sat, val, opacity)
 			if HitboxPart then
 				HitboxPart.Color = Color3.fromHSV(hue, sat, val)
