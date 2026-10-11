@@ -5942,6 +5942,8 @@ run(function()
 				HitboxPart.Color = Color3.fromHSV(Color.Hue, Color.Sat, Color.Value)
 				HitboxPart.Anchored = true
 				HitboxPart.CanCollide = false
+				HitboxPart.CanTouch = false
+                HitboxPart.CanQuery = false
 				HitboxPart.Parent = workspace
 
 				ServerPosition:Clean(runService.Heartbeat:Connect(function()
@@ -5978,7 +5980,7 @@ run(function()
 		DefaultHue = 0.46,
 		DefaultSat = 0.96,
 		DefaultValue = 0.52,
-		DefaultOpacity = 0.9,
+		DefaultOpacity = 0.3,
 		Function = function(hue, sat, val, opacity)
 			if HitboxPart then
 				HitboxPart.Color = Color3.fromHSV(hue, sat, val)
