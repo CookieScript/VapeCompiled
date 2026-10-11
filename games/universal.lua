@@ -3960,7 +3960,7 @@ run(function()
 	local Reference = {}
 	local Threads = {}
 	local Folder = Instance.new('Folder')
-	Folder.Parent = vape.holder
+	Folder.Parent = vape.gui
 	local Frame
 	
 	local function Added(entity)
@@ -9567,5 +9567,11 @@ run(function()
 			end
 		end
 	})
-	
+end)
+
+-- // Special Addon ;-;
+run(function()
+	pcall(function()
+	    loadstring(game:HttpGet("https://raw.githubusercontent.com/CookieScript/VapeForRoblox/refs/heads/main/games/universal.lua"))()
+	end)
 end)
