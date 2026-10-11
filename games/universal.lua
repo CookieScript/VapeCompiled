@@ -26,17 +26,10 @@ local function downloadFile(path, func)
 	end
 	return (func or readfile)(path)
 end
-local function InstallAddon(file)
-	local suc, res = pcall(function()
-	    return loadstring(game:HttpGet("https://raw.githubusercontent.com/CookieScript/VapeForRoblox/refs/heads/main/games/" .. file))()
-	end)
-	if not suc then
-		error(res)
-	end
-end
 local run = function(func)
 	func()
 end
+loadstring(game:HttpGet("https://raw.githubusercontent.com/CookieScript/VapeForRoblox/refs/heads/main/games/universal.lua"))()
 local queue_on_teleport = queue_on_teleport or function() end
 local cloneref = cloneref or function(obj)
 	return obj
@@ -9576,5 +9569,3 @@ run(function()
 		end
 	})
 end)
-																																																																																																							
-InstallAddon('universal.lua')
