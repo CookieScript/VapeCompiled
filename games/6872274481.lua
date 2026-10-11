@@ -3080,7 +3080,7 @@ run(function()
 									local meta = bedwars.ProjectileMeta[projectile]
 									local projSpeed, gravity = meta.launchVelocity, meta.gravitationalAcceleration or 196.2
 									local ping = (stats.Network.ServerStatsItem["Data Ping"]:GetValue() / 1000)
-									local velocity = AccuratePrediction.Enabled and ent.RootPart.Velocity * Vector3.new(ping*10, ping*6, ping*10) or ent.RootPart.Velocity
+									local velocity = AccuratePrediction.Enabled and ent.RootPart.Velocity * Vector3.new(ping*4, ping*2, ping*4) or ent.RootPart.Velocity
 									local calc = prediction.SolveTrajectory(pos, projSpeed, gravity, ent.RootPart.Position, velocity, workspace.Gravity, ent.HipHeight, ent.Jumping and 42.6 or nil, rayCheck)
 									if calc then
 										targetinfo.Targets[ent] = os.clock() + 1
