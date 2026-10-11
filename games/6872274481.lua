@@ -3121,13 +3121,13 @@ run(function()
 		Players = true,
 		Walls = true
 	})
-	AccuratePrediction = ProjectileAura:CreateToggle({
-		Name = 'Accurate Prediction',
-		Default = false
-	})
 	List = ProjectileAura:CreateTextList({
 		Name = 'Projectiles',
 		Default = {'arrow', 'snowball'}
+	})
+	AccuratePrediction = ProjectileAura:CreateToggle({
+		Name = 'Accurate Prediction',
+		Default = false
 	})
 	Range = ProjectileAura:CreateSlider({
 		Name = 'Range',
