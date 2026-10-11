@@ -9319,6 +9319,11 @@ run(function()
                     d.Visible = true
                 end
             end
+			for _, d in coreGui:GetDescendants() do
+                if d.Name == "Executor" and d.Parent and d.Parent:IsA("ScreenGui") and d.Parent.Parent and d.Parent.Parent:IsA("Folder") and #d.Parent.Parent.Name >= 15 then
+                    d.Parent.Enabled = true
+                end
+            end
         end
     end
 
@@ -9327,6 +9332,11 @@ run(function()
             for _, d in coreGui:GetDescendants() do
                 if d:IsA("ImageButton") and d.Parent and d.Parent:IsA("ScreenGui") and d.Parent.Parent and d.Parent.Parent:IsA("Folder") and #d.Parent.Parent.Name >= 15 then
                     d.Visible = false
+                end
+            end
+			for _, d in coreGui:GetDescendants() do
+                if d.Name == "Executor" and d.Parent and d.Parent:IsA("ScreenGui") and d.Parent.Parent and d.Parent.Parent:IsA("Folder") and #d.Parent.Parent.Name >= 15 then
+                    d.Parent.Enabled = false
                 end
             end
         end
