@@ -9107,7 +9107,7 @@ run(function()
 	Depth = Viewmodel:CreateSlider({
 		Name = 'Depth',
 		Min = 0,
-		Max = 2,
+		Max = 3,
 		Default = 0.8,
 		Decimal = 10,
 		Function = function(val)
@@ -9119,7 +9119,7 @@ run(function()
 	Horizontal = Viewmodel:CreateSlider({
 		Name = 'Horizontal',
 		Min = 0,
-		Max = 2,
+		Max = 3,
 		Default = 0.8,
 		Decimal = 10,
 		Function = function(val)
@@ -9131,7 +9131,7 @@ run(function()
 	Vertical = Viewmodel:CreateSlider({
 		Name = 'Vertical',
 		Min = -0.2,
-		Max = 2,
+		Max = 3,
 		Default = -0.2,
 		Decimal = 10,
 		Function = function(val)
@@ -9143,8 +9143,9 @@ run(function()
 	for _, name in {'Rotation X', 'Rotation Y', 'Rotation Z'} do
 		table.insert(Rots, Viewmodel:CreateSlider({
 			Name = name,
-			Min = 0,
-			Max = 360,
+			Min = -180,
+			Max = 180,
+			Default = 0,
 			Function = function(val)
 				if Viewmodel.Enabled then
 					gameCamera.Viewmodel.RightHand.RightWrist.C1 = oldc1 * CFrame.Angles(math.rad(Rots[1].Value), math.rad(Rots[2].Value), math.rad(Rots[3].Value))
