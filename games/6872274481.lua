@@ -5397,6 +5397,53 @@ run(function()
 end)
 
 run(function()
+	local PingBypass
+	local OldCFrame
+	local UpdateRate
+	local Smoothness
+	local LastUpdate = 0
+
+	PingBypass = vape.Categories.Utility:CreateModule({
+		Name = 'PingBypass',
+		Function = function(callback)
+			if callback then
+				PingBypass:Clean(runService.Heartbeat:Connect(function()
+					if entitylib.isAlive and lplr.Character and lplr.Character:FindFirstChild("HumanoidRootPart") then
+						local oldcframe = lplr.Character.HumanoidRootPart.CFrame
+						if os.clock() - LastUpdate >= UpdateRate.Value then
+							LastUpdate = os.clock()
+							OldCFrame = lplr.Character.HumanoidRootPart.CFrame
+						end
+						local CurrentCFrame = lplr.Character.HumanoidRootPart.CFrame
+						local LerpCFrame = CurrentCFrame:Lerp(OldCFrame, Smoothness.Value)
+						lplr.Character.HumanoidRootPart.CFrame = CFrame.new(LerpCFrame.X, CurrentCFrame.Y, LerpCFrame.Z) * (CurrentCFrame - CurrentCFrame.Position)
+						runService:BindToRenderStep("PingBypassRestore", 199, function()
+                            lplr.Character.HumanoidRootPart.CFrame = oldcframe
+                            RunService:UnbindFromRenderStep("PingBypassRestore")
+                        end)
+					end
+				end))
+			end
+		end,
+		Tooltip = 'Prevents anti cheat from lag.'
+	})
+	UpdateRate = PingBypass:CreateSlider({
+		Name = 'Update Rate',
+		Min = 0,
+		Max = 1,
+		Default = 0.5,
+		Decimal = 10,
+	})
+	Smoothness = PingBypass:CreateSlider({
+		Name = 'Smoothness',
+		Min = 0,
+		Max = 1,
+		Default = 0.1,
+		Decimal = 10,
+	})
+end)
+
+run(function()
 	local RavenTP
 	
 	RavenTP = vape.Categories.Utility:CreateModule({
