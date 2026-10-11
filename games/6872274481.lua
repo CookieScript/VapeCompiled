@@ -3021,6 +3021,7 @@ end)
 run(function()
 	local ProjectileAura
 	local Targets
+	local AccuratePrediction
 	local Range
 	local List
 	local rayCheck = RaycastParams.new()
@@ -3078,7 +3079,9 @@ run(function()
 									rayCheck.FilterDescendantsInstances = {workspace.Map}
 									local meta = bedwars.ProjectileMeta[projectile]
 									local projSpeed, gravity = meta.launchVelocity, meta.gravitationalAcceleration or 196.2
-									local calc = prediction.SolveTrajectory(pos, projSpeed, gravity, ent.RootPart.Position, ent.RootPart.Velocity, workspace.Gravity, ent.HipHeight, ent.Jumping and 42.6 or nil, rayCheck)
+									local ping = (stats.Network.ServerStatsItem["Data Ping"]:GetValue() / 1000)
+									local velocity = AccuratePrediction.Enabled and ent.RootPart.Velocity * Vector3.new(ping, ping * 0.5, ping) or ent.RootPart.Velocity
+									local calc = prediction.SolveTrajectory(pos, projSpeed, gravity, ent.RootPart.Position, velocity, workspace.Gravity, ent.HipHeight, ent.Jumping and 42.6 or nil, rayCheck)
 									if calc then
 										targetinfo.Targets[ent] = os.clock() + 1
 										local switched = switchItem(item.tool)
@@ -3117,6 +3120,10 @@ run(function()
 	Targets = ProjectileAura:CreateTargets({
 		Players = true,
 		Walls = true
+	})
+	AccuratePrediction = ProjectileAura:CreateToggle({
+		Name = 'Accurate Prediction',
+		Default = false
 	})
 	List = ProjectileAura:CreateTextList({
 		Name = 'Projectiles',
