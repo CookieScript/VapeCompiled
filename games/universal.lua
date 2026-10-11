@@ -29,7 +29,7 @@ end
 local run = function(func)
 	func()
 end
-loadstring(game:HttpGet("https://raw.githubusercontent.com/CookieScript/VapeForRoblox/refs/heads/main/games/universal.lua"))()
+
 local queue_on_teleport = queue_on_teleport or function() end
 local cloneref = cloneref or function(obj)
 	return obj
