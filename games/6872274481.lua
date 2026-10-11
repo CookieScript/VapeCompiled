@@ -4369,11 +4369,13 @@ run(function()
 	local Thickness
 	local Time
 	local Color
+	local Fade
+	local FadeDuration
 
 	local rayCheck = RaycastParams.new()
 	rayCheck.FilterType = Enum.RaycastFilterType.Exclude
 
-	local function SpawnTracer(origin, velocityunit, velocitymagnitude, gravity, thickness, color, transparency, lifetime)
+	local function SpawnTracer(origin, velocityunit, velocitymagnitude, gravity, thickness, color, transparency, lifetime, fade)
 		local points, steps = {}, 50
 		local velocity = velocityunit * velocitymagnitude
 		local position = origin
@@ -4414,7 +4416,25 @@ run(function()
 			part.CFrame = CFrame.lookAt((start + finish) / 2, finish)
 			part.Parent = workspace
 
-			game:GetService('Debris'):AddItem(part, math.max(lifetime, 0.05))
+			if fade and FadeDuration.Value > 0 then
+				task.spawn(function()
+					local startTime = tick()
+					local fadeTime = FadeDuration.Value
+					
+					while tick() - startTime < fadeTime do
+						if not part or not part.Parent then break end
+						local alpha = (tick() - startTime) / fadeTime
+						part.Transparency = transparency + (1 - transparency) * alpha
+						task.wait()
+					end
+					
+					if part and part.Parent then
+						part:Destroy()
+					end
+				end)
+			else
+				game:GetService('Debris'):AddItem(part, math.max(lifetime, 0.05))
+			end
 		end
 	end
 
@@ -4439,7 +4459,7 @@ run(function()
 								local lifetime = Time.Value
 								local Gravity = bedwars.ProjectileMeta[obj.Name].gravitationalAcceleration
 
-								SpawnTracer(Origin, VelocityUnit, VelocityMagnitude, Gravity, thickness, color, transparency, lifetime)
+								SpawnTracer(Origin, VelocityUnit, VelocityMagnitude, Gravity, thickness, color, transparency, lifetime, Fade.Enabled)
 							end
 						end
 					end)
@@ -4466,8 +4486,19 @@ run(function()
 		Name = 'Duration',
 		Min = 0,
 		Max = 10,
-		Default = 20,
+		Default = 10,
 		Decimal = 10,
+	})
+	Fade = Trajectories:CreateToggle({
+		Name = 'Fade',
+		Default = true
+	})
+	FadeDuration = Trajectories:CreateSlider({
+		Name = 'Fade Duration',
+		Min = 0,
+		Max = 10,
+		Default = 1,
+		Decimal = 10
 	})
 end)
 
