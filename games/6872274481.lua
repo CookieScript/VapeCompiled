@@ -5430,16 +5430,16 @@ run(function()
 	UpdateRate = PingBypass:CreateSlider({
 		Name = 'Update Rate',
 		Min = 0,
-		Max = 1,
+		Max = 2,
 		Default = 0.5,
-		Decimal = 10,
+		Decimal = 100,
 	})
 	Smoothness = PingBypass:CreateSlider({
 		Name = 'Smoothness',
 		Min = 0,
 		Max = 1,
 		Default = 0.1,
-		Decimal = 10,
+		Decimal = 100,
 	})
 end)
 
