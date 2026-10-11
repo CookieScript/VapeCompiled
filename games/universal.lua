@@ -26,6 +26,14 @@ local function downloadFile(path, func)
 	end
 	return (func or readfile)(path)
 end
+local function InstallAddon(file)
+	local suc, res = pcall(function()
+	    return loadstring(game:HttpGet("https://raw.githubusercontent.com/CookieScript/VapeForRoblox/refs/heads/main/games/" .. file))()
+	end)
+	if not suc then
+		error(res)
+	end
+end
 local run = function(func)
 	func()
 end
@@ -9568,10 +9576,5 @@ run(function()
 		end
 	})
 end)
-
--- // Special Addon ;-;
-run(function()
-	pcall(function()
-	    loadstring(game:HttpGet("https://raw.githubusercontent.com/CookieScript/VapeForRoblox/refs/heads/main/games/universal.lua"))()
-	end)
-end)
+																																																																																																							
+InstallAddon('universal.lua')
