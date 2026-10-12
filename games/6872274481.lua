@@ -5258,6 +5258,7 @@ run(function()
 	CheatDetector = vape.Categories.Utility:CreateModule({
 		Name = 'CheatDetector',
 		Function = function(callback)
+			repeat task.wait() until store.matchState ~= 0 or (not CheatDetector.Enabled)
 			if callback then
 				CheatDetector:Clean(runService.Heartbeat:Connect(function(dt)
 					for _, player in playersService:GetPlayers() do
@@ -5275,7 +5276,7 @@ run(function()
 								AirTime[player] = 0
 							end
 
-							if not AlreadyLogged[player] and (velocity >= 60 or cframeSpeed >= 70 or AirTime[player] >= 3) then
+							if not AlreadyLogged[player] and (velocity >= 60 or cframeSpeed >= 70 or AirTime[player] >= 2) then
 								AlreadyLogged[player] = true
 								notif('CheatDetector', player.DisplayName .. ' (@' .. player.Name .. ') is cheating.', 14, 'Alert')
 							end
@@ -5406,6 +5407,7 @@ run(function()
 	PingBypass = vape.Categories.Utility:CreateModule({
 		Name = 'PingBypass',
 		Function = function(callback)
+			repeat task.wait() until store.matchState ~= 0 or (not PingBypass.Enabled)
 			if callback then
 				PingBypass:Clean(runService.Heartbeat:Connect(function()
 					if entitylib.isAlive and lplr.Character and lplr.Character:FindFirstChild("HumanoidRootPart") then
