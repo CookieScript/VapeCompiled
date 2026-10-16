@@ -1772,6 +1772,44 @@ run(function()
 end)
 
 run(function()
+	local AntiVoidFall
+	local rayCheck = RaycastParams.new()
+	rayCheck.FilterType = Enum.RaycastFilterType.Include
+
+	local function getClosestGround(pos)
+		local map = workspace:FindFirstChild('Map')
+		if map then
+			rayCheck.FilterDescendantsInstances = {map}
+
+			local checkPos = roundPos(pos)
+
+			local ray = workspace:Raycast(Vector3.new(checkPos.X, checkPos.Y + 1000, checkPos.Z), Vector3.new(0, -3000, 0), rayCheck)
+
+			return ray and ray.Position or nil
+		end
+	end
+
+	AntiVoidFall = vape.Categories.Blatant:CreateModule({
+		Name = 'AntiVoidFall',
+		Function = function(callback)
+			if callback then
+				AntiVoidFall:Clean(runService.Heartbeat:Connect(function()
+					if entitylib.isAlive and not isnetworkowner(entitylib.character.RootPart) then
+						local root = entitylib.character.RootPart
+						local ground = getClosestGround(root.Position)
+
+						if ground then
+							root.CFrame = CFrame.new(ground + Vector3.new(0, entitylib.character.HipHeight, 0))
+						end
+					end
+				end))
+			end
+		end,
+		Tooltip = 'Teleports you to the closest ground'
+	})
+end)
+
+run(function()
 	local DamageBoost
     local cooldown
 
@@ -9179,7 +9217,7 @@ run(function()
 	})
 	Depth = Viewmodel:CreateSlider({
 		Name = 'Depth',
-		Min = 0,
+		Min = -5,
 		Max = 5,
 		Default = 0.8,
 		Decimal = 10,
@@ -9191,7 +9229,7 @@ run(function()
 	})
 	Horizontal = Viewmodel:CreateSlider({
 		Name = 'Horizontal',
-		Min = 0,
+		Min = -5,
 		Max = 5,
 		Default = 0.8,
 		Decimal = 10,
@@ -9203,7 +9241,7 @@ run(function()
 	})
 	Vertical = Viewmodel:CreateSlider({
 		Name = 'Vertical',
-		Min = -0.2,
+		Min = -5,
 		Max = 5,
 		Default = -0.2,
 		Decimal = 10,
