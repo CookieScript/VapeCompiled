@@ -5294,6 +5294,68 @@ run(function()
 end)
 
 run(function()
+	local KnockbackDelay
+	local Chance
+	local AirDelay
+	local GroundDelay
+	local oldApply
+
+	local function KnockbackApply(type, env, root, mass, dir, knockback, ...)
+		local kb = knockback and table.clone(knockback) or {}
+		kb[type] = env[type] and kb[type] or 0
+		return oldApply(root, mass, dir, kb, ...)
+	end
+
+	KnockbackDelay = vape.Categories.Utility:CreateModule({
+		Name = 'KnockbackDelay',
+		Function = function(callback)
+			if callback then
+				oldApply = bedwars.KnockbackUtil.applyKnockback
+				bedwars.KnockbackUtil.applyKnockback = function(root, mass, dir, knockback, ...)
+					if math.random(1, 100) <= Chance.Value then
+						local env = {}
+						task.delay(AirDelay:GetRandomValue() / 1000, KnockbackApply, 'horizontal', env, root, mass, dir, knockback, ...)
+						task.delay(GroundDelay:GetRandomValue() / 1000, KnockbackApply, 'vertical', env, root, mass, dir, knockback, ...)
+						return
+					end
+
+					return oldApply(root, mass, dir, knockback, ...)
+				end
+			else
+				if oldApply then
+					bedwars.KnockbackUtil.applyKnockback = oldApply
+					oldApply = nil
+				end
+			end
+		end,
+		Tooltip = 'Delays knockback packets.'
+	})
+	Chance = KnockbackDelay:CreateSlider({
+		Name = 'Chance',
+		Min = 1,
+		Max = 100,
+		Default = 50,
+		Suffix = '%'
+	})
+	AirDelay = KnockbackDelay:CreateTwoSlider({
+		Name = 'Air delay',
+		Min = 0,
+		Max = 500,
+		DefaultMin = 50,
+		DefaultMax = 200,
+		Suffix = 'ms'
+	})
+	GroundDelay = KnockbackDelay:CreateTwoSlider({
+		Name = 'Ground delay',
+		Min = 0,
+		Max = 500,
+		DefaultMin = 50,
+		DefaultMax = 200,
+		Suffix = 'ms'
+	})
+end)
+
+run(function()
 	local MissileTP
 	
 	MissileTP = vape.Categories.Utility:CreateModule({
