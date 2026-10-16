@@ -721,6 +721,7 @@ run(function()
 		SoundList = require(replicatedStorage.TS.sound['game-sound']).GameSound,
 		SoundManager = require(replicatedStorage['rbxts_include']['node_modules']['@easy-games']['game-core'].out).SoundManager,
 		Store = require(lplr.PlayerScripts.TS.ui.store).ClientStore,
+		ScaleTool = require(replicatedStorage['rbxts_include']['node_modules']['@rbxts']['scale-model'].out).scaleTool,
 		TeamUpgradeMeta = debug.getupvalue(require(replicatedStorage.TS.games.bedwars['team-upgrade']['team-upgrade-meta']).getTeamUpgradeMetaForQueue, 6),
 		UILayers = require(replicatedStorage['rbxts_include']['node_modules']['@easy-games']['game-core'].out).UILayers,
 		VisualizerUtils = require(lplr.PlayerScripts.TS.lib.visualizer['visualizer-utils']).VisualizerUtils,
@@ -9128,6 +9129,7 @@ run(function()
 	local Depth
 	local Horizontal
 	local Vertical
+	local Size
 	local NoBob
 	local Rots = {}
 	local old, oldc1
@@ -9149,6 +9151,12 @@ run(function()
 				bedwars.InventoryViewmodelController:handleStore(bedwars.Store:getState())
 				if viewmodel then
 					gameCamera.Viewmodel.RightHand.RightWrist.C1 = oldc1 * CFrame.Angles(math.rad(Rots[1].Value), math.rad(Rots[2].Value), math.rad(Rots[3].Value))
+					viewmodel:ScaleTo(Size.Value)
+					Viewmodel:Clean(viewmodel.ChildAdded:Connect(function(obj)
+						if obj:IsA('Accessory') and Size.Value ~= 1 then
+							bedwars.ScaleTool(obj, Size.Value)
+						end
+					end))
 				end
 				lplr.PlayerScripts.TS.controllers.global.viewmodel['viewmodel-controller']:SetAttribute('ConstantManager_DEPTH_OFFSET', -Depth.Value)
 				lplr.PlayerScripts.TS.controllers.global.viewmodel['viewmodel-controller']:SetAttribute('ConstantManager_HORIZONTAL_OFFSET', Horizontal.Value)
@@ -9156,6 +9164,7 @@ run(function()
 			else
 				bedwars.ViewmodelController.playAnimation = old
 				if viewmodel then
+					viewmodel:ScaleTo(1)
 					viewmodel.RightHand.RightWrist.C1 = oldc1
 				end
 	
@@ -9171,7 +9180,7 @@ run(function()
 	Depth = Viewmodel:CreateSlider({
 		Name = 'Depth',
 		Min = 0,
-		Max = 3,
+		Max = 5,
 		Default = 0.8,
 		Decimal = 10,
 		Function = function(val)
@@ -9183,7 +9192,7 @@ run(function()
 	Horizontal = Viewmodel:CreateSlider({
 		Name = 'Horizontal',
 		Min = 0,
-		Max = 3,
+		Max = 5,
 		Default = 0.8,
 		Decimal = 10,
 		Function = function(val)
@@ -9195,12 +9204,24 @@ run(function()
 	Vertical = Viewmodel:CreateSlider({
 		Name = 'Vertical',
 		Min = -0.2,
-		Max = 3,
+		Max = 5,
 		Default = -0.2,
 		Decimal = 10,
 		Function = function(val)
 			if Viewmodel.Enabled then
 				lplr.PlayerScripts.TS.controllers.global.viewmodel['viewmodel-controller']:SetAttribute('ConstantManager_VERTICAL_OFFSET', val)
+			end
+		end
+	})
+	Size = Viewmodel:CreateSlider({
+		Name = 'Size',
+		Min = 0.1,
+		Max = 5,
+		Default = 1,
+		Decimal = 10,
+		Function = function(val)
+			if Viewmodel.Enabled and gameCamera:FindFirstChild('Viewmodel') then
+				gameCamera.Viewmodel:ScaleTo(val)
 			end
 		end
 	})
