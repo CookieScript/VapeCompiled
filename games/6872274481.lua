@@ -6977,7 +6977,7 @@ run(function()
 		if entitylib.isAlive then
 			local pos = entitylib.character.RootPart.Position
 			for _, chest in Chests do
-				if (chest.Position - pos).Magnitude < 20 then
+				if (chest.Position - pos).Magnitude < 40 then
 					return true
 				end
 			end
@@ -6989,7 +6989,7 @@ run(function()
 		if not chest then return end
 	
 		local mapCF = workspace.MapCFrames:FindFirstChild((lplr:GetAttribute('Team') or 1)..'_spawn')
-		if mapCF and (entitylib.character.RootPart.Position - mapCF.Value.Position).Magnitude < 80 then
+		if mapCF and (entitylib.character.RootPart.Position - mapCF.Value.Position).Magnitude < 30 then
 			for _, v in chest:GetChildren() do
 				local item = Items[v.Name]
 				if item then
