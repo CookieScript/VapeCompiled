@@ -2443,7 +2443,7 @@ run(function()
 	Value = HighJump:CreateSlider({
 		Name = 'Velocity',
 		Min = 1,
-		Max = 150,
+		Max = 300,
 		Default = 50,
 		Suffix = function(val)
 			return val == 1 and 'stud' or 'studs'
@@ -3846,7 +3846,8 @@ run(function()
 			if vape.ThreadFix then
 				setthreadidentity(8)
 			end
-	
+
+			Reference[entity]:Destroy()
 			Reference[entity] = nil
 			entry:Destroy()
 		end
