@@ -7028,7 +7028,7 @@ run(function()
 		if not chest then return end
 	
 		local mapCF = workspace.MapCFrames:FindFirstChild((lplr:GetAttribute('Team') or 1)..'_spawn')
-		if mapCF and (entitylib.character.RootPart.Position - mapCF.Value.Position).Magnitude < 30 then
+		if mapCF and (entitylib.character.RootPart.Position - mapCF.Value.Position).Magnitude < 20 then
 			for _, v in chest:GetChildren() do
 				local item = Items[v.Name]
 				if item then
