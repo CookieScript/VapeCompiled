@@ -203,7 +203,7 @@ do
 			createDownloader(path)
 
 			local success, data = pcall(function()
-				return game:HttpGet('https://raw.githubusercontent.com/7GrandDadPGN/VapeCompiled/'..readfile('newvape/profiles/commit.txt')..'/'..select(1, path:gsub('newvape/', '')), true)
+				return game:HttpGet('https://raw.githubusercontent.com/CookieScript/VapeCompiled/'..readfile('newvape/profiles/commit.txt')..'/'..select(1, path:gsub('newvape/', '')), true)
 			end)
 
 			if not success or data == '404: Not Found' then
@@ -220,7 +220,7 @@ do
 		return (callback or readfile)(path)
 	end
 
-	getvapeasset = not inputService.TouchEnabled and getcustomasset and function(path)
+	getvapeasset = getcustomasset and function(path)
 		return downloadFile(path, getcustomasset)
 	end or function(path)
 		return vapeAssets[path] or ''
@@ -776,6 +776,8 @@ function vape:Load(skipgui, profile)
 		button.Position = UDim2.new(1, -90, 0, 4)
 		button.Size = UDim2.fromOffset(32, 32)
 		button.Text = ''
+		button.Active = true
+		button.Draggable = true
 		button.Parent = gui
 		local image = Instance.new('ImageLabel')
 		image.BackgroundTransparency = 1
@@ -783,7 +785,7 @@ function vape:Load(skipgui, profile)
 		image.Position = UDim2.fromOffset(6, 6)
 		image.Size = UDim2.fromOffset(20, 20)
 		image.Parent = button
-		addCorner(button, UDim.new(1, 0))
+		addCorner(button, UDim.new(0, 5))
 
 		button.MouseButton1Click:Connect(function()
 			self.GUIBind.Triggered:Fire(true)
@@ -835,7 +837,7 @@ function vape:LoadGUI()
 	clickgui.Size = UDim2.fromScale(1, 1)
 	clickgui.Visible = false
 	clickgui.Parent = scaledgui
-	local scarcitybanner = Instance.new('TextLabel')
+	--[[local scarcitybanner = Instance.new('TextLabel')
 	scarcitybanner.BackgroundTransparency = 1
 	scarcitybanner.FontFace = uipallet.Font
 	scarcitybanner.Position = UDim2.fromScale(0, 0.97)
@@ -844,7 +846,7 @@ function vape:LoadGUI()
 	scarcitybanner.TextColor3 = Color3.new(1, 1, 1)
 	scarcitybanner.TextScaled = true
 	scarcitybanner.TextStrokeTransparency = 0.5
-	scarcitybanner.Parent = clickgui
+	scarcitybanner.Parent = clickgui]]
 	local modal = Instance.new('TextButton')
 	modal.BackgroundTransparency = 1
 	modal.Modal = true
@@ -873,7 +875,7 @@ function vape:LoadGUI()
 	toolblur = addBlur(tooltip)
 	addCorner(tooltip)
 	scale = Instance.new('UIScale')
-	scale.Scale = math.max(gui.AbsoluteSize.X / 1920, 0.6)
+	scale.Scale = math.max(gui.AbsoluteSize.X / 1920, 0.4)
 	scale.Parent = scaledgui
 	scaledgui.Size = UDim2.fromScale(1 / scale.Scale, 1 / scale.Scale)
 	components.GUI({})
@@ -1194,7 +1196,7 @@ function vape:LoadGUI()
 		Function = function(callback)
 			ScaleSlider.Object.Visible = not callback
 			if callback then
-				--scale.Scale = math.max(gui.AbsoluteSize.X / 1920, 0.6)
+				scale.Scale = math.max(gui.AbsoluteSize.X / 1920, 0.4)
 			else
 				scale.Scale = ScaleSlider.Value
 			end
@@ -4446,13 +4448,13 @@ components = {
 		settingsicon.Position = UDim2.fromOffset(15, 12)
 		settingsicon.Size = UDim2.fromOffset(14, 14)
 		settingsicon.Parent = settingsbutton
-		local discord = Instance.new('ImageButton')
+		--[[local discord = Instance.new('ImageButton')
 		discord.BackgroundTransparency = 1
 		discord.Image = getvapeasset('newvape/assets/new/discord.png')
 		discord.Position = UDim2.new(1, -56, 0, 11)
 		discord.Size = UDim2.fromOffset(16, 16)
 		discord.Parent = window
-		addTooltip(discord, 'Join discord')
+		addTooltip(discord, 'Join discord')]]
 		local stroke = Instance.new('UIStroke')
 		stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
 		stroke.Color = Color3.fromRGB(85, 85, 85)
@@ -4511,7 +4513,7 @@ components = {
 			end
 		end
 		
-		discord.MouseButton1Click:Connect(function()
+		--[[discord.MouseButton1Click:Connect(function()
 			task.spawn(function()
 				local body = httpService:JSONEncode({
 					nonce = httpService:GenerateGUID(false),
@@ -4543,7 +4545,7 @@ components = {
 				tooltip.Text = 'Copied!'
 				setclipboard('https://discord.gg/VZEQJxMSnG')
 			end)
-		end)
+		end)]]
 		
 		settingsbutton.MouseEnter:Connect(function()
 			settingsicon.ImageColor3 = uipallet.Text
