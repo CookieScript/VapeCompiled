@@ -4019,7 +4019,7 @@ run(function()
 	local Reference = {}
 	local Threads = {}
 	local Folder = Instance.new('Folder')
-	Folder.Parent = vape.holder
+	Folder.Parent = vape.gui
 	local Frame
 	
 	local function Added(entity)
@@ -7150,7 +7150,7 @@ run(function()
 	local Background
 	local Stroke
 	WaypointFolder = Instance.new('Folder')
-	WaypointFolder.Parent = vape.holder
+	WaypointFolder.Parent = vape.gui
 	
 	Waypoints = vape.Categories.Render:CreateModule({
 		Name = 'Waypoints',
