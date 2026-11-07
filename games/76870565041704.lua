@@ -108,7 +108,8 @@ end
 run(function()
 	minecraft = setmetatable({
 		Controller = require(lplr.PlayerScripts.MC.Controller),
-		Config = require(replicatedStorage.MC.Config)
+		Config = require(replicatedStorage.MC.Config),
+		Physics = require(replicatedStorage.MC.Physics)
 	}, {})
 
 	local remoteNames = {
@@ -117,10 +118,6 @@ run(function()
 
 	for i, v in remoteNames do
 		remotes[i] = v
-	end
-
-	for i, v in minecraft.Controller.state do
-		print(i, typeof(v), v)
 	end
 
 	store.BlockSize = minecraft.Config.BLOCK or 3
@@ -174,6 +171,68 @@ end)
 for _, v in {'AntiRagdoll', 'TriggerBot', 'SilentAim', 'Speed', 'AutoRejoin', 'Rejoin', 'Disabler', 'Timer', 'ServerHop', 'MouseTP', 'MurderMystery'} do
 	vape:Remove(v)
 end
+
+run(function()
+	local Velocity
+	local Horizontal
+	local Vertical
+	local Chance
+	local TargetCheck
+	local rand, old = Random.new()
+	
+	Velocity = vape.Categories.Combat:CreateModule({
+		Name = 'Velocity',
+		Function = function(callback)
+			if callback then
+				old = minecraft.Physics.knockbackVelocity
+				minecraft.Physics.knockbackVelocity = function(vel, onGround, strength, x, z, rng)
+					if rand:NextNumber(0, 100) > Chance.Value then return old(vel, onGround, strength, x, z, rng) end
+					local check = (not TargetCheck.Enabled) or entitylib.EntityPosition({
+						Range = 50,
+						Part = 'RootPart',
+						Players = true
+					})
+	
+					if check then
+						if Horizontal.Value == 0 and Vertical.Value == 0 then return vel end
+						local kbVel = old(vel, onGround, strength, x, z, rng)
+						local deltaX = kbVel.X - vel.X
+						local deltaY = kbVel.Y - vel.Y
+						local deltaZ = kbVel.Z - vel.Z
+						return Vector3.new(vel.X + deltaX * (Horizontal.Value / 100), vel.Y + deltaY * (Vertical.Value / 100), vel.Z + deltaZ * (Horizontal.Value / 100))
+					end
+					
+					return old(vel, onGround, strength, x, z, rng)
+				end
+			else
+				minecraft.Physics.knockbackVelocity = old
+			end
+		end,
+		Tooltip = 'Reduces knockback taken'
+	})
+	Horizontal = Velocity:CreateSlider({
+		Name = 'Horizontal',
+		Min = 0,
+		Max = 100,
+		Default = 0,
+		Suffix = '%'
+	})
+	Vertical = Velocity:CreateSlider({
+		Name = 'Vertical',
+		Min = 0,
+		Max = 100,
+		Default = 0,
+		Suffix = '%'
+	})
+	Chance = Velocity:CreateSlider({
+		Name = 'Chance',
+		Min = 0,
+		Max = 100,
+		Default = 100,
+		Suffix = '%'
+	})
+	TargetCheck = Velocity:CreateToggle({Name = 'Only when targeting'})
+end)
 
 --[[local Attacking
 run(function()
