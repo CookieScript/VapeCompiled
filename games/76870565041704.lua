@@ -224,7 +224,7 @@ run(function()
 						local plrs = entitylib.AllPosition({
 							Range = SwingRange.Value,
 							Wallcheck = Targets.Walls.Enabled or nil,
-							Part = 'HumanoidRootPart',
+							Part = 'RootPart',
 							Players = Targets.Players.Enabled,
 							NPCs = Targets.NPCs.Enabled,
 							Limit = MaxTargets.Value,
