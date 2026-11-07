@@ -119,10 +119,6 @@ run(function()
 		remotes[i] = v
 	end
 
-	for i, v in minecraft.Controller.state do
-		print(i, v)
-	end
-
 	store.BlockSize = minecraft.Config.BLOCK or 3
 
 	minecraft.getEntityId = function(model)
