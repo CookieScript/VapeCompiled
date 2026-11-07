@@ -122,6 +122,29 @@ local sortmethods = {
 }
 
 run(function()
+	local oldstart = entitylib.start
+	local function customEntity(ent)
+		entitylib.addEntity(ent, nil, function(self)
+			return lplr:GetAttribute('Team') ~= self.Character:GetAttribute('Team')
+		end)
+	end
+
+	entitylib.start = function()
+		oldstart()
+		if entitylib.Running then
+			for _, ent in collectionService:GetTagged('Dummy') do
+				customEntity(ent)
+			end
+			table.insert(entitylib.Connections, collectionService:GetInstanceAddedSignal('Dummy'):Connect(customEntity))
+			table.insert(entitylib.Connections, collectionService:GetInstanceRemovedSignal('Dummy'):Connect(function(ent)
+				entitylib.removeEntity(ent)
+			end))
+		end
+	end
+end)
+entitylib.start()
+
+run(function()
 	minecraft = setmetatable({
 		Controller = require(lplr.PlayerScripts.MC.Controller),
 		Config = require(replicatedStorage.MC.Config),
@@ -220,7 +243,7 @@ run(function()
 				repeat
 					Attacking = false
 					store.KillauraTarget = nil
-					if canAttack() then
+					if canAttack() and entitylib.isAlive then
 						local plrs = entitylib.AllPosition({
 							Range = SwingRange.Value,
 							Wallcheck = Targets.Walls.Enabled or nil,
