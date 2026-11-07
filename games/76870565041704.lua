@@ -105,6 +105,22 @@ local function removeTags(str)
 	return (str:gsub('<[^<>]->', ''))
 end
 
+local sortmethods = {
+	Damage = function(a, b)
+		return a.Entity.Character:GetAttribute('LastDamageTakenTime') < b.Entity.Character:GetAttribute('LastDamageTakenTime')
+	end,
+	Health = function(a, b)
+		return a.Entity.Health < b.Entity.Health
+	end,
+	Angle = function(a, b)
+		local selfrootpos = entitylib.character.RootPart.Position
+		local localfacing = entitylib.character.RootPart.CFrame.LookVector * Vector3.new(1, 0, 1)
+		local angle = math.acos(localfacing:Dot(((a.Entity.RootPart.Position - selfrootpos) * Vector3.new(1, 0, 1)).Unit))
+		local angle2 = math.acos(localfacing:Dot(((b.Entity.RootPart.Position - selfrootpos) * Vector3.new(1, 0, 1)).Unit))
+		return angle < angle2
+	end
+}
+
 run(function()
 	minecraft = setmetatable({
 		Controller = require(lplr.PlayerScripts.MC.Controller),
