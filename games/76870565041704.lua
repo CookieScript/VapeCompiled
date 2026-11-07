@@ -107,8 +107,8 @@ end
 
 run(function()
 	minecraft = setmetatable({
-		Controller = lplr.PlayerScripts.MC.Controller,
-		Config = replicatedStorage.MC.Config
+		Controller = require(lplr.PlayerScripts.MC.Controller),
+		Config = require(replicatedStorage.MC.Config)
 	}, {})
 
 	local remoteNames = {
@@ -117,6 +117,10 @@ run(function()
 
 	for i, v in remoteNames do
 		remotes[i] = v
+	end
+
+	for i, v in minecraft.Controller.state do
+		print(i, typeof(v), v)
 	end
 
 	store.BlockSize = minecraft.Config.BLOCK or 3
