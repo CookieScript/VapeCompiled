@@ -196,7 +196,7 @@ run(function()
                     ["ground"] = minecraft.Controller.state.onGround,
                     ["swap"] = false,
                     ["predicted"] = true,
-                    ["look"] = minecraft.Controller.look(),
+                    ["look"] = gameCamera.CFrame.LookVector,
                 },
                 ["target"] = entityId
             })
@@ -292,8 +292,10 @@ run(function()
 						for i, v in Boxes do
 							v.Adornee = attacked[i] and attacked[i].Entity.RootPart or nil
 							if v.Adornee then
-								v.Color3 = Color3.fromHSV(attacked[i].Check.Hue, attacked[i].Check.Sat, attacked[i].Check.Value)
-								v.Transparency = 1 - attacked[i].Check.Opacity
+								pcall(function()
+									v.Color3 = Color3.fromHSV(attacked[i].Check.Hue, attacked[i].Check.Sat, attacked[i].Check.Value)
+									v.Transparency = 1 - attacked[i].Check.Opacity
+								end)
 							end
 						end
 
