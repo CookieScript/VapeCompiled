@@ -288,6 +288,7 @@ run(function()
 									if Face.Enabled and minecraft.look then
 										minecraft.look(actualRoot.Position)
 									end
+									minecraft.Controller.frozen = Face.Enabled
 									if minecraft.attack then
 										minecraft.attack(v.Character, SpamItem.Enabled)
 									end
@@ -311,11 +312,6 @@ run(function()
 							v.Parent = attacked[i] and gameCamera or nil
 						end
 
-						if Face.Enabled and attacked[1] then
-							local vec = attacked[1].Entity.RootPart.Position * Vector3.new(1, 0, 1)
-							entitylib.character.RootPart.CFrame = CFrame.lookAt(entitylib.character.RootPart.Position, Vector3.new(vec.X, entitylib.character.RootPart.Position.Y + 0.001, vec.Z))
-						end
-
 						task.wait(#attacked > 0 and #attacked * 0.02 or 1 / UpdateRate.Value)
 					else
 						task.wait(1 / UpdateRate.Value)
@@ -323,6 +319,7 @@ run(function()
 				until not Killaura.Enabled
 			else
 				store.KillauraTarget = nil
+				minecraft.Controller.frozen = false
 				for _, v in Boxes do
 					v.Adornee = nil
 				end
@@ -330,12 +327,6 @@ run(function()
 					v.Parent = nil
 				end
 				Attacking = false
-				if armC0 then
-					AnimTween = tweenService:Create(gameCamera.Viewmodel.RightHand.RightWrist, TweenInfo.new(AnimationTween.Enabled and 0.001 or 0.3, Enum.EasingStyle.Exponential), {
-						C0 = armC0
-					})
-					AnimTween:Play()
-				end
 			end
 		end,
 		Tooltip = 'Attack players around you\nwithout aiming at them.'
