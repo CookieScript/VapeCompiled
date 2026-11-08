@@ -53,6 +53,10 @@ local getvapeasset = vape.Libraries.getvapeasset
 local store = {
 	attackReach = 0,
 	attackReachUpdate = tick(),
+	inventory = {
+		inventory = {},
+		hotbarSelected = 0,
+	},
 	lastAttack = 0
 }
 local minecraft, remotes = {}, {}
@@ -80,6 +84,14 @@ local function getTableSize(tab)
 		ind += 1
 	end
 	return ind
+end
+
+local function hotbarSwitch(slot)
+	if slot and store.inventory.hotbarSelected ~= slot then
+		minecraft.Hands.select(slot)
+		return true
+	end
+	return false
 end
 
 local function isFriend(plr, recolor)
@@ -149,6 +161,7 @@ run(function()
 	minecraft = setmetatable({
 		Controller = require(lplr.PlayerScripts.MC.Controller),
 		Config = require(replicatedStorage.MC.Config),
+		Hands = require(lplr.PlayerScripts.MC.Hands),
 		Net = require(lplr.PlayerScripts.MC.Net),
 		Physics = require(replicatedStorage.MC.Physics)
 	}, {})
@@ -214,6 +227,20 @@ run(function()
 			end
 		end
 	end
+
+	local function updateStore()
+		store.inventory = {
+			hotbar = table.clone(minecraft.Hands.inv.hotbar),
+			offhand = minecraft.Hands.inv.offhand,
+			armor = table.clone(minecraft.Hands.inv.armor or {}),
+			inventory = table.clone(minecraft.Hands.inv.inventory),
+			cursor = minecraft.Hands.inv.cursor,
+			selected = minecraft.Hands.inv.selected
+		}
+	end
+
+	table.insert(Hands.onChanged, updateStore)
+	updateStore()
 end)
 
 for _, v in {'AntiRagdoll', 'TriggerBot', 'SilentAim', 'Speed', 'AutoRejoin', 'Rejoin', 'Reach', 'Disabler', 'Timer', 'ServerHop', 'MouseTP', 'MurderMystery'} do
