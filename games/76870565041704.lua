@@ -181,11 +181,11 @@ run(function()
         end
     end
 
-	minecraft.attack = function(entity)
+	minecraft.attack = function(entity, spam)
 		if minecraft.Controller and minecraft.Controller.state then
 			local entityId = minecraft.getEntityId(entity)
 
-			if os.clock() - store.lastAttack > 0.2 then
+			if os.clock() - store.lastAttack > (spam and 0 or 0.625) then
 				store.lastAttack = os.clock()
 
 				minecraft.Net.send({
@@ -231,6 +231,7 @@ run(function()
 	local ParticleColor2
 	local ParticleSize
 	local Face
+	local SpamItem
 	local Particles, Boxes = {}, {}
 	local anims, AnimDelay, AnimTween, armC0 = vape.Libraries.auraanims, tick()
 
@@ -288,7 +289,7 @@ run(function()
 										minecraft.look(actualRoot.Position)
 									end
 									if minecraft.attack then
-										minecraft.attack(v.Character)
+										minecraft.attack(v.Character, SpamItem.Enabled)
 									end
 								end
 							end
@@ -522,4 +523,5 @@ run(function()
 		Visible = false
 	})
 	Face = Killaura:CreateToggle({Name = 'Face target'})
+	SpamItem = Killaura:CreateToggle({Name = 'Spam item'})
 end)
