@@ -52,7 +52,8 @@ local getvapeasset = vape.Libraries.getvapeasset
 
 local store = {
 	attackReach = 0,
-	attackReachUpdate = tick()
+	attackReachUpdate = tick(),
+	lastAttack = 0
 }
 local minecraft, remotes = {}, {}
 
@@ -184,22 +185,26 @@ run(function()
 		if minecraft.Controller and minecraft.Controller.state then
 			local entityId = minecraft.getEntityId(entity)
 
-			minecraft.Net.send({
-    	        a = "attack",
-    	        st = {
-        	        pos = minecraft.Controller.state.pos,
-                    vel = minecraft.Controller.state.vel,
-                    sprint = minecraft.Controller.state.sprinting,
-                    fall = minecraft.Controller.state.fallDistance,
-                    gliding = minecraft.Controller.state.gliding,
-                    water = minecraft.Controller.state.inWater,
-	                ground = minecraft.Controller.state.onGround,
-                	swap = false,
-            	    predicted = true,
-        	        look = nil,
-    	        },
-    	        target = entityId
-	        })
+			if os.clock() - store.lastAttack > 0.2 then
+				store.lastAttack = os.clock()
+
+				minecraft.Net.send({
+    		        a = "attack",
+    		        st = {
+        		        pos = minecraft.Controller.state.pos,
+                	    vel = minecraft.Controller.state.vel,
+                    	sprint = minecraft.Controller.state.sprinting,
+	                    fall = minecraft.Controller.state.fallDistance,
+    	                gliding = minecraft.Controller.state.gliding,
+        	            water = minecraft.Controller.state.inWater,
+	        	        ground = minecraft.Controller.state.onGround,
+                		swap = false,
+            		    predicted = true,
+        		        look = minecraft.Controller.look(),
+    		        },
+    		        target = entityId
+		        })
+			end
 		end
 	end
 end)
@@ -279,7 +284,7 @@ run(function()
 
 								local actualRoot = v.Character.PrimaryPart
 								if actualRoot then
-									if minecraft.look then
+									if Face.Enabled and minecraft.look then
 										minecraft.look(actualRoot.Position)
 									end
 									if minecraft.attack then
@@ -289,11 +294,14 @@ run(function()
 							end
 						end
 
+						-- why is this having a syntax error?
 						for i, v in Boxes do
-							v.Adornee = attacked[i] and attacked[i].Entity.RootPart or nil
-							if v.Adornee then
-								v.Color3 = Color3.fromHSV(attacked[i].Check.Hue, attacked[i].Check.Sat, attacked[i].Check.Value)
-								v.Transparency = 1 - attacked[i].Check.Opacity
+							if attacked[i] and attacked[i].Entity.RootPart and attacked[i].Entity.RootPart:IsA('BasePart') then
+								v.Adornee = attacked[i].Entity.RootPart or nil
+								if v.Adornee then
+									v.Color3 = Color3.fromHSV(attacked[i].Check.Hue, attacked[i].Check.Sat, attacked[i].Check.Value)
+									v.Transparency = 1 - attacked[i].Check.Opacity
+								end
 							end
 						end
 
