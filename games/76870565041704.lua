@@ -180,46 +180,26 @@ run(function()
         end
     end
 
-	minecraft.attack = function(entity, Net)
+	minecraft.attack = function(entity)
 		if minecraft.Controller and minecraft.Controller.state then
 			local entityId = minecraft.getEntityId(entity)
-			local look = gameCamera.CFrame.LookVector
 
-			if Net then
-				minecraft.Net.send({
-    	            a = "attack",
-        	        st = {
-            	        pos = minecraft.Controller.state.pos,
-                    	vel = minecraft.Controller.state.vel,
-                	    sprint = minecraft.Controller.state.sprinting,
-            	        fall = minecraft.Controller.state.fallDistance,
-        	            gliding = minecraft.Controller.state.gliding,
-    	                water = minecraft.Controller.state.inWater,
-	                    ground = minecraft.Controller.state.onGround,
-                    	swap = false,
-                	    predicted = true,
-            	        look = look,
-        	        },
-    	            target = entityId
-	            })
-			else
-				remotes.Action:FireServer({
-					a = "attack",
-        	        st = {
-            	        pos = minecraft.Controller.state.pos,
-                    	vel = minecraft.Controller.state.vel,
-                	    sprint = minecraft.Controller.state.sprinting,
-            	        fall = minecraft.Controller.state.fallDistance,
-        	            gliding = minecraft.Controller.state.gliding,
-    	                water = minecraft.Controller.state.inWater,
-	                    ground = minecraft.Controller.state.onGround,
-                    	swap = false,
-                	    predicted = true,
-            	        look = look,
-        	        },
-    	            target = entityId
-				})
-			end
+			minecraft.Net.send({
+    	        a = "attack",
+    	        st = {
+        	        pos = minecraft.Controller.state.pos,
+                    vel = minecraft.Controller.state.vel,
+                    sprint = minecraft.Controller.state.sprinting,
+                    fall = minecraft.Controller.state.fallDistance,
+                    gliding = minecraft.Controller.state.gliding,
+                    water = minecraft.Controller.state.inWater,
+	                ground = minecraft.Controller.state.onGround,
+                	swap = false,
+            	    predicted = true,
+        	        look = nil,
+    	        },
+    	        target = entityId
+	        })
 		end
 	end
 end)
@@ -246,7 +226,6 @@ run(function()
 	local ParticleColor2
 	local ParticleSize
 	local Face
-	local UseNetwork
 	local Particles, Boxes = {}, {}
 	local anims, AnimDelay, AnimTween, armC0 = vape.Libraries.auraanims, tick()
 
@@ -304,7 +283,7 @@ run(function()
 										minecraft.look(actualRoot.Position)
 									end
 									if minecraft.attack then
-										minecraft.attack(v.Character, UseNetwork.Enabled)
+										minecraft.attack(v.Character)
 									end
 								end
 							end
@@ -535,5 +514,4 @@ run(function()
 		Visible = false
 	})
 	Face = Killaura:CreateToggle({Name = 'Face target'})
-	UseNetwork = Killaura:CreateToggle({Name = 'Use Network'})
 end)
