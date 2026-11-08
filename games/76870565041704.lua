@@ -536,7 +536,7 @@ run(function()
 		Function = function(callback)
 			if callback then
 				Speed:Clean(runService.PreSimulation:Connect(function(dt)
-					if entitylib.isAlive and minecraft.Controller and minecraft.Controller.state and not LongJump.Enabled and isnetworkowner(entitylib.character.RootPart) then
+					if entitylib.isAlive and minecraft.Controller and minecraft.Controller.state and not vape.Modules.LongJump.Enabled and isnetworkowner(entitylib.character.RootPart) then
 						local state = entitylib.character.Humanoid:GetState()
 						if state == Enum.HumanoidStateType.Climbing then return end
 	
