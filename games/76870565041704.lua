@@ -239,7 +239,7 @@ run(function()
 		}
 	end
 
-	table.insert(Hands.onChanged, updateStore)
+	table.insert(minecraft.Hands.onChanged, updateStore)
 	updateStore()
 end)
 
