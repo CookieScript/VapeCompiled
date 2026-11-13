@@ -1306,13 +1306,13 @@ run(function()
 		Function = function(callback)
 			if callback then
 				AutoClicker:Clean(inputService.InputBegan:Connect(function(input)
-					if input.UserInputType == Enum.UserInputType.MouseButton1 then
+					if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
 						AutoClick()
 					end
 				end))
 	
 				AutoClicker:Clean(inputService.InputEnded:Connect(function(input)
-					if input.UserInputType == Enum.UserInputType.MouseButton1 and Thread then
+					if (input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch) and Thread then
 						task.cancel(Thread)
 						Thread = nil
 					end
@@ -2044,8 +2044,6 @@ run(function()
 				return math.clamp(meta.sword.attackSpeed + ((stats.Network.ServerStatsItem["Data Ping"]:GetValue() / 1000) * (0.05 * math.random(3, 10))), 0.01, 2)
 			elseif HitRegMode.Value == 'Blatant' then
 				return math.clamp(meta.sword.attackSpeed - ((stats.Network.ServerStatsItem["Data Ping"]:GetValue() / 1000) * 0.15), 0.01, 2)
-			elseif HitRegMode.Value == 'HVH' then
-				return math.clamp(meta.sword.attackSpeed - 0.028, 0.01, 2)
 			elseif HitRegMode.Value == 'Custom' then
 				return math.clamp(meta.sword.attackSpeed - (HitRegOffset.Value / 500), 0.01, 2)
 			end
@@ -2481,7 +2479,7 @@ run(function()
 	})
 	HitRegMode = Killaura:CreateDropdown({
 		Name = 'Hit Register Mode',
-		List = {'Auto', 'Legit', 'Blatant', 'HVH', 'Custom'},
+		List = {'Auto', 'Legit', 'Blatant', 'Custom'},
 		Function = function(val)
 			HitRegOffset.Object.Visible = (val == 'Custom')
 		end
