@@ -2043,7 +2043,7 @@ run(function()
 			elseif HitRegMode.Value == 'Legit' then
 				return math.clamp(meta.sword.attackSpeed + ((stats.Network.ServerStatsItem["Data Ping"]:GetValue() / 1000) * (0.05 * math.random(3, 10))), 0.01, 2)
 			elseif HitRegMode.Value == 'Blatant' then
-				return math.clamp(meta.sword.attackSpeed - ((stats.Network.ServerStatsItem["Data Ping"]:GetValue() / 1000) * 0.25), 0.01, 2)
+				return math.clamp(meta.sword.attackSpeed - ((stats.Network.ServerStatsItem["Data Ping"]:GetValue() / 1000) * 0.15), 0.01, 2)
 			elseif HitRegMode.Value == 'Custom' then
 				return math.clamp(meta.sword.attackSpeed - (HitRegOffset.Value / 500), 0.01, 2)
 			end
