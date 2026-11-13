@@ -2003,7 +2003,7 @@ run(function()
 	local AnimationTween
 	local Limit
 	local HitRegMode
-	local Multiplier
+	local HitRegOffset
 	local LegitAura
 	local Particles, Boxes = {}, {}
 	local anims, AnimDelay, AnimTween, armC0 = vape.Libraries.auraanims, tick()
@@ -2043,11 +2043,11 @@ run(function()
 			elseif HitRegMode.Value == 'Legit' then
 				return math.clamp(meta.sword.attackSpeed + ((stats.Network.ServerStatsItem["Data Ping"]:GetValue() / 1000) * 0.45), 0.01, 2)
 			elseif HitRegMode.Value == 'Blatant' then
-				return math.clamp(meta.sword.attackSpeed - ((stats.Network.ServerStatsItem["Data Ping"]:GetValue() / 1000) * 0.85), 0.01, 2)
+				return math.clamp(meta.sword.attackSpeed - ((stats.Network.ServerStatsItem["Data Ping"]:GetValue() / 1000) * 0.35), 0.01, 2)
 			elseif HitRegMode.Value == 'HVH' then
-				return math.clamp(meta.sword.attackSpeed - ((stats.Network.ServerStatsItem["Data Ping"]:GetValue() / 1000) * 0.95 + 0.05), 0.01, 2)
+				return math.clamp(meta.sword.attackSpeed - ((stats.Network.ServerStatsItem["Data Ping"]:GetValue() / 1000) * 0.15 + 0.05), 0.01, 2)
 			elseif HitRegMode.Value == 'Custom' then
-				return math.clamp(meta.sword.attackSpeed - (Multiplier.Value / 500), 0.01, 2)
+				return math.clamp(meta.sword.attackSpeed - (HitRegOffset.Value / 500), 0.01, 2)
 			end
 		end
 		return math.clamp(0.3 - (stats.Network.ServerStatsItem["Data Ping"]:GetValue() / 1000), 0.01, 2)
@@ -2484,11 +2484,10 @@ run(function()
 		List = {'Auto', 'Legit', 'Blatant', 'HVH', 'Custom'},
 		Function = function(val)
 			Multiplier.Object.Visible = (val == 'Custom')
-			notif('Killaura', 'Switched hit register mode to '..val, 5.5, 'Info')
 		end
 	})
-	Multiplier = Killaura:CreateSlider({
-		Name = 'Register Multiplier',
+	HitRegOffset = Killaura:CreateSlider({
+		Name = 'Hit Register Offset',
 		Min = 1,
 		Max = 100,
 		Default = 10,
