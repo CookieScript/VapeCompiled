@@ -2483,7 +2483,7 @@ run(function()
 		Name = 'Hit Register Mode',
 		List = {'Auto', 'Legit', 'Blatant', 'HVH', 'Custom'},
 		Function = function(val)
-			Multiplier.Object.Visible = (val == 'Custom')
+			HitRegOffset.Object.Visible = (val == 'Custom')
 		end
 	})
 	HitRegOffset = Killaura:CreateSlider({
