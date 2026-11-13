@@ -2041,23 +2041,16 @@ run(function()
 			if HitRegMode.Value == 'Auto' then
 				return math.clamp(meta.sword.attackSpeed - (stats.Network.ServerStatsItem["Data Ping"]:GetValue() / 1000), 0.01, 2)
 			elseif HitRegMode.Value == 'Legit' then
-				return math.clamp(meta.sword.attackSpeed + ((stats.Network.ServerStatsItem["Data Ping"]:GetValue() / 1000) * 0.35), 0.01, 2)
+				return math.clamp(meta.sword.attackSpeed + ((stats.Network.ServerStatsItem["Data Ping"]:GetValue() / 1000) * 0.45), 0.01, 2)
 			elseif HitRegMode.Value == 'Blatant' then
-				return math.clamp(meta.sword.attackSpeed - (0.2 * math.random(1, 3)), 0.01, 2)
+				return math.clamp(meta.sword.attackSpeed - ((stats.Network.ServerStatsItem["Data Ping"]:GetValue() / 1000) * 0.85), 0.01, 2)
+			elseif HitRegMode.Value == 'HVH' then
+				return math.clamp(meta.sword.attackSpeed - ((stats.Network.ServerStatsItem["Data Ping"]:GetValue() / 1000) * 0.95 + 0.05), 0.01, 2)
 			elseif HitRegMode.Value == 'Custom' then
 				return math.clamp(meta.sword.attackSpeed - (Multiplier.Value / 500), 0.01, 2)
 			end
 		end
-
-		if HitRegMode.Value == 'Auto' then
-			return math.clamp(0.3 - (stats.Network.ServerStatsItem["Data Ping"]:GetValue() / 1000), 0.01, 2)
-		elseif HitRegMode.Value == 'Legit' then
-			return math.clamp(0.3 + ((stats.Network.ServerStatsItem["Data Ping"]:GetValue() / 1000) * 0.35), 0.01, 2)
-		elseif HitRegMode.Value == 'Blatant' then
-			return math.clamp(0.3 - (0.2 * math.random(1, 3)), 0.01, 2)
-		elseif HitRegMode.Value == 'Custom' then
-			return math.clamp(0.3 - (Multiplier.Value / 500), 0.01, 2)
-		end
+		return math.clamp(0.3 - (stats.Network.ServerStatsItem["Data Ping"]:GetValue() / 1000), 0.01, 2)
 	end
 
 	Killaura = vape.Categories.Blatant:CreateModule({
@@ -2488,10 +2481,10 @@ run(function()
 	})
 	HitRegMode = Killaura:CreateDropdown({
 		Name = 'Hit Register Mode',
-		List = {'Auto', 'Legit', 'Blatant', 'Custom'},
+		List = {'Auto', 'Legit', 'Blatant', 'HVH', 'Custom'},
 		Function = function(val)
 			Multiplier.Object.Visible = (val == 'Custom')
-			Notify('Killaura', 'Switched hit register mode to '..val, 5.5, 'Info')
+			Notif('Killaura', 'Switched hit register mode to '..val, 5.5, 'Info')
 		end
 	})
 	Multiplier = Killaura:CreateSlider({
