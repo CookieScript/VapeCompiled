@@ -2484,7 +2484,7 @@ run(function()
 		List = {'Auto', 'Legit', 'Blatant', 'HVH', 'Custom'},
 		Function = function(val)
 			Multiplier.Object.Visible = (val == 'Custom')
-			Notif('Killaura', 'Switched hit register mode to '..val, 5.5, 'Info')
+			notif('Killaura', 'Switched hit register mode to '..val, 5.5, 'Info')
 		end
 	})
 	Multiplier = Killaura:CreateSlider({
