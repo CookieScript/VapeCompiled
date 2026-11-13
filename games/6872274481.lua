@@ -2041,11 +2041,9 @@ run(function()
 			if HitRegMode.Value == 'Auto' then
 				return math.clamp(meta.sword.attackSpeed - (stats.Network.ServerStatsItem["Data Ping"]:GetValue() / 1000), 0.01, 2)
 			elseif HitRegMode.Value == 'Legit' then
-				return math.clamp(meta.sword.attackSpeed + ((stats.Network.ServerStatsItem["Data Ping"]:GetValue() / 1000) * 0.45), 0.01, 2)
+				return math.clamp(meta.sword.attackSpeed + ((stats.Network.ServerStatsItem["Data Ping"]:GetValue() / 1000) * (0.05 * math.random(3, 10))), 0.01, 2)
 			elseif HitRegMode.Value == 'Blatant' then
-				return math.clamp(meta.sword.attackSpeed - ((stats.Network.ServerStatsItem["Data Ping"]:GetValue() / 1000) * 0.35), 0.01, 2)
-			elseif HitRegMode.Value == 'HVH' then
-				return math.clamp(meta.sword.attackSpeed - ((stats.Network.ServerStatsItem["Data Ping"]:GetValue() / 1000) * 0.15 + 0.05), 0.01, 2)
+				return math.clamp(meta.sword.attackSpeed - ((stats.Network.ServerStatsItem["Data Ping"]:GetValue() / 1000) * 0.25), 0.01, 2)
 			elseif HitRegMode.Value == 'Custom' then
 				return math.clamp(meta.sword.attackSpeed - (HitRegOffset.Value / 500), 0.01, 2)
 			end
@@ -2481,7 +2479,7 @@ run(function()
 	})
 	HitRegMode = Killaura:CreateDropdown({
 		Name = 'Hit Register Mode',
-		List = {'Auto', 'Legit', 'Blatant', 'HVH', 'Custom'},
+		List = {'Auto', 'Legit', 'Blatant', 'Custom'},
 		Function = function(val)
 			HitRegOffset.Object.Visible = (val == 'Custom')
 		end
