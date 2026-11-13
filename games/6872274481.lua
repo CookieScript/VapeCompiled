@@ -2002,6 +2002,8 @@ run(function()
 	local AnimationSpeed
 	local AnimationTween
 	local Limit
+	local HitRegMode
+	local Multiplier
 	local LegitAura
 	local Particles, Boxes = {}, {}
 	local anims, AnimDelay, AnimTween, armC0 = vape.Libraries.auraanims, tick()
@@ -2036,10 +2038,26 @@ run(function()
 
 	local function getHitReg(meta)
 		if meta and meta.sword and meta.sword.attackSpeed then
-			return math.clamp(meta.sword.attackSpeed - (stats.Network.ServerStatsItem["Data Ping"]:GetValue() / 1000), 0.01, 2)
+			if HitRegMode.Value == 'Auto' then
+				return math.clamp(meta.sword.attackSpeed - (stats.Network.ServerStatsItem["Data Ping"]:GetValue() / 1000), 0.01, 2)
+			elseif HitRegMode.Value == 'Legit' then
+				return math.clamp(meta.sword.attackSpeed + ((stats.Network.ServerStatsItem["Data Ping"]:GetValue() / 1000) * 0.35), 0.01, 2)
+			elseif HitRegMode.Value == 'Blatant' then
+				return math.clamp(meta.sword.attackSpeed - (0.2 * math.random(1, 3)), 0.01, 2)
+			elseif HitRegMode.Value == 'Custom' then
+				return math.clamp(meta.sword.attackSpeed - (Multiplier.Value / 500), 0.01, 2)
+			end
 		end
 
-		return math.clamp(0.3 - (stats.Network.ServerStatsItem["Data Ping"]:GetValue() / 1000), 0.01, 2)
+		if HitRegMode.Value == 'Auto' then
+			return math.clamp(0.3 - (stats.Network.ServerStatsItem["Data Ping"]:GetValue() / 1000), 0.01, 2)
+		elseif HitRegMode.Value == 'Legit' then
+			return math.clamp(0.3 + ((stats.Network.ServerStatsItem["Data Ping"]:GetValue() / 1000) * 0.35), 0.01, 2)
+		elseif HitRegMode.Value == 'Blatant' then
+			return math.clamp(0.3 - (0.2 * math.random(1, 3)), 0.01, 2)
+		elseif HitRegMode.Value == 'Custom' then
+			return math.clamp(0.3 - (Multiplier.Value / 500), 0.01, 2)
+		end
 	end
 
 	Killaura = vape.Categories.Blatant:CreateModule({
@@ -2467,6 +2485,21 @@ run(function()
 			end
 		end,
 		Tooltip = 'Only attacks when the sword is held'
+	})
+	HitRegMode = Killaura:CreateDropdown({
+		Name = 'Hit Register Mode',
+		List = {'Auto', 'Legit', 'Blatant', 'Custom'},
+		Function = function(val)
+			Multiplier.Object.Visible = (val == 'Custom')
+			Notify('Killaura', 'Switched hit register mode to '..val, 5.5, 'Info')
+		end
+	})
+	Multiplier = Killaura:CreateSlider({
+		Name = 'Register Multiplier',
+		Min = 1,
+		Max = 100,
+		Default = 10,
+		Visible = false
 	})
 	LegitAura = Killaura:CreateToggle({
 		Name = 'Swing only',
